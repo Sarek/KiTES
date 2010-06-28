@@ -28,7 +28,7 @@ ruletree:
 	;
 
 instance:
-	nonterminal*
+	nonterminal
 	;
 	
 rule:
