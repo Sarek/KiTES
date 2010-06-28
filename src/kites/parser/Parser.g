@@ -33,7 +33,7 @@ instance:
 	
 rule:
 	 nonterminal
-	 '-->'
+	 RARROW
 	 (var | terminal | nonterminal)
 	 ;
 
@@ -43,9 +43,9 @@ nonterminal
 //	}
 	:
 	IDENT
-	'('
+	LPAR
 	(var | terminal | nonterminal)+
-	')'
+	RPAR
 	;
 
 terminal:
@@ -85,3 +85,15 @@ MULTI_COMMENT:
 	.*
 	'*/'
 	{$channel = HIDDEN;};
+	
+LPAR:
+	'('
+	;
+	
+RPAR:
+	')'
+	;
+	
+RARROW:
+	'-->'
+	;
