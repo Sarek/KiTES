@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
+import javax.swing.JToolBar;
 
 /**
  * Main window class for KiTES.
@@ -51,7 +52,7 @@ public class MainWindow extends JFrame {
         JEditorPane editor = new JEditorPane();
         editor.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         System.out.println(editor.getFont().getFontName());
-        this.add(editor);
+        this.add(editor, BorderLayout.CENTER);
         
         /*
          * Construct the menu
@@ -126,7 +127,16 @@ public class MainWindow extends JFrame {
         /*
          * Build toolbar
          */
-        //TODO: Build toolbar
+        JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
+        JButton tbSave = new JButton("Save");
+        JButton tbOpen = new JButton("Open");
+        JButton tbRun = new JButton("Run Int");
+        
+        toolBar.add(tbSave);
+        toolBar.add(tbOpen);
+        toolBar.add(tbRun);
+        
+        this.add(toolBar, BorderLayout.PAGE_START);
         
         /*
          * Actions

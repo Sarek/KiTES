@@ -1,9 +1,13 @@
 package kites.TRSModel;
 
 public abstract class ASTNode {
-	private String name;
+	protected String name;
 	
 	public ASTNode(String name) {
 		this.name = name;
+	}
+	
+	public String toString(String indent) {
+		return indent + name;
 	}
 }
