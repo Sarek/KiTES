@@ -1,4 +1,4 @@
-grammar Parser;
+grammar TRS;
 
 options {
   language = Java;
