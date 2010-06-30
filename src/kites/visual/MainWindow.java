@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -19,6 +21,13 @@ import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
+
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.TokenStream;
+
+import kites.parser.TRSLexer;
+import kites.parser.TRSParser;
 
 /**
  * Main window class for KiTES.
@@ -49,7 +58,7 @@ public class MainWindow extends JFrame {
         setTitle("KiTES v0.1");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         
-        JEditorPane editor = new JEditorPane();
+        final JEditorPane editor = new JEditorPane();
         editor.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         System.out.println(editor.getFont().getFontName());
         this.add(editor, BorderLayout.CENTER);
@@ -141,7 +150,47 @@ public class MainWindow extends JFrame {
         /*
          * Actions
          */
-        //TODO: Actions
+        final class QuitAction implements ActionListener {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+				
+			}
+        	
+        }
+        menuFileQuit.addActionListener(new QuitAction());
+        
+        final class RunAction implements ActionListener {
+        	@Override
+        	public void actionPerformed(ActionEvent arg0) {
+        		System.out.println("Parsing tree...");
+        		TRSLexer lexer = new TRSLexer(new ANTLRStringStream(editor.getText()));
+        		TokenStream tokenStream = new CommonTokenStream(lexer);
+        		TRSParser parser = new TRSParser(tokenStream);
+        		
+        		
+        		
+        		
+        		
+        		
+        		
+        		
+        		/*
+        		CharStream stream =
+        			new ANTLRStringStream("x := 4; y := 2 + 3; 3  * (-x + y) * 3");
+        		Sample4Lexer lexer = new Sample4Lexer(stream);
+        		TokenStream tokenStream = new CommonTokenStream(lexer);
+        		Sample4Parser parser = new Sample4Parser(tokenStream);
+        		evaluator_return evaluator = parser.evaluator();
+        		System.out.println(evaluator.tree.toStringTree());
+        		CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(evaluator.tree);
+        		EvaluatorWalker walker = new EvaluatorWalker(nodeStream);
+        		int result = walker.evaluator();
+        		System.out.println("ok - result = " + result);
+        		*/
+        	}
+        }
    }
 
 	

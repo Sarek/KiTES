@@ -23,35 +23,47 @@ options {
 //	rule*
 //	;
 
-ruletree:
-	rule*
+rulelist returns [RuleList e]:
+	{ RuleList e = new RuleList(); }
+	(rule	{ e.add($rule); }
+	)*
 	;
 
-instance:
+instance returns [ASTNode e]:
 	nonterminal
 	;
 	
-rule:
-	 nonterminal
-	 RARROW
-	 (var | terminal | nonterminal)
-	 ;
+rule returns [Rule e]:
+	{ Rule e = new Rule(); }
+	nonterminal		{ e.setLeft($nonterminal); }
+	RARROW
+	right=(var | terminal | nonterminal) { e.setRight($right); }
+	;
 
-nonterminal
+nonterminal returns [ASTNode e]:
 //	options {
 //	  greedy = false;
 //	}
 	:
-	IDENT
+	{ $e = new Nonterminal(); }
+	IDENT { $e.setName($IDENT.text); }
 	LPAR
-	(var | terminal | nonterminal)+
+	(var	{ $e.add($var); }
+	| terminal	{ $e.add($terminal); }
+	| nonterminal	{ $e.add($nonterminal); }
+	)+
 	RPAR
 	;
 
-terminal:
-	IDENT;
-var:
-	VAR;
+terminal returns [ASTNode e]:
+	{ Terminal e = new Terminal(); }
+	IDENT { e.setName($IDENT.text); }
+	;
+	
+var returns [ASTNode e]:
+	{ Variable e = new Variable(); }
+	VAR	{ e.setName($IDENT.text); }
+	;
 
 
 /*
