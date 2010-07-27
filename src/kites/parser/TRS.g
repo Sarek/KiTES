@@ -6,6 +6,7 @@ options {
 
 @header {
   package kites.parser;
+  import kites.TRSModel.*;
 }
 
 @lexer::header {
@@ -17,52 +18,48 @@ options {
 //	program
 //	instantiation
 //	; 
-	
+
 //program:
 //	'program:'
 //	rule*
 //	;
 
 rulelist returns [RuleList e]:
-	{ RuleList e = new RuleList(); }
-	(rule	{ e.add($rule); }
+	{ $e = new RuleList(); }
+	(rule	{ $e.add($rule.e); }
 	)*
 	;
 
-instance returns [ASTNode e]:
-	nonterminal
-	;
-	
+
 rule returns [Rule e]:
-	{ Rule e = new Rule(); }
-	nonterminal		{ e.setLeft($nonterminal); }
+	{ $e = new Rule(); }
+	fun=function		{ $e.setLeft($fun.e); }
 	RARROW
-	right=(var | terminal | nonterminal) { e.setRight($right); }
+	( var				{ $e.setRight($var.e); }
+	| constant			{ $e.setRight($constant.e); }
+	| f=function		{ $e.setRight($f.e); }
+	) 
 	;
 
-nonterminal returns [ASTNode e]:
-//	options {
+function returns [ASTNode e]:
+//	options {token
 //	  greedy = false;
 //	}
-	:
-	{ $e = new Nonterminal(); }
-	IDENT { $e.setName($IDENT.text); }
+	IDENT { $e = new Nonterminal($IDENT.text); }
 	LPAR
-	(var	{ $e.add($var); }
-	| terminal	{ $e.add($terminal); }
-	| nonterminal	{ $e.add($nonterminal); }
+	(var	{ $e.add($var.e); }
+	| constant	{ $e.add($constant.e); }
+	| function	{ $e.add($function.e); }
 	)+
 	RPAR
 	;
 
-terminal returns [ASTNode e]:
-	{ Terminal e = new Terminal(); }
-	IDENT { e.setName($IDENT.text); }
+constant returns [ASTNode e]:
+	IDENT { $e = new Terminal($IDENT.text); }
 	;
 	
 var returns [ASTNode e]:
-	{ Variable e = new Variable(); }
-	VAR	{ e.setName($IDENT.text); }
+	VAR	{ $e = new Variable($VAR.text); }
 	;
 
 

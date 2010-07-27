@@ -6,7 +6,7 @@ import java.util.LinkedList;
 public class RuleList {
 	LinkedList<Rule> rules;
 	
-	public void addRule(Rule rule) {
+	public void add(Rule rule) {
 		rules.add(rule);
 	}
 	
