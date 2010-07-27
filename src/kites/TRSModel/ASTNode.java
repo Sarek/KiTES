@@ -9,12 +9,13 @@ public abstract class ASTNode {
 		this.name = name;
 	}
 	
+	public String toString() {
+		return name;
+	}
+	
 	public String toString(String indent) {
 		return indent + name;
 	}
 	
-	public void add(ASTNode a) {
-		// This is only for abstraction purposes here.
-		// Will be implemented in subtypes.
-	}
+	public abstract void add(ASTNode a);
 }

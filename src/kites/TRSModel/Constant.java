@@ -1,10 +1,10 @@
 package kites.TRSModel;
 
-public class Variable extends ASTNode {
-	public Variable(String name) {
+public class Constant extends ASTNode {
+	public Constant(String name) {
 		super(name);
 	}
-	
+
 	@Override
 	public void add(ASTNode a) {
 		// Nothing to add here		

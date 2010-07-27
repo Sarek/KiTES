@@ -45,17 +45,17 @@ function returns [ASTNode e]:
 //	options {token
 //	  greedy = false;
 //	}
-	IDENT { $e = new Nonterminal($IDENT.text); }
+	IDENT { $e = new Function($IDENT.text); }
 	LPAR
 	(var	{ $e.add($var.e); }
 	| constant	{ $e.add($constant.e); }
-	| function	{ $e.add($function.e); }
+	| f=function	{ $e.add($f.e); }
 	)+
 	RPAR
 	;
 
 constant returns [ASTNode e]:
-	IDENT { $e = new Terminal($IDENT.text); }
+	IDENT { $e = new Constant($IDENT.text); }
 	;
 	
 var returns [ASTNode e]:

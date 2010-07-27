@@ -24,8 +24,12 @@ import javax.swing.JToolBar;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 
+import kites.TRSModel.ASTNode;
+import kites.TRSModel.Function;
+import kites.TRSModel.RuleList;
 import kites.parser.TRSLexer;
 import kites.parser.TRSParser;
 
@@ -168,6 +172,14 @@ public class MainWindow extends JFrame {
         		TRSLexer lexer = new TRSLexer(new ANTLRStringStream(editor.getText()));
         		TokenStream tokenStream = new CommonTokenStream(lexer);
         		TRSParser parser = new TRSParser(tokenStream);
+        		try {
+					RuleList rulelist = parser.rulelist();
+					System.out.println(rulelist.toString());
+				} catch (RecognitionException e) {
+					e.printStackTrace();
+				}
+				
+				
         		
         		
         		
@@ -191,6 +203,7 @@ public class MainWindow extends JFrame {
         		*/
         	}
         }
+        tbRun.addActionListener(new RunAction());
    }
 
 	
