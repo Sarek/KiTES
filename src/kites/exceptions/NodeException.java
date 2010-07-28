@@ -2,6 +2,11 @@ package kites.exceptions;
 
 public class NodeException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3568616556543406755L;
+
 	public NodeException() {
 		super();
 	}

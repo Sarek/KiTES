@@ -3,6 +3,8 @@ package kites.TRSModel;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import kites.exceptions.NoChildrenException;
+
 public class Function extends ASTNode {
 	private LinkedList<ASTNode> children;
 	
@@ -28,5 +30,9 @@ public class Function extends ASTNode {
 		}
 		
 		return retval + ")";
+	}
+	
+	public Iterator<ASTNode> getChildIterator() throws NoChildrenException {
+		return this.children.iterator();
 	}
 }

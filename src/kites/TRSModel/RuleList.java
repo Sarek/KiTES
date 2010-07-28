@@ -18,6 +18,10 @@ public class RuleList {
 		return rules.iterator();
 	}
 	
+	public LinkedList<Rule> getRulesList() {
+		return rules;
+	}
+	
 	public String toString() {
 		String retval = "";
 		Iterator<Rule> it = this.getRules();
