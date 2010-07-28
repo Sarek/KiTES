@@ -1,13 +1,10 @@
 package kites.visual;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
@@ -16,10 +13,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
-import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 
 import org.antlr.runtime.ANTLRStringStream;
@@ -27,8 +21,6 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 
-import kites.TRSModel.ASTNode;
-import kites.TRSModel.Function;
 import kites.TRSModel.RuleList;
 import kites.parser.TRSLexer;
 import kites.parser.TRSParser;
@@ -73,12 +65,12 @@ public class MainWindow extends JFrame {
         JMenuBar menuBar = new JMenuBar();
         JMenu menuFile = new JMenu("Datei");
         JMenu menuEdit = new JMenu("Bearbeiten");
-        JMenu menuInterpretation = new JMenu("Interpretation");
+        //JMenu menuInterpretation = new JMenu("Interpretation");
         JMenu menuHelp = new JMenu("Hilfe");
         
         menuBar.add(menuFile);
         menuBar.add(menuEdit);
-        menuBar.add(menuInterpretation);
+        //menuBar.add(menuInterpretation);
         menuBar.add(menuHelp);
         this.setJMenuBar(menuBar);
         
@@ -101,7 +93,7 @@ public class MainWindow extends JFrame {
         JMenuItem menuEditHeadersEqual = new JMenuItem("Equal");
         
         ButtonGroup grpInterpretation = new ButtonGroup();
-        JMenuItem menuInterpretationStart = new JMenuItem("Interpreter starten");
+        //JMenuItem menuInterpretationStart = new JMenuItem("Interpreter starten");
         JRadioButtonMenuItem menuInterpretationNonDet = new JRadioButtonMenuItem("Nicht-deterministisches Programm");
         grpInterpretation.add(menuInterpretationNonDet);
         JRadioButtonMenuItem menuInterpretationProg = new JRadioButtonMenuItem("Programm");
@@ -128,12 +120,14 @@ public class MainWindow extends JFrame {
         menuEditHeaders.add(menuEditHeadersIf);
         menuEditHeaders.add(menuEditHeadersEqual);
         
+        /*
         menuInterpretation.add(menuInterpretationStart);
         menuInterpretation.add(menuSeparator3);
         menuInterpretation.add(menuInterpretationNonDet);
         menuInterpretation.add(menuInterpretationProg);
         menuInterpretation.add(menuInterpretationNonDet);
         menuInterpretation.add(menuInterpretationTRS);
+        */
         
         menuHelp.add(menuHelpAbout);
         
@@ -141,9 +135,9 @@ public class MainWindow extends JFrame {
          * Build toolbar
          */
         JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
-        JButton tbSave = new JButton("Save");
-        JButton tbOpen = new JButton("Open");
-        JButton tbRun = new JButton("Run Int");
+        JButton tbSave = new JButton("Speichern");
+        JButton tbOpen = new JButton("Öffnen");
+        JButton tbRun = new JButton("Interpreter starten");
         
         toolBar.add(tbSave);
         toolBar.add(tbOpen);
@@ -174,33 +168,11 @@ public class MainWindow extends JFrame {
         		TRSParser parser = new TRSParser(tokenStream);
         		try {
 					RuleList rulelist = parser.rulelist();
-					System.out.println(rulelist.toString());
+					InterpreterWindow wndInterpreter = new InterpreterWindow(rulelist, 0);
+					wndInterpreter.setVisible(true);
 				} catch (RecognitionException e) {
 					e.printStackTrace();
 				}
-				
-				
-        		
-        		
-        		
-        		
-        		
-        		
-        		
-        		
-        		/*
-        		CharStream stream =
-        			new ANTLRStringStream("x := 4; y := 2 + 3; 3  * (-x + y) * 3");
-        		Sample4Lexer lexer = new Sample4Lexer(stream);
-        		TokenStream tokenStream = new CommonTokenStream(lexer);
-        		Sample4Parser parser = new Sample4Parser(tokenStream);
-        		evaluator_return evaluator = parser.evaluator();
-        		System.out.println(evaluator.tree.toStringTree());
-        		CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(evaluator.tree);
-        		EvaluatorWalker walker = new EvaluatorWalker(nodeStream);
-        		int result = walker.evaluator();
-        		System.out.println("ok - result = " + result);
-        		*/
         	}
         }
         tbRun.addActionListener(new RunAction());
