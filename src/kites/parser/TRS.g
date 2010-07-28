@@ -52,12 +52,12 @@ options {
 rulelist returns [RuleList e]:
 	{ $e = new RuleList(); }
 	( rule	{ $e.add($rule.e); }
-	| include
+	| INCLUDE
 	)*
 	;
 
-include:
-	INC f=IDENT
+INCLUDE:
+	'#include' (WS)? f=IDENT
 	{
        String name = f.getText();
        name = name.substring(1,name.length()-1);

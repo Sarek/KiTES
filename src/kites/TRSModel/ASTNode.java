@@ -1,7 +1,5 @@
 package kites.TRSModel;
 
-import kites.exceptions.NodeException;
-
 public abstract class ASTNode {
 	protected String name;
 	
