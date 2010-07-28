@@ -13,24 +13,68 @@ options {
   package kites.parser;
 }
 
-//baum:
-//	include
-//	program
-//	instantiation
-//	; 
+@lexer::members {
+    class SaveStruct {
+      SaveStruct(CharStream input){
+        this.input = input;
+        this.marker = input.mark();
+      }
+      public CharStream input;
+      public int marker;
+     }
 
-//program:
-//	'program:'
-//	rule*
-//	;
+     Stack<SaveStruct> includes = new Stack<SaveStruct>();
+
+    // We should override this method for handling EOF of included file
+     public Token nextToken(){
+       Token token = super.nextToken();
+
+       if(token.getType() == Token.EOF && !includes.empty()){
+        // We've got EOF and have non empty stack.
+         SaveStruct ss = includes.pop();
+         setCharStream(ss.input);
+         input.rewind(ss.marker);
+         //this should be used instead of super [like below] to handle exits from nested includes
+         //it matters, when the 'include' token is the last in previous stream (using super, lexer 'crashes' returning EOF token)
+         token = this.nextToken();
+       }
+
+      // Skip first token after switching on another input.
+      // You need to use this rather than super as there may be nested include files
+       if(((CommonToken)token).getStartIndex() < 0)
+         token = this.nextToken();
+
+       return token;
+     }
+ }
+
 
 rulelist returns [RuleList e]:
 	{ $e = new RuleList(); }
-	(rule	{ $e.add($rule.e); }
+	( rule	{ $e.add($rule.e); }
+	| include
 	)*
 	;
 
+include:
+	INC f=IDENT
+	{
+       String name = f.getText();
+       name = name.substring(1,name.length()-1);
+       try {
+        // save current lexer's state
+         SaveStruct ss = new SaveStruct(input);
+         includes.push(ss);
 
+        // switch on new input stream
+         setCharStream(new ANTLRFileStream(name));
+         reset();
+
+       } catch(Exception fnf) { throw new Error("Cannot open file " + name); }
+     }
+     ;
+	
+	 
 rule returns [Rule e]:
 	{ $e = new Rule(); }
 	fun=function		{ $e.setLeft($fun.e); }
@@ -71,6 +115,10 @@ IDENT:
 	'a'..'z'
 	('a'..'z' | 'A'..'Z' | '0'..'9')*
 	;
+	
+INC:
+	('#include' | '#INCLUDE' | '#Include')
+	; 
 	
 VAR:
 	'A'..'Z'
