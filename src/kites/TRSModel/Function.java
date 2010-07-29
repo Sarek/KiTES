@@ -36,6 +36,10 @@ public class Function extends ASTNode {
 		return this.children.iterator();
 	}
 	
+	public Iterator<ASTNode> getRevChildIterator() throws NoChildrenException {
+		return this.children.descendingIterator();
+	}
+	
 	public int getParamCount() {
 		return children.size();
 	}

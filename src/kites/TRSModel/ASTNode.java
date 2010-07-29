@@ -33,6 +33,10 @@ public abstract class ASTNode {
 		throw new NoChildrenException();
 	}
 	
+	public Iterator<ASTNode> getRevChildIterator() throws NoChildrenException {
+		throw new NoChildrenException();
+	}
+	
 	public int getParamCount() {
 		return 0;
 	}
