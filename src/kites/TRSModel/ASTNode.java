@@ -32,4 +32,8 @@ public abstract class ASTNode {
 	public Iterator<ASTNode> getChildIterator() throws NoChildrenException {
 		throw new NoChildrenException();
 	}
+	
+	public int getParamCount() {
+		return 0;
+	}
 }

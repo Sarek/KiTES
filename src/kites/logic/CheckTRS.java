@@ -3,6 +3,7 @@
  */
 package kites.logic;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -20,7 +21,7 @@ import kites.exceptions.UnificationException;
  *
  */
 public class CheckTRS {
-	public void unifiabilityCheck(RuleList rulelist) throws UnificationException{
+	public void unifiabilityCheck(RuleList rulelist) throws SyntaxErrorException{
 		Iterator<Rule> rules = rulelist.getRules();
 		LinkedList<Rule> rules2 = rulelist.getRulesList();
 		
@@ -31,30 +32,83 @@ public class CheckTRS {
 			Rule rule1 = rules.next();
 			
 			while(it.hasNext()) {
-				unifiable(rule1.getLeft(), it.next().getLeft());
+				ASTNode rightNode = it.next().getLeft();
+				if(unifiable(rule1.getLeft(), rightNode, true)) {
+					throw new SyntaxErrorException("The rules " + rule1.getLeft() + " and " + rightNode + " are unifiable");
+				}
 			}
+			pos++;
 		}
 	}
 	
-
-	
-	
-	private void unifiable(ASTNode left, ASTNode right) throws UnificationException {
+	private boolean unifiable(ASTNode left, ASTNode right, boolean match) {
+		if(!(left instanceof Variable || right instanceof Variable) && left.getName() != right.getName()) {
+			match = false;
+		}
+		else {
+			try {
+				Iterator<ASTNode> leftChildren = left.getChildIterator();
+				Iterator<ASTNode> rightChildren = right.getChildIterator();
 				
+				while(leftChildren.hasNext() && rightChildren.hasNext()) {
+					match = unifiable(leftChildren.next(), rightChildren.next(), match);
+					if(match == false)
+						break;		// stop going through the tree if we already know that it is not unifiable
+									// with the other one.
+				}
+			}
+			catch(NoChildrenException e) {
+				// just return, maybe there are other nodes with children
+				// if not we will return to the original caller.
+			}
+		}
+		
+		return match;
 	}
 
 
+	public void signatureCheck(RuleList rulelist) throws SyntaxErrorException {
+		HashMap<String, Integer> signature = new HashMap<String, Integer>();
+		
+		Iterator<Rule> it = rulelist.getRules();
+		while(it.hasNext()) {
+			Rule r = it.next();
+			sigCheckNode(signature, r.getLeft());
+			sigCheckNode(signature, r.getRight());
+		}
+	}
 
-
-	public void syntaxCheck(RuleList rulelist) throws SyntaxErrorException {
+	private void sigCheckNode(HashMap<String, Integer> signature, ASTNode node) throws SyntaxErrorException {
+		if(signature.containsKey(node.getName())) {
+			if(signature.get(node.getName()) != node.getParamCount())
+				throw new SyntaxErrorException("Wrong parameter count for " + node + " on line " + node.getLine());
+		}
+		else {
+			signature.put(node.getName(), node.getParamCount());
+		}
+		
+		try {
+			Iterator<ASTNode> children = node.getChildIterator();
+			
+			while(children.hasNext()) {
+				sigCheckNode(signature, children.next());
+			}
+		}
+		catch(NoChildrenException e) {
+			// Do nothing
+		}
+		
+	}
+	
+	public void variableCheck(RuleList rulelist) throws SyntaxErrorException {
 		Iterator<Rule> it = rulelist.getRules();
 		
 		while(it.hasNext()) {
-			CheckRule(it.next());
+			variableCheckRule(it.next());
 		}
 	}
 	
-	private void CheckRule(Rule rule) throws SyntaxErrorException {
+	private void variableCheckRule(Rule rule) throws SyntaxErrorException {
 		// Create a list of variables on left side
 		// and check for multiple usage at the same time
 		HashSet<String> variables = GetVariables(rule.getLeft(), new HashSet<String>());
