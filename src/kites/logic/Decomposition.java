@@ -25,7 +25,7 @@ public class Decomposition {
 	public static final int LO = 1;
 	public static final int RO = 2;
 	public static final int NDET = 3;
-	public static final int TES = 4;
+	public static final int TRS = 4;
 	
 	public static LinkedHashMap<ASTNode, LinkedList<Rule>> getDecomp(int type, RuleList rulelist, ASTNode instance) throws DecompositionException, SyntaxErrorException {
 		LinkedHashMap<ASTNode, LinkedList<Rule>> matches = new LinkedHashMap<ASTNode, LinkedList<Rule>>();
@@ -40,17 +40,42 @@ public class Decomposition {
 		case NDET:
 			return ndetDecomp(rulelist, instance, matches);
 			
-		case TES:
-			return tesDecomp(rulelist, instance, matches);
+		case TRS:
+			return trsDecomp(rulelist, instance, matches);
 			
 		default:
 			throw new DecompositionException("No such decomposition is available");
 		}
 	}
 
-	private static LinkedHashMap<ASTNode, LinkedList<Rule>> tesDecomp(RuleList rulelist, ASTNode node, LinkedHashMap<ASTNode,LinkedList<Rule>> matches) {
-		// TODO Auto-generated method stub
-		return null;
+	private static LinkedHashMap<ASTNode, LinkedList<Rule>> trsDecomp(RuleList rulelist, ASTNode node, LinkedHashMap<ASTNode,LinkedList<Rule>> matches) throws SyntaxErrorException {
+		// The decomposition for the execution as a TRS is quite easy, because we have no specific execution order
+		// and can apply whatever rule we want at whatever position in the tree we want
+		// So basically we just gather all possible matches for all nodes.
+		
+		Iterator<Rule> ruleIterator = rulelist.getRules();
+		while(ruleIterator.hasNext()) {
+			Rule rule = ruleIterator.next();
+			if(match(rule.getLeft(), node)) {
+				if(!matches.containsKey(node)) {
+					matches.put(node, new LinkedList<Rule>());
+				}
+				matches.get(node).add(rule);
+			}
+		}
+		
+		// Add matches for children
+		try {
+			Iterator<ASTNode> childrenIt = node.getChildIterator();
+			while(childrenIt.hasNext()) {
+				matches = trsDecomp(rulelist, childrenIt.next(), matches);
+			}
+		}
+		catch(NoChildrenException e) {
+			// Do nothing. We simply reached a leaf node.
+		}
+		
+		return matches;
 	}
 
 	private static LinkedHashMap<ASTNode, LinkedList<Rule>> ndetDecomp(RuleList rulelist, ASTNode node, LinkedHashMap<ASTNode,LinkedList<Rule>> matches) {
@@ -63,6 +88,9 @@ public class Decomposition {
 		while(ruleIterator.hasNext()) {
 			Rule rule = ruleIterator.next();
 			if(match(rule.getLeft(), node)) {
+				if(!matches.containsKey(node)) {
+					matches.put(node, new LinkedList<Rule>());
+				}
 				matches.get(node).add(rule);
 				return matches;
 			}
@@ -89,6 +117,9 @@ public class Decomposition {
 		while(ruleIterator.hasNext()) {
 			Rule rule = ruleIterator.next();
 			if(match(rule.getLeft(), node)) {
+				if(!matches.containsKey(node)) {
+					matches.put(node, new LinkedList<Rule>());
+				}
 				matches.get(node).add(rule);
 				return matches;
 			}
