@@ -40,4 +40,8 @@ public abstract class ASTNode {
 	public int getParamCount() {
 		return 0;
 	}
+	
+	public int getSize() {
+		return 1;
+	}
 }

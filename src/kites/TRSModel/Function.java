@@ -43,4 +43,15 @@ public class Function extends ASTNode {
 	public int getParamCount() {
 		return children.size();
 	}
+	
+	public int getSize() {
+		int retval = 1;
+		Iterator<ASTNode> childrenIt = getChildIterator();
+		
+		while(childrenIt.hasNext()) {
+			retval += childrenIt.next().getSize();
+		}
+		
+		return retval;
+	}
 }

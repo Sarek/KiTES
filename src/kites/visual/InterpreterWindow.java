@@ -36,7 +36,7 @@ public class InterpreterWindow extends JFrame {
 			e.printStackTrace();
 		}
 		
-		setLocationRelativeTo(getParent());
+		//setLocationRelativeTo(getParent());
         setSize(1000, 500);
         setTitle("KiTES v0.1");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);

@@ -49,7 +49,7 @@ public class MainWindow extends JFrame {
 			e.printStackTrace();
 		}
 		
-		setLocationRelativeTo(getParent());
+		//setLocationRelativeTo(null);
         setSize(1000, 500);
         setTitle("KiTES v0.1");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
