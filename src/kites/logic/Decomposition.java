@@ -26,6 +26,7 @@ public class Decomposition {
 	public static final int RO = 2;
 	public static final int NDET = 3;
 	public static final int TRS = 4;
+	public static final int LI = 5;
 	
 	public static LinkedHashMap<ASTNode, LinkedList<Rule>> getDecomp(int type, RuleList rulelist, ASTNode instance) throws DecompositionException, SyntaxErrorException {
 		LinkedHashMap<ASTNode, LinkedList<Rule>> matches = new LinkedHashMap<ASTNode, LinkedList<Rule>>();
@@ -42,10 +43,20 @@ public class Decomposition {
 			
 		case TRS:
 			return trsDecomp(rulelist, instance, matches);
+		
+		case LI:
+			return liDecomp(rulelist, instance, matches);
 			
 		default:
 			throw new DecompositionException("No such decomposition is available");
 		}
+	}
+
+	private static LinkedHashMap<ASTNode, LinkedList<Rule>> liDecomp(
+			RuleList rulelist, ASTNode instance,
+			LinkedHashMap<ASTNode, LinkedList<Rule>> matches) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private static LinkedHashMap<ASTNode, LinkedList<Rule>> trsDecomp(RuleList rulelist, ASTNode node, LinkedHashMap<ASTNode,LinkedList<Rule>> matches) throws SyntaxErrorException {
