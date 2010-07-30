@@ -32,11 +32,11 @@ public class Function extends ASTNode {
 		return retval + ")";
 	}
 	
-	public Iterator<ASTNode> getChildIterator() throws NoChildrenException {
+	public Iterator<ASTNode> getChildIterator() {
 		return this.children.iterator();
 	}
 	
-	public Iterator<ASTNode> getRevChildIterator() throws NoChildrenException {
+	public Iterator<ASTNode> getRevChildIterator() {
 		return this.children.descendingIterator();
 	}
 	

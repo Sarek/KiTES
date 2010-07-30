@@ -145,7 +145,7 @@ public class CheckTRS {
 		catch(NoChildrenException e) {
 			if(node instanceof Variable) {
 				if(variables.contains(node.getName())) {
-					throw new SyntaxErrorException("Variable " + node.getName() + "used multiple times on a left-hand side of a rule. Line: " + node.getLine());
+					throw new SyntaxErrorException("Rule on line " + node.getLine() + " is not left-linear.");
 				}
 				else {
 					variables.add(node.getName());
