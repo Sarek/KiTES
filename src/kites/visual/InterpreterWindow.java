@@ -98,21 +98,48 @@ public class InterpreterWindow extends JFrame {
         this.add(pane);
         
         JMenuBar menuBar = new JMenuBar();
-        JMenu menuInterpretation = new JMenu("Interpretation");
+        JMenu menuInterpretation = new JMenu("Interpretationsmodus");
         ButtonGroup grpInterpretation = new ButtonGroup();
+        
         JRadioButtonMenuItem menuInterpretationNonDet = new JRadioButtonMenuItem("Nicht-deterministisches Programm");
-        grpInterpretation.add(menuInterpretationNonDet);
         JRadioButtonMenuItem menuInterpretationProg = new JRadioButtonMenuItem("Programm");
-        grpInterpretation.add(menuInterpretationProg);
-        menuInterpretationProg.setSelected(true);
         JRadioButtonMenuItem menuInterpretationTRS = new JRadioButtonMenuItem("Termersetzungssystem");
+        
+        grpInterpretation.add(menuInterpretationNonDet);
+        grpInterpretation.add(menuInterpretationProg);
         grpInterpretation.add(menuInterpretationTRS);
+        
+        menuInterpretationProg.setSelected(true);
         
         menuInterpretation.add(menuInterpretationNonDet);
         menuInterpretation.add(menuInterpretationProg);
         menuInterpretation.add(menuInterpretationNonDet);
         menuInterpretation.add(menuInterpretationTRS);
+        
         menuBar.add(menuInterpretation);
+        
+        JMenu menuStrategy = new JMenu("Reduktionsstrategie");
+        ButtonGroup grpStrategy = new ButtonGroup();
+        
+        JRadioButtonMenuItem menuStrategyLI = new JRadioButtonMenuItem("Leftmost-Innermost");
+        JRadioButtonMenuItem menuStrategyLO = new JRadioButtonMenuItem("Leftmost-Outermost");
+        JRadioButtonMenuItem menuStrategyRI = new JRadioButtonMenuItem("Rightmost-Innermost");
+        JRadioButtonMenuItem menuStrategyRO = new JRadioButtonMenuItem("Rightmost-Outermost");
+        
+        menuStrategyLO.setSelected(true);
+        
+        grpStrategy.add(menuStrategyLI);
+        grpStrategy.add(menuStrategyLO);
+        grpStrategy.add(menuStrategyRI);
+        grpStrategy.add(menuStrategyRO);
+        
+        menuStrategy.add(menuStrategyLI);
+        menuStrategy.add(menuStrategyLO);
+        menuStrategy.add(menuStrategyRI);
+        menuStrategy.add(menuStrategyRO);
+        
+        menuBar.add(menuStrategy);
+        
         this.setJMenuBar(menuBar);
 	}
 
