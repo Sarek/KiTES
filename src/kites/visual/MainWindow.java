@@ -148,7 +148,7 @@ public class MainWindow extends JFrame {
         /*
          * Actions
          */
-        final class QuitAction implements ActionListener {
+        class QuitAction implements ActionListener {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -159,7 +159,7 @@ public class MainWindow extends JFrame {
         }
         menuFileQuit.addActionListener(new QuitAction());
         
-        final class RunAction implements ActionListener {
+        class RunAction implements ActionListener {
         	@Override
         	public void actionPerformed(ActionEvent arg0) {
         		System.out.println("Parsing tree...");

@@ -4,6 +4,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -101,9 +103,9 @@ public class InterpreterWindow extends JFrame {
         JMenu menuInterpretation = new JMenu("Interpretationsmodus");
         ButtonGroup grpInterpretation = new ButtonGroup();
         
-        JRadioButtonMenuItem menuInterpretationNonDet = new JRadioButtonMenuItem("Nicht-deterministisches Programm");
-        JRadioButtonMenuItem menuInterpretationProg = new JRadioButtonMenuItem("Programm");
-        JRadioButtonMenuItem menuInterpretationTRS = new JRadioButtonMenuItem("Termersetzungssystem");
+        final JRadioButtonMenuItem menuInterpretationNonDet = new JRadioButtonMenuItem("Nicht-deterministisches Programm");
+        final JRadioButtonMenuItem menuInterpretationProg = new JRadioButtonMenuItem("Programm");
+        final JRadioButtonMenuItem menuInterpretationTRS = new JRadioButtonMenuItem("Termersetzungssystem");
         
         grpInterpretation.add(menuInterpretationNonDet);
         grpInterpretation.add(menuInterpretationProg);
@@ -118,7 +120,7 @@ public class InterpreterWindow extends JFrame {
         
         menuBar.add(menuInterpretation);
         
-        JMenu menuStrategy = new JMenu("Reduktionsstrategie");
+        final JMenu menuStrategy = new JMenu("Reduktionsstrategie");
         ButtonGroup grpStrategy = new ButtonGroup();
         
         JRadioButtonMenuItem menuStrategyLI = new JRadioButtonMenuItem("Leftmost-Innermost");
@@ -139,6 +141,25 @@ public class InterpreterWindow extends JFrame {
         menuStrategy.add(menuStrategyRO);
         
         menuBar.add(menuStrategy);
+        
+        class StrategyAction implements ActionListener {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if(menuInterpretationProg.isSelected()) {
+					System.out.println("Aktiviere Menü");
+					menuStrategy.setEnabled(true);
+				}
+				else {
+					System.out.println("Deaktiviere Menü");
+					menuStrategy.setEnabled(false);
+				}
+			}
+        }
+        
+        StrategyAction stratAction = new StrategyAction();
+        menuInterpretationProg.addActionListener(stratAction);
+        menuInterpretationNonDet.addActionListener(stratAction);
+        menuInterpretationTRS.addActionListener(stratAction);
         
         this.setJMenuBar(menuBar);
 	}
