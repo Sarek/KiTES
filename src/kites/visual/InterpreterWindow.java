@@ -6,6 +6,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
@@ -21,7 +23,11 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
+import org.antlr.runtime.RecognitionException;
+
 import kites.TRSModel.RuleList;
+import kites.exceptions.DecompositionException;
+import kites.exceptions.NoRewritePossibleException;
 import kites.exceptions.SyntaxErrorException;
 import kites.logic.CheckTRS;
 import kites.logic.Decomposition;
@@ -53,7 +59,6 @@ public class InterpreterWindow extends JFrame {
 			e.printStackTrace();
 		}
 		
-		//setLocationRelativeTo(getParent());
         setSize(1000, 500);
         setTitle("KiTES v0.1");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -188,6 +193,7 @@ public class InterpreterWindow extends JFrame {
         	
         	checktrs.variableCheck();
         	signature = checktrs.signatureCheck();
+        	
         	steprewrite = new StepRewrite(getRuleList(), signature, instance, results, txtSteps, txtSize);
 			
         	
@@ -196,8 +202,35 @@ public class InterpreterWindow extends JFrame {
     			public void actionPerformed(ActionEvent arg0) {
     				steprewrite.setMode(getMode());
     				steprewrite.setStrategy(getStrategy());
-    				steprewrite.run();
+    				try {
+						steprewrite.run();
+					}
+    				catch (Exception e) {
+						MsgBox.error(e);
+					}
     			}
+            }
+            
+            class ResetAction implements KeyListener {
+				@Override
+				public void keyPressed(KeyEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void keyReleased(KeyEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void keyTyped(KeyEvent arg0) {
+    				steprewrite.setFirst();
+    				results.setText("");
+    				txtSteps.setText("");
+    				txtSize.setText("");
+				}
             }
             
     		class RunAction implements ActionListener {
@@ -210,17 +243,32 @@ public class InterpreterWindow extends JFrame {
     						steprewrite.run();
     					}
     				}
-    				catch(Exception e) {
-    					e.printStackTrace(); // we probably can not reduce anymore
+    				catch(SyntaxErrorException e) {
+    					MsgBox.error(e);
     				}
+    				catch(DecompositionException e) {
+    					MsgBox.error(e);
+    				}
+    				catch(NoRewritePossibleException e) {
+    					System.out.println("No rewrite possible");
+    				}
+    				catch (RecognitionException e) {
+						// TODO Auto-generated catch block
+						MsgBox.error(e);
+					}
     			}
     		}
         	
+    		instance.addKeyListener(new ResetAction());
         	btnStep.addActionListener(new StepAction());
         	btnGo.addActionListener(new RunAction());
+        	
+        	this.setVisible(true);
         }
         catch(SyntaxErrorException e) {
         	MsgBox.error(e);
+        	this.dispose();
+        	System.gc();
         }
 	}
 

@@ -39,21 +39,27 @@ public class Decomposition {
 		
 		switch(type) {
 		case S_LO:
+			System.out.println("Returning LO decomp");
 			return loDecomp(rulelist, instance, matches);
 		
 		case S_RO:
+			System.out.println("Returning RO decomp");
 			return roDecomp(rulelist, instance, matches);
 			
 		case S_NDET:
+			System.out.println("Returning NDET decomp");
 			return ndetDecomp(rulelist, instance, matches);
 			
 		case S_TRS:
+			System.out.println("Returning TRS decomp");
 			return trsDecomp(rulelist, instance, matches);
 		
 		case S_LI:
+			System.out.println("Returning LI decomp");
 			return liDecomp(rulelist, instance, matches);
 			
 		case S_RI:
+			System.out.println("Retutning RI decomp");
 			//return riDecomp(rulelist, instance, matches); // TODO: riDecomp()
 			
 		default:
@@ -141,7 +147,6 @@ public class Decomposition {
 					matches.put(node, new LinkedList<Rule>());
 				}
 				matches.get(node).add(rule);
-				return matches;
 			}
 		}
 		
@@ -150,7 +155,6 @@ public class Decomposition {
 			while(childrenIt.hasNext()) {
 				matches = loDecomp(rulelist, childrenIt.next(), matches);
 				if(!matches.isEmpty()) {
-					return matches;
 				}
 			}
 		}
@@ -162,6 +166,7 @@ public class Decomposition {
 	}
 	
 	private static boolean match(ASTNode rule, ASTNode node) throws SyntaxErrorException {
+		System.out.println("Looking for match between " + rule + " and " + node);
 		boolean retval = false;
 		
 		if(rule instanceof Variable || node instanceof Variable) {
@@ -198,6 +203,7 @@ public class Decomposition {
 				throw new SyntaxErrorException("The number of parameters of " + rule + " and " + node + "is not equal, although they have the same names");
 			}
 		}
+		System.out.println(retval);
 		return retval;
 	}
 

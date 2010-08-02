@@ -27,8 +27,8 @@ public class CheckTRS {
 	}
 	
 	public static void instanceCheck(ASTNode node, HashMap<String, Integer> signature) throws SyntaxErrorException {
-		if(!signature.containsKey(node.getName()) || signature.get(node.getName()) != node.getParamCount()) {
-			throw new SyntaxErrorException("Instance does not match rule signatures.");
+		if(signature.containsKey(node.getName()) && signature.get(node.getName()) != node.getParamCount()) {
+			throw new SyntaxErrorException("Parameter count for \"" + node.toString() + "\" violates signature. Expecting " + signature.get(node.getName()) + " parameters");
 		}
 		else {
 			try {

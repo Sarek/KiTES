@@ -160,6 +160,7 @@ public class MainWindow extends JFrame {
         
         class RunAction implements ActionListener {
         	@Override
+        	@SuppressWarnings({"unused"})
         	public void actionPerformed(ActionEvent arg0) {
         		System.out.println("Parsing tree...");
         		TRSLexer lexer = new TRSLexer(new ANTLRStringStream(editor.getText()));
@@ -168,7 +169,8 @@ public class MainWindow extends JFrame {
         		try {
 					RuleList rulelist = parser.rulelist();
 					InterpreterWindow wndInterpreter = new InterpreterWindow(rulelist, 0);
-					wndInterpreter.setVisible(true);
+					wndInterpreter = null;
+					System.gc();
 				} catch (RecognitionException e) {
 					e.printStackTrace();
 				}

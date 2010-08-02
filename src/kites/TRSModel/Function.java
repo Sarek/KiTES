@@ -15,14 +15,12 @@ public class Function extends ASTNode {
 	}
 	
 	public void add(ASTNode child) {
-		System.out.println(name + ": Adding child: " + child.toString());
 		children.add(child);
 	}
 		
 	public String toString() {
 		String retval = name + "(";
-		
-		//System.out.println(name + ": " + children.size());
+
 		Iterator<ASTNode> it = children.iterator();
 		
 		while(it.hasNext()) {
