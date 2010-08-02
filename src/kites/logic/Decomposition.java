@@ -22,30 +22,39 @@ import kites.exceptions.SyntaxErrorException;
  *
  */
 public class Decomposition {
-	public static final int LO = 1;
-	public static final int RO = 2;
-	public static final int NDET = 3;
-	public static final int TRS = 4;
-	public static final int LI = 5;
+	public static final int S_LO = 1;
+	public static final int S_RO = 2;
+	public static final int S_NDET = 3;
+	public static final int S_TRS = 4;
+	public static final int S_LI = 5;
+	public static final int S_RI = 6;
+	
+	public static int M_PROGRAM = 0;
+	public static int M_NONDET = 1;
+	public static int M_TRS = 2;
+	
 	
 	public static LinkedHashMap<ASTNode, LinkedList<Rule>> getDecomp(int type, RuleList rulelist, ASTNode instance) throws DecompositionException, SyntaxErrorException {
 		LinkedHashMap<ASTNode, LinkedList<Rule>> matches = new LinkedHashMap<ASTNode, LinkedList<Rule>>();
 		
 		switch(type) {
-		case LO:
+		case S_LO:
 			return loDecomp(rulelist, instance, matches);
 		
-		case RO:
+		case S_RO:
 			return roDecomp(rulelist, instance, matches);
 			
-		case NDET:
+		case S_NDET:
 			return ndetDecomp(rulelist, instance, matches);
 			
-		case TRS:
+		case S_TRS:
 			return trsDecomp(rulelist, instance, matches);
 		
-		case LI:
+		case S_LI:
 			return liDecomp(rulelist, instance, matches);
+			
+		case S_RI:
+			//return riDecomp(rulelist, instance, matches); // TODO: riDecomp()
 			
 		default:
 			throw new DecompositionException("No such decomposition is available");

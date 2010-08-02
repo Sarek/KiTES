@@ -21,28 +21,30 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.TokenStream;
-
-import kites.TRSModel.ASTNode;
 import kites.TRSModel.RuleList;
 import kites.exceptions.SyntaxErrorException;
 import kites.logic.CheckTRS;
-import kites.parser.TRSLexer;
-import kites.parser.TRSParser;
+import kites.logic.Decomposition;
 
 public class InterpreterWindow extends JFrame {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8983460115872591238L;
-	public static int PROGRAM = 0;
-	
+
 	private RuleList rulelist;
-	
-	public InterpreterWindow(RuleList rulelist, int mode) {
+
+    private final JRadioButtonMenuItem menuInterpretationNonDet;
+    private final JRadioButtonMenuItem menuInterpretationProg;
+    private final JRadioButtonMenuItem menuInterpretationTRS;
+    
+    private final JRadioButtonMenuItem menuStrategyLI;
+    private final JRadioButtonMenuItem menuStrategyLO;
+    private final JRadioButtonMenuItem menuStrategyRI;
+    private final JRadioButtonMenuItem menuStrategyRO;
+
+
+	public InterpreterWindow(final RuleList rulelist, final int mode) {
 		super();
 		setRuleList(rulelist);
 		try {
@@ -116,9 +118,9 @@ public class InterpreterWindow extends JFrame {
         JMenu menuInterpretation = new JMenu("Interpretationsmodus");
         ButtonGroup grpInterpretation = new ButtonGroup();
         
-        final JRadioButtonMenuItem menuInterpretationNonDet = new JRadioButtonMenuItem("Nicht-deterministisches Programm");
-        final JRadioButtonMenuItem menuInterpretationProg = new JRadioButtonMenuItem("Programm");
-        final JRadioButtonMenuItem menuInterpretationTRS = new JRadioButtonMenuItem("Termersetzungssystem");
+        menuInterpretationNonDet = new JRadioButtonMenuItem("Nicht-deterministisches Programm");
+        menuInterpretationProg = new JRadioButtonMenuItem("Programm");
+        menuInterpretationTRS = new JRadioButtonMenuItem("Termersetzungssystem");
         
         grpInterpretation.add(menuInterpretationNonDet);
         grpInterpretation.add(menuInterpretationProg);
@@ -136,10 +138,10 @@ public class InterpreterWindow extends JFrame {
         final JMenu menuStrategy = new JMenu("Reduktionsstrategie");
         ButtonGroup grpStrategy = new ButtonGroup();
         
-        JRadioButtonMenuItem menuStrategyLI = new JRadioButtonMenuItem("Leftmost-Innermost");
-        JRadioButtonMenuItem menuStrategyLO = new JRadioButtonMenuItem("Leftmost-Outermost");
-        JRadioButtonMenuItem menuStrategyRI = new JRadioButtonMenuItem("Rightmost-Innermost");
-        JRadioButtonMenuItem menuStrategyRO = new JRadioButtonMenuItem("Rightmost-Outermost");
+        menuStrategyLI = new JRadioButtonMenuItem("Leftmost-Innermost");
+        menuStrategyLO = new JRadioButtonMenuItem("Leftmost-Outermost");
+        menuStrategyRI = new JRadioButtonMenuItem("Rightmost-Innermost");
+        menuStrategyRO = new JRadioButtonMenuItem("Rightmost-Outermost");
         
         menuStrategyLO.setSelected(true);
         
@@ -169,24 +171,57 @@ public class InterpreterWindow extends JFrame {
 			}
         }
         
+
+        
         StrategyAction stratAction = new StrategyAction();
         menuInterpretationProg.addActionListener(stratAction);
         menuInterpretationNonDet.addActionListener(stratAction);
         menuInterpretationTRS.addActionListener(stratAction);
         
         this.setJMenuBar(menuBar);
+        final StepRewrite steprewrite;
         
         // Check syntax of rules
-        HashMap<String, Integer> signature;
+        final HashMap<String, Integer> signature;
         try {
         	CheckTRS checktrs = new CheckTRS(this.getRuleList());
         	
         	checktrs.variableCheck();
         	signature = checktrs.signatureCheck();
+        	steprewrite = new StepRewrite(getRuleList(), signature, instance, results, txtSteps, txtSize);
+			
+        	
+            class StepAction implements ActionListener {
+    			@Override
+    			public void actionPerformed(ActionEvent arg0) {
+    				steprewrite.setMode(getMode());
+    				steprewrite.setStrategy(getStrategy());
+    				steprewrite.run();
+    			}
+            }
+            
+    		class RunAction implements ActionListener {
+    			@Override
+    			public void actionPerformed(ActionEvent arg0) {
+    				steprewrite.setMode(getMode());
+    				steprewrite.setStrategy(getStrategy());
+    				try {
+    					while(true) {
+    						steprewrite.run();
+    					}
+    				}
+    				catch(Exception e) {
+    					e.printStackTrace(); // we probably can not reduce anymore
+    				}
+    			}
+    		}
+        	
+        	btnStep.addActionListener(new StepAction());
+        	btnGo.addActionListener(new RunAction());
         }
         catch(SyntaxErrorException e) {
         	MsgBox.error(e);
-        }        
+        }
 	}
 
 	/**
@@ -201,5 +236,38 @@ public class InterpreterWindow extends JFrame {
 	 */
 	public RuleList getRuleList() {
 		return rulelist;
+	}
+	
+	public int getMode() {
+		if(menuInterpretationNonDet.isSelected()) {
+			return Decomposition.M_NONDET;
+		}
+		else if(menuInterpretationProg.isSelected()) {
+			return Decomposition.M_PROGRAM;
+		}
+		else if(menuInterpretationTRS.isSelected()) {
+			return Decomposition.M_TRS;
+		}
+		else {
+			return -1;
+		}
+	}
+	
+	public int getStrategy() {
+		if(menuStrategyLI.isSelected()) {
+			return Decomposition.S_LI;
+		}
+		else if(menuStrategyLO.isSelected()) {
+			return Decomposition.S_LO;
+		}
+		else if(menuStrategyRI.isSelected()) {
+			return Decomposition.S_RI;
+		}
+		else if(menuStrategyRO.isSelected()) {
+			return Decomposition.S_RO;
+		}
+		else {
+			return -1;
+		}
 	}
 }

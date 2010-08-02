@@ -14,7 +14,6 @@ import kites.TRSModel.RuleList;
 import kites.TRSModel.Variable;
 import kites.exceptions.NoChildrenException;
 import kites.exceptions.SyntaxErrorException;
-import kites.exceptions.UnificationException;
 
 /**
  * @author sarek

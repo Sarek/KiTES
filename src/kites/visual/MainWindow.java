@@ -77,7 +77,6 @@ public class MainWindow extends JFrame {
         // Create menu items
         JSeparator menuSeparator = new JSeparator();
         JSeparator menuSeparator2 = new JSeparator();
-        JSeparator menuSeparator3 = new JSeparator();
         
         JMenuItem menuFileOpen = new JMenuItem("Öffnen...");
         JMenuItem menuFileSave = new JMenuItem("Speichern");

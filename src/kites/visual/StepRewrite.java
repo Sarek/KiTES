@@ -1,7 +1,5 @@
 package kites.visual;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -20,10 +18,9 @@ import kites.parser.TRSParser;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 
-public class StepAction implements ActionListener {
+public class StepRewrite {
 	private boolean firstStep;
 	private RuleList rulelist;
 	private ASTNode instanceTree;
@@ -33,11 +30,10 @@ public class StepAction implements ActionListener {
 	private JEditorPane instance, results;
 	private JTextField steps, size;
 	
-	public StepAction(RuleList rulelist, int mode, int strategy, HashMap<String, Integer> signature, JEditorPane instance, JEditorPane results, JTextField steps, JTextField size) {
+	public StepRewrite(RuleList rulelist, HashMap<String, Integer> signature, JEditorPane instance, JEditorPane results, JTextField steps, JTextField size) {
 		firstStep = true;
 		this.rulelist = rulelist;
-		this.mode = mode;
-		this.strategy = strategy;
+
 		this.signature = signature;
 		this.results = instance;
 		this.results = results;
@@ -45,8 +41,15 @@ public class StepAction implements ActionListener {
 		this.size = size;
 	}
 	
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void setMode(int mode) {
+		this.mode = mode;
+	}
+	
+	public void setStrategy(int strategy) {
+		this.strategy = strategy;
+	}
+	
+	public void run() {
 		if(instanceTree != null) {
 			if(firstStep) {
 				System.out.println("Parsing instance...");
@@ -69,7 +72,7 @@ public class StepAction implements ActionListener {
 				}
 			}
 			
-			if(mode == InterpreterWindow.PROGRAM) {
+			if(mode == Decomposition.M_PROGRAM) {
 				try {
 					LinkedHashMap<ASTNode, LinkedList<Rule>> decomp = Decomposition.getDecomp(strategy, rulelist, instanceTree);
 					Rewrite.rewrite(decomp.keySet().iterator().next(), decomp.entrySet().iterator().next().getValue().element());
