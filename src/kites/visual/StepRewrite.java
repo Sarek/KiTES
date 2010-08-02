@@ -10,6 +10,7 @@ import javax.swing.JTextField;
 import kites.TRSModel.ASTNode;
 import kites.TRSModel.Rule;
 import kites.TRSModel.RuleList;
+import kites.exceptions.NoRewritePossibleException;
 import kites.logic.CheckTRS;
 import kites.logic.Decomposition;
 import kites.logic.Rewrite;
@@ -75,6 +76,9 @@ public class StepRewrite {
 			if(mode == Decomposition.M_PROGRAM) {
 				try {
 					LinkedHashMap<ASTNode, LinkedList<Rule>> decomp = Decomposition.getDecomp(strategy, rulelist, instanceTree);
+					if(decomp.isEmpty()) {
+						throw new NoRewritePossibleException("No more rules applicable");
+					}
 					Rewrite.rewrite(decomp.keySet().iterator().next(), decomp.entrySet().iterator().next().getValue().element());
 				}
 				catch(Exception e) {
