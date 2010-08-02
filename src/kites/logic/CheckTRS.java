@@ -21,7 +21,13 @@ import kites.exceptions.UnificationException;
  *
  */
 public class CheckTRS {
-	public void unifiabilityCheck(RuleList rulelist) throws SyntaxErrorException{
+	RuleList rulelist;
+	
+	public CheckTRS(RuleList rulelist) {
+		this.rulelist = rulelist;
+	}
+	
+	public void unifiabilityCheck() throws SyntaxErrorException{
 		Iterator<Rule> rules = rulelist.getRules();
 		LinkedList<Rule> rules2 = rulelist.getRulesList();
 		
@@ -67,7 +73,7 @@ public class CheckTRS {
 	}
 
 
-	public void signatureCheck(RuleList rulelist) throws SyntaxErrorException {
+	public HashMap<String, Integer> signatureCheck() throws SyntaxErrorException {
 		HashMap<String, Integer> signature = new HashMap<String, Integer>();
 		
 		Iterator<Rule> it = rulelist.getRules();
@@ -76,6 +82,8 @@ public class CheckTRS {
 			sigCheckNode(signature, r.getLeft());
 			sigCheckNode(signature, r.getRight());
 		}
+		
+		return signature;
 	}
 
 	private void sigCheckNode(HashMap<String, Integer> signature, ASTNode node) throws SyntaxErrorException {
@@ -97,10 +105,9 @@ public class CheckTRS {
 		catch(NoChildrenException e) {
 			// Do nothing
 		}
-		
 	}
 	
-	public void variableCheck(RuleList rulelist) throws SyntaxErrorException {
+	public void variableCheck() throws SyntaxErrorException {
 		Iterator<Rule> it = rulelist.getRules();
 		
 		while(it.hasNext()) {
