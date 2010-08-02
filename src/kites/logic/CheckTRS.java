@@ -27,6 +27,22 @@ public class CheckTRS {
 		this.rulelist = rulelist;
 	}
 	
+	public static void instanceCheck(ASTNode node, HashMap<String, Integer> signature) throws SyntaxErrorException {
+		if(!signature.containsKey(node.getName()) || signature.get(node.getName()) != node.getParamCount()) {
+			throw new SyntaxErrorException("Instance does not match rule signatures.");
+		}
+		else {
+			try {
+				Iterator<ASTNode> childrenIt = node.getChildIterator();
+				while(childrenIt.hasNext()) {
+					instanceCheck(childrenIt.next(), signature);
+				}
+			}
+			catch(NoChildrenException e) {
+				// Do nothing, we simply reached a leaf node
+			}
+		}
+	}
 	public void unifiabilityCheck() throws SyntaxErrorException{
 		Iterator<Rule> rules = rulelist.getRules();
 		LinkedList<Rule> rules2 = rulelist.getRulesList();

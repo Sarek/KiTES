@@ -38,6 +38,8 @@ public class InterpreterWindow extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = -8983460115872591238L;
+	public static int PROGRAM = 0;
+	
 	private RuleList rulelist;
 	
 	public InterpreterWindow(RuleList rulelist, int mode) {
@@ -184,42 +186,7 @@ public class InterpreterWindow extends JFrame {
         }
         catch(SyntaxErrorException e) {
         	MsgBox.error(e);
-        }
-        
-        class StepAction implements ActionListener {
-        	private boolean firstStep;
-        	ASTNode instanceTree;
-        	
-        	public StepAction() {
-        		firstStep = true;
-        		// parse instance
-        		System.out.println("Parsing instance...");
-        		TRSLexer lexer = new TRSLexer(new ANTLRStringStream(instance.getText()));
-        		TokenStream tokenStream = new CommonTokenStream(lexer);
-        		TRSParser parser = new TRSParser(tokenStream);
-        		try {
-					instanceTree = parser.function();
-				} catch (RecognitionException e) {
-					MsgBox.error(e);
-				}
-        	}
-        	
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if(instanceTree != null) {
-					if(firstStep) {
-						results.setText(instanceTree.toString());
-						txtSteps.setText("1");
-						txtSize.setText(String.valueOf(instanceTree.getSize()));
-						firstStep = false;
-					}
-					
-					// get possible reductions according to strategy
-					// perform reduction
-				}
-			}
-        }
-        
+        }        
 	}
 
 	/**
