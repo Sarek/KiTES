@@ -166,13 +166,12 @@ public class Decomposition {
 	}
 	
 	private static boolean match(ASTNode rule, ASTNode node) throws SyntaxErrorException {
-		System.out.println("Looking for match between " + rule + " and " + node);
 		boolean retval = false;
 		
 		if(rule instanceof Variable || node instanceof Variable) {
 			return true;
 		}
-		if(rule.getName() == node.getName()) {
+		if(rule.getName().equals(node.getName())) {
 			retval = true;
 			
 			try {
@@ -183,7 +182,6 @@ public class Decomposition {
 					if(!match(ruleChildren.next(), nodeChildren.next())) {
 						retval = false;
 					}
-					
 				}
 			}
 			catch(NoChildrenException e) {
@@ -203,7 +201,6 @@ public class Decomposition {
 				throw new SyntaxErrorException("The number of parameters of " + rule + " and " + node + "is not equal, although they have the same names");
 			}
 		}
-		System.out.println(retval);
 		return retval;
 	}
 
