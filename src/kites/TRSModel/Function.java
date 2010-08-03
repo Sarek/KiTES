@@ -24,7 +24,10 @@ public class Function extends ASTNode {
 		Iterator<ASTNode> it = children.iterator();
 		
 		while(it.hasNext()) {
-			retval += it.next().toString() + ",";
+			retval += it.next().toString();
+			if(it.hasNext()) {
+				retval += ", ";
+			}
 		}
 		
 		return retval + ")";
