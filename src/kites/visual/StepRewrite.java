@@ -73,9 +73,6 @@ public class StepRewrite {
 			firstStep = false;
 		}
 		
-		System.out.println("\n" + instanceTree);
-		System.out.println(Decomposition.M_PROGRAM == mode);
-		
 		if(instanceTree != null) {
 			if(mode == Decomposition.M_PROGRAM) {
 				System.out.println("Doing rewrite.");
@@ -83,12 +80,21 @@ public class StepRewrite {
 				if(decomp.isEmpty()) {
 					throw new NoRewritePossibleException("No more rules applicable");
 				}
-				System.out.println(decomp);
-				Rewrite.rewrite(decomp.keySet().iterator().next(), decomp.entrySet().iterator().next().getValue().element());
-				
-				results.setText(results.getText() + "\n\n" + instanceTree.toString());
-				steps.setText(String.valueOf(Integer.parseInt(steps.getText()) + 1));
-				size.setText(String.valueOf(instanceTree.getSize()));
+				try {
+					ASTNode newTree = Rewrite.rewrite(instanceTree, decomp.entrySet().iterator().next().getValue().element(), strategy);
+					System.out.println("Rewritten instance: " + newTree);
+					
+					results.setText(results.getText() + "\n\n" + newTree.toString());
+					steps.setText(String.valueOf(Integer.parseInt(steps.getText()) + 1));
+					Integer newSize = new Integer(newTree.getSize());
+					if(newSize.compareTo(Integer.parseInt(size.getText())) > 0) {
+						size.setText(String.valueOf(newTree.getSize()));
+					}
+					instanceTree = newTree;
+				}
+				catch(Exception e) {
+					MsgBox.error(e);
+				}
 			}
 		}
 		else {

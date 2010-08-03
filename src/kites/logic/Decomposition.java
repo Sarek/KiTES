@@ -39,27 +39,21 @@ public class Decomposition {
 		
 		switch(type) {
 		case S_LO:
-			System.out.println("Returning LO decomp");
 			return loDecomp(rulelist, instance, matches);
 		
 		case S_RO:
-			System.out.println("Returning RO decomp");
 			return roDecomp(rulelist, instance, matches);
 			
 		case S_NDET:
-			System.out.println("Returning NDET decomp");
 			return ndetDecomp(rulelist, instance, matches);
 			
 		case S_TRS:
-			System.out.println("Returning TRS decomp");
 			return trsDecomp(rulelist, instance, matches);
 		
 		case S_LI:
-			System.out.println("Returning LI decomp");
 			return liDecomp(rulelist, instance, matches);
 			
 		case S_RI:
-			System.out.println("Retutning RI decomp");
 			//return riDecomp(rulelist, instance, matches); // TODO: riDecomp()
 			
 		default:
@@ -165,7 +159,7 @@ public class Decomposition {
 		return matches;
 	}
 	
-	private static boolean match(ASTNode rule, ASTNode node) throws SyntaxErrorException {
+	public static boolean match(ASTNode rule, ASTNode node) throws SyntaxErrorException {
 		boolean retval = false;
 		
 		if(rule instanceof Variable || node instanceof Variable) {

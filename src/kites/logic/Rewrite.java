@@ -23,19 +23,81 @@ import kites.exceptions.SyntaxErrorException;
  * @return The transformed (reduced) (sub-) tree.
  */
 public class Rewrite {
-	public static void rewrite(ASTNode instance, Rule rule) throws SyntaxErrorException {
+	public static ASTNode rewrite(ASTNode instance, Rule rule, int strategy) throws SyntaxErrorException, NoChildrenException {
+		System.out.println("Rewriting node " + instance);
+		System.out.println("using rule " + rule);
 		// gather variable assignments
 		HashMap<String, ASTNode> assignments = getVarAssignments(instance, rule.getLeft(), new HashMap<String, ASTNode>());
+		System.out.println("Assignments: " + assignments);
+		
+		// Traverse instance to reach point of rewrite
+		ASTNode newInstance = findRewrite(instance, rule.getLeft(), strategy, rule.getRight(), assignments);
 		
 		// build new (sub-) tree and replace old one with it
-		instance = buildTree(rule.getRight(), assignments);
+		System.out.println("Instance rewritten to: " + newInstance);
+		return newInstance;
 	}
 	
+	private static ASTNode findRewrite(ASTNode instance, ASTNode left, int strategy, ASTNode rule, HashMap<String, ASTNode> assignments) throws NoChildrenException, SyntaxErrorException {
+		switch(strategy) {
+		case Decomposition.S_LO:
+			return findRewriteLO(instance, left, rule, assignments);
+		case Decomposition.S_LI:
+			return findRewriteLI(instance, left, rule, assignments);
+		case Decomposition.S_RO:
+			return findRewriteRO(instance, left, rule, assignments);
+		case Decomposition.S_RI:
+			return findRewriteRI(instance, left, rule, assignments);
+		}
+		return null;
+	}
+
+	private static ASTNode findRewriteRI(ASTNode instance, ASTNode left, ASTNode rule, HashMap<String, ASTNode> assignments) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static ASTNode findRewriteRO(ASTNode instance, ASTNode left, ASTNode rule, HashMap<String, ASTNode> assignments) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static ASTNode findRewriteLI(ASTNode instance, ASTNode left, ASTNode rule, HashMap<String, ASTNode> assignments) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static ASTNode findRewriteLO(ASTNode instance, ASTNode ruleLHS, ASTNode ruleRHS, HashMap<String, ASTNode> assignments) throws NoChildrenException, SyntaxErrorException {
+		if(instance.getName().equals(ruleLHS.getName())) {
+			// we have reached the subtree to rewrite
+			return buildTree(ruleRHS, assignments);
+		}
+		else {
+			if(instance instanceof Function) {
+				ASTNode newNode = new Function(instance.getName());
+				Iterator<ASTNode> childIt = instance.getChildIterator();
+				newNode.add(findRewriteLO(childIt.next(), ruleLHS, ruleRHS, assignments));
+				
+				while(childIt.hasNext()) {
+					newNode.add(childIt.next());
+				}
+				return newNode;
+			}
+			else if(instance instanceof Constant) {
+				return new Constant(instance.getName());
+			}
+			else {
+				throw new SyntaxErrorException("Invalid instance given");
+			}
+		}
+	}
+
 	private static ASTNode buildTree(ASTNode right,	HashMap<String, ASTNode> assignments) throws SyntaxErrorException {
 		// we need to determine what kind of node we want to create
 		// and the creation of every kind of node is different
 		if(right instanceof Constant) {
 			// Constants have no children and their sole property is their name
+			System.out.println("Creating new contant");
 			return new Constant(right.getName());
 		}
 		else if(right instanceof Function) {
@@ -61,7 +123,7 @@ public class Rewrite {
 	}
 
 	private static HashMap<String, ASTNode> getVarAssignments(ASTNode instance, ASTNode rule, HashMap<String, ASTNode> assignments) {
-		if(instance instanceof Variable) {
+		if(rule instanceof Variable) {
 			assignments.put(rule.getName(), instance);
 		}
 		else {

@@ -65,6 +65,7 @@ public class InterpreterWindow extends JFrame {
         
         final JEditorPane results = new JEditorPane();
         results.setEditable(false);
+        results.setAutoscrolls(true);
         final JEditorPane instance = new JEditorPane();
         JButton btnStep = new JButton("Schritt");
         JButton btnGo = new JButton("Ausführen");
@@ -207,6 +208,7 @@ public class InterpreterWindow extends JFrame {
 					}
     				catch (Exception e) {
 						MsgBox.error(e);
+						e.printStackTrace();
 					}
     			}
             }
