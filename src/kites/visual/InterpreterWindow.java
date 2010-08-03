@@ -20,6 +20,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
@@ -66,7 +67,9 @@ public class InterpreterWindow extends JFrame {
         final JEditorPane results = new JEditorPane();
         results.setEditable(false);
         results.setAutoscrolls(true);
+        JScrollPane scrollResults = new JScrollPane(results);
         final JEditorPane instance = new JEditorPane();
+        JScrollPane scrollInstance = new JScrollPane(instance);
         JButton btnStep = new JButton("Schritt");
         JButton btnGo = new JButton("Ausführen");
         JButton btnCodify = new JButton("Kodifizieren");
@@ -96,7 +99,7 @@ public class InterpreterWindow extends JFrame {
         c.gridy = 0;
         c.weightx = 1;
         c.weighty = 0.8;
-        pane.add(results, c);
+        pane.add(scrollResults, c);
         c.fill = GridBagConstraints.BOTH;
         c.gridheight = 1;
         c.gridwidth = 1;
@@ -104,7 +107,7 @@ public class InterpreterWindow extends JFrame {
         c.weightx = 1;
         c.weighty = 0.2;
         
-        pane.add(instance, c);
+        pane.add(scrollInstance, c);
         c.gridx = 1;
         c.gridy = 0;
         c.weighty = 0.5;

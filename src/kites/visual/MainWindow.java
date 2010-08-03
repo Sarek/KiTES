@@ -13,6 +13,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JToolBar;
 
@@ -57,7 +58,8 @@ public class MainWindow extends JFrame {
         final JEditorPane editor = new JEditorPane();
         editor.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         System.out.println(editor.getFont().getFontName());
-        this.add(editor, BorderLayout.CENTER);
+        JScrollPane scrollEditor = new JScrollPane(editor);
+        this.add(scrollEditor, BorderLayout.CENTER);
         
         /*
          * Construct the menu
