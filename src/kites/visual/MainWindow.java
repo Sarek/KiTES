@@ -37,7 +37,7 @@ import kites.parser.TRSParser;
 public class MainWindow extends JFrame {
 
 	/**
-	 * Eclipse thinks every class should have a field called serialVersionUID
+	 * Eclipse thinks every serializable class should have a field called serialVersionUID
 	 */
 	private static final long serialVersionUID = -5132318887749930073L;
 
