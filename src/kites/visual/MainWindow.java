@@ -4,6 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -166,8 +169,31 @@ public class MainWindow extends JFrame {
         		TRSLexer lexer = new TRSLexer(new ANTLRStringStream(editor.getText()));
         		TokenStream tokenStream = new CommonTokenStream(lexer);
         		TRSParser parser = new TRSParser(tokenStream);
+        		
         		try {
 					RuleList rulelist = parser.rulelist();
+					
+					List<String> lexerErrors = lexer.getErrors();
+	        		if(!lexerErrors.isEmpty()) {
+	        			String errors = "Detected errors during lexing:\n\n";
+	        			Iterator<String> errIt = lexerErrors.iterator();
+	        			while(errIt.hasNext()) {
+	        				errors += errIt.next() + "\n";
+	        			}
+	        			MsgBox.error(errors);
+	        			return;
+	        		}
+	        		List<String> parseErrors = parser.getErrors();
+	        		if(!parseErrors.isEmpty()) {
+	        			String errors = "Detected errors during parsing:\n\n";
+	        			Iterator<String> errIt = parseErrors.iterator();
+	        			while(errIt.hasNext()) {
+	        				errors += errIt.next() + "\n";
+	        			}
+	        			MsgBox.error(errors);
+	        			return;
+	        		}
+	        		
 					InterpreterWindow wndInterpreter = new InterpreterWindow(rulelist, 0);
 					wndInterpreter = null;
 					System.gc();

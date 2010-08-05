@@ -7,13 +7,39 @@ options {
 @header {
   package kites.parser;
   import kites.TRSModel.*;
+  import java.util.LinkedList;
+}
+
+@members {
+  private List<String> errors = new LinkedList<String>();
+      public void displayRecognitionError(String[] tokenNames,
+                                          RecognitionException e) {
+          String hdr = getErrorHeader(e);
+          String msg = getErrorMessage(e, tokenNames);
+          errors.add(hdr + " " + msg);
+      }
+      public List<String> getErrors() {
+          return errors;
+      }
 }
 
 @lexer::header {
   package kites.parser;
+  
+  import java.util.LinkedList;
 }
 
 @lexer::members {
+    private List<String> errors = new LinkedList<String>();
+      public void displayRecognitionError(String[] tokenNames,
+                                          RecognitionException e) {
+          String hdr = getErrorHeader(e);
+          String msg = getErrorMessage(e, tokenNames);
+          errors.add(hdr + " " + msg);
+      }
+      public List<String> getErrors() {
+          return errors;
+      }
     class SaveStruct {
       SaveStruct(CharStream input){
         this.input = input;
@@ -47,7 +73,6 @@ options {
        return token;
      }
  }
-
 
 rulelist returns [RuleList e]:
 	{ $e = new RuleList(); }

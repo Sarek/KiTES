@@ -255,7 +255,7 @@ public class InterpreterWindow extends JFrame {
     					MsgBox.error(e);
     				}
     				catch(NoRewritePossibleException e) {
-    					System.out.println("No rewrite possible");
+    					// Do nothing. Execution is complete.
     				}
     				catch (RecognitionException e) {
 						// TODO Auto-generated catch block

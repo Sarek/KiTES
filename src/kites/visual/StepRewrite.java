@@ -1,8 +1,10 @@
 package kites.visual;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JEditorPane;
 import javax.swing.JTextField;
@@ -63,6 +65,29 @@ public class StepRewrite {
 			TokenStream tokenStream = new CommonTokenStream(lexer);
 			TRSParser parser = new TRSParser(tokenStream);
 			instanceTree = parser.instance();
+			
+			List<String> lexerErrors = lexer.getErrors();
+    		if(!lexerErrors.isEmpty()) {
+    			System.out.println("Displaying lexer errors");
+    			String errors = "Detected errors during lexing:\n\n";
+    			Iterator<String> errIt = lexerErrors.iterator();
+    			while(errIt.hasNext()) {
+    				errors += errIt.next() + "\n";
+    			}
+    			MsgBox.error(errors);
+    			return;
+    		}
+    		List<String> parseErrors = parser.getErrors();
+    		System.out.println(parseErrors);
+    		if(!parseErrors.isEmpty()) {
+    			String errors = "Detected errors during parsing:\n\n";
+    			Iterator<String> errIt = parseErrors.iterator();
+    			while(errIt.hasNext()) {
+    				errors += errIt.next() + "\n";
+    			}
+    			MsgBox.error(errors);
+    			return;
+    		}
 			
 			// syntax check instance
 			CheckTRS.instanceCheck(instanceTree, signature);

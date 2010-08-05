@@ -14,7 +14,7 @@ public class MsgBox {
 	}
 
 	public static void error(String e) {
-		JOptionPane.showMessageDialog(null, getHeadline(null) + ":\n\n" + e, "KiTES - Error", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null, e, "KiTES - Error", JOptionPane.ERROR_MESSAGE);
 	}
 
 	public static void info(Exception e) {
@@ -22,7 +22,7 @@ public class MsgBox {
 	}
 	
 	public static void info(String e) {
-		JOptionPane.showMessageDialog(null, getHeadline(null) + ":\n\n" + e, "KiTES - Information", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(null, e, "KiTES - Information", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	public static void warning(Exception e) {
@@ -30,7 +30,7 @@ public class MsgBox {
 	}
 
 	public static void warning(String e) {
-		JOptionPane.showMessageDialog(null, getHeadline(null) + ":\n\n" + e, "KiTES - Warning", JOptionPane.WARNING_MESSAGE);
+		JOptionPane.showMessageDialog(null, e, "KiTES - Warning", JOptionPane.WARNING_MESSAGE);
 	}
 	
 	private static String getHeadline(Exception e) {
