@@ -27,7 +27,9 @@ public abstract class ASTNode {
 		return indent + name;
 	}
 	
-	public abstract void add(ASTNode a);
+	public void add(ASTNode a) {
+		// Do nothing
+	}
 	
 	public Iterator<ASTNode> getChildIterator() throws NoChildrenException {
 		throw new NoChildrenException();
@@ -43,5 +45,9 @@ public abstract class ASTNode {
 	
 	public int getSize() {
 		return 1;
+	}
+	
+	public void reverse() {
+		// Do nothing
 	}
 }

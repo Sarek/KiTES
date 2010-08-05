@@ -7,13 +7,16 @@ import kites.exceptions.NoChildrenException;
 
 public class Function extends ASTNode {
 	private LinkedList<ASTNode> children;
+	private boolean reversed;
 	
 	public Function(String name) {
 		super(name);
 		
 		children = new LinkedList<ASTNode>();
+		reversed = false;
 	}
 	
+	@Override
 	public void add(ASTNode child) {
 		children.add(child);
 	}
@@ -21,7 +24,7 @@ public class Function extends ASTNode {
 	public String toString() {
 		String retval = name + "(";
 
-		Iterator<ASTNode> it = children.iterator();
+		Iterator<ASTNode> it = getChildIterator();
 		
 		while(it.hasNext()) {
 			retval += it.next().toString();
@@ -34,11 +37,21 @@ public class Function extends ASTNode {
 	}
 	
 	public Iterator<ASTNode> getChildIterator() {
-		return this.children.iterator();
+		if(reversed) {
+			return this.children.descendingIterator();
+		}
+		else {
+			return this.children.iterator();
+		}
 	}
 	
 	public Iterator<ASTNode> getRevChildIterator() {
-		return this.children.descendingIterator();
+		if(reversed) {
+			return this.children.iterator();
+		}
+		else {
+			return this.children.descendingIterator();
+		}
 	}
 	
 	public int getParamCount() {
@@ -54,5 +67,10 @@ public class Function extends ASTNode {
 		}
 		
 		return retval;
+	}
+	
+	@Override
+	public void reverse() {
+		reversed = !reversed;
 	}
 }

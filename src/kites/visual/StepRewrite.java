@@ -15,7 +15,7 @@ import kites.exceptions.NoRewritePossibleException;
 import kites.exceptions.SyntaxErrorException;
 import kites.logic.CheckTRS;
 import kites.logic.Decomposition;
-import kites.logic.Rewrite;
+import kites.logic.ProgramRewrite;
 import kites.parser.TRSLexer;
 import kites.parser.TRSParser;
 
@@ -62,7 +62,7 @@ public class StepRewrite {
 			TRSLexer lexer = new TRSLexer(new ANTLRStringStream(instance.getText()));
 			TokenStream tokenStream = new CommonTokenStream(lexer);
 			TRSParser parser = new TRSParser(tokenStream);
-			instanceTree = parser.function();
+			instanceTree = parser.instance();
 			
 			// syntax check instance
 			CheckTRS.instanceCheck(instanceTree, signature);
@@ -75,14 +75,9 @@ public class StepRewrite {
 		
 		if(instanceTree != null) {
 			if(mode == Decomposition.M_PROGRAM) {
-				System.out.println("Doing rewrite.");
-				LinkedHashMap<ASTNode, LinkedList<Rule>> decomp = Decomposition.getDecomp(strategy, rulelist, instanceTree);
-				if(decomp.isEmpty()) {
-					throw new NoRewritePossibleException("No more rules applicable");
-				}
 				try {
-					ASTNode newTree = Rewrite.rewrite(instanceTree, decomp.entrySet().iterator().next().getValue().element(), strategy);
-					System.out.println("Rewritten instance: " + newTree);
+					ProgramRewrite rwrt = new ProgramRewrite(strategy, instanceTree, rulelist);
+					ASTNode newTree = rwrt.findRewrite();
 					
 					results.setText(results.getText() + "\n\n" + newTree.toString());
 					steps.setText(String.valueOf(Integer.parseInt(steps.getText()) + 1));
@@ -94,6 +89,7 @@ public class StepRewrite {
 				}
 				catch(Exception e) {
 					MsgBox.error(e);
+					e.printStackTrace();
 				}
 			}
 		}

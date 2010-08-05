@@ -24,38 +24,23 @@ import kites.exceptions.SyntaxErrorException;
 public class Decomposition {
 	public static final int S_LO = 1;
 	public static final int S_RO = 2;
-	public static final int S_NDET = 3;
-	public static final int S_TRS = 4;
 	public static final int S_LI = 5;
 	public static final int S_RI = 6;
 	
-	public static int M_PROGRAM = 0;
-	public static int M_NONDET = 1;
-	public static int M_TRS = 2;
+	public static final int M_PROGRAM = 0;
+	public static final int M_NONDET = 1;
+	public static final int M_TRS = 2;
 	
 	
 	public static LinkedHashMap<ASTNode, LinkedList<Rule>> getDecomp(int type, RuleList rulelist, ASTNode instance) throws DecompositionException, SyntaxErrorException {
 		LinkedHashMap<ASTNode, LinkedList<Rule>> matches = new LinkedHashMap<ASTNode, LinkedList<Rule>>();
 		
 		switch(type) {
-		case S_LO:
-			return loDecomp(rulelist, instance);
-		
-		case S_RO:
-			return roDecomp(rulelist, instance);
-			
-		case S_NDET:
+		case M_NONDET:
 			return ndetDecomp(rulelist, instance, matches);
 			
-		case S_TRS:
+		case M_TRS:
 			return trsDecomp(rulelist, instance, matches);
-		
-		case S_LI:
-			return liDecomp(rulelist, instance);
-			
-		case S_RI:
-			return riDecomp(rulelist, instance);
-			
 		default:
 			throw new DecompositionException("No such decomposition is available");
 		}
@@ -96,108 +81,6 @@ public class Decomposition {
 		return null;
 	}
 
-	private static LinkedHashMap<ASTNode, LinkedList<Rule>> roDecomp(RuleList rulelist, ASTNode instance) throws SyntaxErrorException {
-		LinkedHashMap<ASTNode, LinkedList<Rule>> retval = new LinkedHashMap<ASTNode, LinkedList<Rule>>();
-		
-		Iterator<Rule> ruleIt = rulelist.getRules();
-		while(ruleIt.hasNext()) {
-			Rule rule = ruleIt.next();
-			if(match(rule.getLeft(), instance)) {
-				if(!retval.containsKey(instance)) {
-					retval.put(instance, new LinkedList<Rule>());
-				}
-				retval.get(instance).add(rule);
-			}
-		}
-		
-		if(retval.isEmpty()) {
-			try {
-				retval = riDecomp(rulelist, instance.getRevChildIterator().next());
-			}
-			catch(NoChildrenException e) {
-				retval = new LinkedHashMap<ASTNode, LinkedList<Rule>>();
-			}
-		}
-		
-		return retval;
-	}
-
-	private static LinkedHashMap<ASTNode, LinkedList<Rule>> riDecomp(RuleList rulelist, ASTNode instance) throws SyntaxErrorException {
-		LinkedHashMap<ASTNode, LinkedList<Rule>> retval;
-		try {
-			retval = riDecomp(rulelist, instance.getRevChildIterator().next());
-		}
-		catch(NoChildrenException e) {
-			retval = new LinkedHashMap<ASTNode, LinkedList<Rule>>();
-		}
-		
-		if(retval.isEmpty()) {
-			Iterator<Rule> ruleIt = rulelist.getRules();
-			while(ruleIt.hasNext()) {
-				Rule rule = ruleIt.next();
-				if(match(rule.getLeft(), instance)) {
-					if(!retval.containsKey(instance)) {
-						retval.put(instance, new LinkedList<Rule>());
-					}
-					retval.get(instance).add(rule);
-				}
-			}
-		} 
-		return retval;
-	}
-
-	
-	private static LinkedHashMap<ASTNode, LinkedList<Rule>> loDecomp(RuleList rulelist, ASTNode instance) throws SyntaxErrorException {
-		LinkedHashMap<ASTNode, LinkedList<Rule>> retval = new LinkedHashMap<ASTNode, LinkedList<Rule>>();
-		
-		Iterator<Rule> ruleIt = rulelist.getRules();
-		while(ruleIt.hasNext()) {
-			Rule rule = ruleIt.next();
-			if(match(rule.getLeft(), instance)) {
-				if(!retval.containsKey(instance)) {
-					retval.put(instance, new LinkedList<Rule>());
-				}
-				retval.get(instance).add(rule);
-			}
-		}
-		
-		if(retval.isEmpty()) {
-			try {
-				retval = riDecomp(rulelist, instance.getChildIterator().next());
-			}
-			catch(NoChildrenException e) {
-				retval = new LinkedHashMap<ASTNode, LinkedList<Rule>>();
-			}
-		}
-		
-		return retval;
-	}
-	
-	private static LinkedHashMap<ASTNode, LinkedList<Rule>> liDecomp(RuleList rulelist, ASTNode instance) throws SyntaxErrorException {
-		LinkedHashMap<ASTNode, LinkedList<Rule>> retval;
-		try {
-			retval = riDecomp(rulelist, instance.getChildIterator().next());
-		}
-		catch(NoChildrenException e) {
-			retval = new LinkedHashMap<ASTNode, LinkedList<Rule>>();
-		}
-		
-		if(retval.isEmpty()) {
-			Iterator<Rule> ruleIt = rulelist.getRules();
-			while(ruleIt.hasNext()) {
-				Rule rule = ruleIt.next();
-				if(match(rule.getLeft(), instance)) {
-					if(!retval.containsKey(instance)) {
-						retval.put(instance, new LinkedList<Rule>());
-					}
-					retval.get(instance).add(rule);
-				}
-			}
-		} 
-		return retval;
-	}
-
-	
 	public static boolean match(ASTNode rule, ASTNode node) throws SyntaxErrorException {
 		boolean retval = false;
 		
@@ -236,5 +119,4 @@ public class Decomposition {
 		}
 		return retval;
 	}
-
 }

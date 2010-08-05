@@ -57,7 +57,6 @@ public class MainWindow extends JFrame {
         
         final JEditorPane editor = new JEditorPane();
         editor.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-        System.out.println(editor.getFont().getFontName());
         JScrollPane scrollEditor = new JScrollPane(editor);
         this.add(scrollEditor, BorderLayout.CENTER);
         
@@ -164,7 +163,6 @@ public class MainWindow extends JFrame {
         	@Override
         	@SuppressWarnings({"unused"})
         	public void actionPerformed(ActionEvent arg0) {
-        		System.out.println("Parsing tree...");
         		TRSLexer lexer = new TRSLexer(new ANTLRStringStream(editor.getText()));
         		TokenStream tokenStream = new CommonTokenStream(lexer);
         		TRSParser parser = new TRSParser(tokenStream);

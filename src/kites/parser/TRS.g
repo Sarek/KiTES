@@ -55,6 +55,12 @@ rulelist returns [RuleList e]:
 	| INCLUDE
 	)*
 	;
+	
+instance returns [ASTNode e]:
+  ( function  { $e = $function.e; }
+  | constant  { $e = $constant.e; }
+  )
+  ;
 
 INCLUDE:
 	'#include' (WS)? f=IDENT
@@ -77,11 +83,14 @@ INCLUDE:
 	 
 rule returns [Rule e]:
 	{ $e = new Rule(); }
-	fun=function		{ $e.setLeft($fun.e); }
+	( v1=var         { $e.setLeft($v1.e); }
+	| c1=constant    { $e.setLeft($c1.e); }
+	| f1= function	 { $e.setLeft($f1.e); }
+	)
 	RARROW
-	( var				{ $e.setRight($var.e); }
-	| constant			{ $e.setRight($constant.e); }
-	| f=function		{ $e.setRight($f.e); }
+	( v2=var         { $e.setRight($v2.e); }
+	| c2=constant    { $e.setRight($c2.e); }
+	| f2=function    { $e.setRight($f2.e); }
 	) 
 	;
 
