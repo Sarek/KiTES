@@ -1,5 +1,6 @@
 package kites.TRSModel;
 
+import java.awt.Component;
 import java.util.Iterator;
 
 import kites.exceptions.NoChildrenException;
@@ -50,4 +51,6 @@ public abstract class ASTNode {
 	public void reverse() {
 		// Do nothing
 	}
+	
+	public abstract Component toLabel();
 }

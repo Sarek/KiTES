@@ -1,9 +1,12 @@
 package kites.TRSModel;
 
+import java.awt.Component;
 import java.util.Iterator;
 import java.util.LinkedList;
 
 import kites.exceptions.NoChildrenException;
+import kites.visual.NodeBox;
+import kites.visual.NodeLabel;
 
 public class Function extends ASTNode {
 	private LinkedList<ASTNode> children;
@@ -72,5 +75,18 @@ public class Function extends ASTNode {
 	@Override
 	public void reverse() {
 		reversed = !reversed;
+	}
+
+	@Override
+	public Component toLabel() {
+		NodeBox nodeBox = new NodeBox(getParamCount());
+		nodeBox.setHead(new NodeLabel(this));
+		
+		Iterator<ASTNode> childIt = getChildIterator();
+		while(childIt.hasNext()) {
+			nodeBox.addChild(childIt.next().toLabel());
+		}
+		
+		return nodeBox;
 	}
 }
