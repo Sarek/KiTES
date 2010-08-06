@@ -27,6 +27,31 @@ public class CheckTRS {
 	}
 
 	/**
+	 * Checks whether the given rule set is a Sigma-Gamma-
+	 * program system.
+	 * First it creates both signatures then performs the
+	 * following checks:
+	 * - do they overlap? This would mean there is at least one
+	 *   rule that starts with a Sigma-symbol
+	 * 
+	 * Throws a SyntaxErrorException with a meaningful message
+	 * if any check fails.
+	 * 
+	 * @throws SyntaxErrorException
+	 */
+	public void isSigmaGammaSystem() throws SyntaxErrorException {
+		HashMap<String, Integer> sigma = getSigmaSignature();
+		HashMap<String, Integer> gamma = getGammaSignature();
+		
+		Iterator<String> sigmaIt = sigma.keySet().iterator();
+		while(sigmaIt.hasNext()) {
+			String symbol = sigmaIt.next();
+			if(gamma.containsKey(symbol)) {
+				throw new SyntaxErrorException("Symbol " + symbol + " is in the Sigma as well as the Gamma signature.");
+			}
+		}
+	}
+	/**
 	 * Create the Gamma-signature of the rule set.
 	 * In a program system the root node in the tree representing
 	 * a left-hand side of a rule needs to belong to the Gamma-
@@ -34,7 +59,7 @@ public class CheckTRS {
 	 * @return
 	 * @throws SyntaxErrorException
 	 */
-	public HashMap<String, Integer> gammaSignature() throws SyntaxErrorException {
+	private HashMap<String, Integer> getGammaSignature() throws SyntaxErrorException {
 		Iterator<Rule> rules = rulelist.getRules();
 		HashMap<String, Integer> retval = new HashMap<String, Integer>();
 		
@@ -58,7 +83,7 @@ public class CheckTRS {
 	 * @return The new signature
 	 * @throws SyntaxErrorException
 	 */
-	public HashMap<String, Integer> gammaSigNode(ASTNode node, HashMap<String, Integer> signature) throws SyntaxErrorException {
+	private HashMap<String, Integer> gammaSigNode(ASTNode node, HashMap<String, Integer> signature) throws SyntaxErrorException {
 		if(node instanceof Variable) {
 			throw new SyntaxErrorException("Variables are not allowed as root elements in a rule");
 		}
@@ -85,7 +110,7 @@ public class CheckTRS {
 	 * @throws SyntaxErrorException When signature is found to be contradicted
 	 * 		by a wrong parameter count
 	 */
-	public HashMap<String, Integer> sigmaSignature() throws SyntaxErrorException {
+	private HashMap<String, Integer> getSigmaSignature() throws SyntaxErrorException {
 		Iterator<Rule> rules = rulelist.getRules();
 		HashMap<String, Integer> retval = new HashMap<String, Integer>();
 		
