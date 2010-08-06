@@ -1,10 +1,13 @@
 package kites.visual;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Component;
 import java.util.LinkedList;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -16,7 +19,6 @@ public class NodeBox extends JPanel {
 	private GridBagConstraints constraints;
 	private JLabel openPar;
 	private JLabel closePar;
-	private JLabel comma;
 	private LinkedList<Component> children;
 	private NodeLabel head;
 	private int params;
@@ -24,15 +26,28 @@ public class NodeBox extends JPanel {
 	public NodeBox(int params) {
 		super();
 		this.setLayout(new GridBagLayout());
+		this.setAlignmentX(JPanel.LEFT_ALIGNMENT);
+		this.setAlignmentY(JPanel.TOP_ALIGNMENT);
 		openPar = new JLabel("(");
+		openPar.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		openPar.setHorizontalAlignment(JLabel.LEFT);
+		openPar.setAlignmentY(JLabel.TOP_ALIGNMENT);
+		openPar.setVerticalAlignment(JLabel.TOP);
+		openPar.invalidate();
 		closePar = new JLabel(")");
-		comma = new JLabel(",");
+		closePar.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		closePar.setHorizontalAlignment(JLabel.LEFT);
+		closePar.setAlignmentY(JLabel.TOP_ALIGNMENT);
+		closePar.setVerticalAlignment(JLabel.BOTTOM);
 		children = new LinkedList<Component>();
 		this.params = params;
-		
+
 		constraints = new GridBagConstraints();
-		constraints.gridheight = params;
-		constraints.gridwidth = 4;
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.gridheight = 1;
+		constraints.gridwidth = 1;
+		constraints.weightx = 1.0;
+		constraints.weighty = 1.0;
 		
 		constraints.gridx = 1;
 		constraints.gridy = 0;
@@ -41,10 +56,17 @@ public class NodeBox extends JPanel {
 		constraints.gridx = 3;
 		for(int i = 0; i < params - 1; i++) {
 			constraints.gridy = i;
+			System.out.println("Adding comma at " + constraints.gridx + ", " + constraints.gridy);
+			JLabel comma = new JLabel(",");
+			comma.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+			comma.setHorizontalAlignment(JLabel.LEFT);
+			comma.setAlignmentY(JLabel.TOP_ALIGNMENT);
+			comma.setVerticalAlignment(JLabel.BOTTOM);
 			this.add(comma, constraints);
 		}
-		constraints.gridy++;
+		constraints.gridy = params - 1;
 		this.add(closePar, constraints);
+		this.invalidate();
 	}
 	
 	public void setHead(NodeLabel head) {
@@ -53,17 +75,30 @@ public class NodeBox extends JPanel {
 		
 		this.add(head, constraints);
 		this.head = head;
+		this.invalidate();
 	}
 	
 	public void addChild(Component child) {
 		if(children.size() < params) {
 			constraints.gridx = 2;
 			constraints.gridy = children.size();
+			System.out.println("Constraints: " + constraints);
 			this.add(child, constraints);
+			children.add(child);
 		}
+		this.invalidate();
 	}
 	
 	public NodeLabel getHead() {
 		return head;
+	}
+	
+	@Override
+	public Dimension getPreferredSize() {
+		return this.getMinimumSize();
+	}
+	
+	public Dimension getMaximumSize() {
+		return this.getMinimumSize();
 	}
 }

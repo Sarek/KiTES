@@ -1,6 +1,8 @@
 package kites.visual;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -28,6 +30,7 @@ import javax.swing.border.TitledBorder;
 
 import org.antlr.runtime.RecognitionException;
 
+import kites.TRSModel.Constant;
 import kites.TRSModel.RuleList;
 import kites.exceptions.DecompositionException;
 import kites.exceptions.NoRewritePossibleException;
@@ -51,6 +54,12 @@ public class InterpreterWindow extends JFrame {
     private final JRadioButtonMenuItem menuStrategyLO;
     private final JRadioButtonMenuItem menuStrategyRI;
     private final JRadioButtonMenuItem menuStrategyRO;
+    
+    private JPanel results;
+    private StepRewrite steprewrite;
+    private JTextField txtSteps;
+    private JTextField txtSize;
+    private JEditorPane instance;
 
 
 	public InterpreterWindow(final RuleList rulelist, final int mode) {
@@ -66,12 +75,17 @@ public class InterpreterWindow extends JFrame {
         setTitle("KiTES v0.1");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         
-        final JPanel results = new JPanel();
+        results = new JPanel();
         results.setBackground(Color.WHITE);
         results.setLayout(new BoxLayout(results, BoxLayout.Y_AXIS));
         
-        JScrollPane scrollResults = new JScrollPane(results);
-        final JEditorPane instance = new JEditorPane();
+        Constant alpha = new Constant("alpha");
+        Component alphaLabel = alpha.toLabel();
+        addToResults(alphaLabel);
+        
+        
+        JScrollPane scrollResults = new JScrollPane(getResultsPanel());
+        instance = new JEditorPane();
         JScrollPane scrollInstance = new JScrollPane(instance);
         JButton btnStep = new JButton("Schritt");
         JButton btnGo = new JButton("Ausführen");
@@ -82,8 +96,8 @@ public class InterpreterWindow extends JFrame {
         paneStatistics.setBorder(titlePaneStatistics);
         JLabel lblSteps = new JLabel("Schritte");
         JLabel lblSize = new JLabel("Max. Größe");
-        final JTextField txtSteps = new JTextField();
-        final JTextField txtSize = new JTextField();
+        txtSteps = new JTextField();
+        txtSize = new JTextField();
         txtSteps.setEditable(false);
         txtSize.setEditable(false);
         paneStatistics.setLayout(new GridLayout(2, 2));
@@ -191,7 +205,7 @@ public class InterpreterWindow extends JFrame {
         menuInterpretationTRS.addActionListener(stratAction);
         
         this.setJMenuBar(menuBar);
-        final StepRewrite steprewrite;
+        
         
         // Check syntax of rules
         final HashMap<String, Integer> signature;
@@ -201,16 +215,21 @@ public class InterpreterWindow extends JFrame {
         	checktrs.variableCheck();
         	signature = checktrs.signatureCheck();
         	
-        	steprewrite = new StepRewrite(getRuleList(), signature, instance, results, txtSteps, txtSize);
+        	steprewrite = new StepRewrite(getRuleList(), signature, this);
 			
         	
             class StepAction implements ActionListener {
+            	private InterpreterWindow wnd;
+            	
+            	public StepAction(InterpreterWindow wnd) {
+            		this.wnd = wnd;
+            	}
     			@Override
     			public void actionPerformed(ActionEvent arg0) {
-    				steprewrite.setMode(getMode());
-    				steprewrite.setStrategy(getStrategy());
+    				wnd.getStepRewrite().setMode(getMode());
+    				wnd.getStepRewrite().setStrategy(getStrategy());
     				try {
-						steprewrite.run();
+    					wnd.getStepRewrite().run();
 					}
     				catch (Exception e) {
 						MsgBox.error(e);
@@ -220,6 +239,11 @@ public class InterpreterWindow extends JFrame {
             }
             
             class ResetAction implements KeyListener {
+            	private InterpreterWindow wnd;
+            	
+            	public ResetAction(InterpreterWindow wnd) {
+            		this.wnd = wnd;
+            	}
 				@Override
 				public void keyPressed(KeyEvent arg0) {
 					// TODO Auto-generated method stub
@@ -234,21 +258,31 @@ public class InterpreterWindow extends JFrame {
 
 				@Override
 				public void keyTyped(KeyEvent arg0) {
-    				steprewrite.setFirst();
-    				results.removeAll();
+					int num = wnd.getResultsPanel().countComponents();
+					System.out.println("Results panel contains " + num + "components before clearing");
+					wnd.getStepRewrite().setFirst();
+					System.out.println("Removing everything from results panel...");
+    				wnd.getResultsPanel().removeAll();
+    				wnd.getResultsPanel().repaint();
     				txtSteps.setText("");
     				txtSize.setText("");
 				}
             }
             
     		class RunAction implements ActionListener {
+    			private InterpreterWindow wnd;
+    			
+    			public RunAction(InterpreterWindow wnd) {
+    				this.wnd = wnd;
+    			}
+    			
     			@Override
     			public void actionPerformed(ActionEvent arg0) {
-    				steprewrite.setMode(getMode());
-    				steprewrite.setStrategy(getStrategy());
+    				wnd.getStepRewrite().setMode(getMode());
+    				wnd.getStepRewrite().setStrategy(getStrategy());
     				try {
     					while(true) {
-    						steprewrite.run();
+    						wnd.getStepRewrite().run();
     					}
     				}
     				catch(SyntaxErrorException e) {
@@ -267,9 +301,9 @@ public class InterpreterWindow extends JFrame {
     			}
     		}
         	
-    		instance.addKeyListener(new ResetAction());
-        	btnStep.addActionListener(new StepAction());
-        	btnGo.addActionListener(new RunAction());
+    		instance.addKeyListener(new ResetAction(this));
+        	btnStep.addActionListener(new StepAction(this));
+        	btnGo.addActionListener(new RunAction(this));
         	
         	this.setVisible(true);
         }
@@ -325,5 +359,30 @@ public class InterpreterWindow extends JFrame {
 		else {
 			return -1;
 		}
+	}
+	
+	public JPanel getResultsPanel() {
+		return results;
+	}
+	
+	public StepRewrite getStepRewrite() {
+		return steprewrite;
+	}
+
+	public JTextField getStepsField() {
+		return txtSteps;
+	}
+	
+	public JTextField getSizeField() {
+		return txtSize;
+	}
+
+	public void addToResults(Component label) {
+		getResultsPanel().add(label);
+		getResultsPanel().revalidate();
+	}
+	
+	public JEditorPane getInstance() {
+		return instance;
 	}
 }

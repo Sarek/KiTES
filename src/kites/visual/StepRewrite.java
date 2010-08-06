@@ -1,7 +1,9 @@
 package kites.visual;
 
+import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -12,6 +14,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import kites.TRSModel.ASTNode;
 import kites.TRSModel.Rule;
@@ -37,19 +40,14 @@ public class StepRewrite {
 	private int mode;
 	private int strategy;
 	private HashMap<String, Integer> signature;
-	private JEditorPane instance;
-	private JPanel results;
-	private JTextField steps, size;
+	private InterpreterWindow wnd;
 	
-	public StepRewrite(RuleList rulelist, HashMap<String, Integer> signature, JEditorPane instance, JPanel results, JTextField steps, JTextField size) {
+	public StepRewrite(RuleList rulelist, HashMap<String, Integer> signature, InterpreterWindow wnd) {
 		firstStep = true;
 		this.rulelist = rulelist;
+		this.wnd = wnd;
 
 		this.signature = signature;
-		this.instance = instance;
-		this.results = results;
-		this.steps = steps;
-		this.size = size;
 	}
 	
 	public void setFirst() {
@@ -65,6 +63,52 @@ public class StepRewrite {
 	}
 	
 	public void run() throws SyntaxErrorException, DecompositionException, NoRewritePossibleException, RecognitionException {
+		if(firstStep) {
+			TRSLexer lexer = new TRSLexer(new ANTLRStringStream(wnd.getInstance().getText()));
+			TokenStream tokenStream = new CommonTokenStream(lexer);
+			TRSParser parser = new TRSParser(tokenStream);
+			instanceTree = parser.instance();
+			
+			List<String> lexerErrors = lexer.getErrors();
+    		if(!lexerErrors.isEmpty()) {
+    			System.out.println("Displaying lexer errors");
+    			String errors = "Detected errors during lexing:\n\n";
+    			Iterator<String> errIt = lexerErrors.iterator();
+    			while(errIt.hasNext()) {
+    				errors += errIt.next() + "\n";
+    			}
+    			MsgBox.error(errors);
+    			return;
+    		}
+    		List<String> parseErrors = parser.getErrors();
+    		System.out.println(parseErrors);
+    		if(!parseErrors.isEmpty()) {
+    			String errors = "Detected errors during parsing:\n\n";
+    			Iterator<String> errIt = parseErrors.iterator();
+    			while(errIt.hasNext()) {
+    				errors += errIt.next() + "\n";
+    			}
+    			MsgBox.error(errors);
+    			return;
+    		}
+			
+			// syntax check instance
+			CheckTRS.instanceCheck(instanceTree, signature);
+			
+			try {
+				javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			Component nodelabel = instanceTree.toLabel();
+			nodelabel.validate();
+			System.out.println(nodelabel);
+			wnd.addToResults(nodelabel);
+			wnd.getStepsField().setText("1");
+			wnd.getSizeField().setText(String.valueOf(instanceTree.getSize()));
+	
+			firstStep = false;
+		}
 		/**
 		 * A JEditorPane is unusable for what I want to do (i. e. non-deterministic programs.
 		 * Therefore, this is mostly crap. (At least anything that has anything to do with output)
