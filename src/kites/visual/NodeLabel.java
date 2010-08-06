@@ -1,37 +1,25 @@
 package kites.visual;
 
-import javax.swing.Icon;
 import javax.swing.JLabel;
 
+import kites.TRSModel.ASTNode;
+
 public class NodeLabel extends JLabel {
-
-	public NodeLabel() {
-		// TODO Auto-generated constructor stub
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9139677250114966677L;
+	
+	private ASTNode node;
+	
+	public NodeLabel(ASTNode node) {
+		super(node.getName());
+		
+		this.node = node;
 	}
-
-	public NodeLabel(String arg0) {
-		super(arg0);
-		// TODO Auto-generated constructor stub
-	}
-
-	public NodeLabel(Icon arg0) {
-		super(arg0);
-		// TODO Auto-generated constructor stub
-	}
-
-	public NodeLabel(String arg0, int arg1) {
-		super(arg0, arg1);
-		// TODO Auto-generated constructor stub
-	}
-
-	public NodeLabel(Icon arg0, int arg1) {
-		super(arg0, arg1);
-		// TODO Auto-generated constructor stub
-	}
-
-	public NodeLabel(String arg0, Icon arg1, int arg2) {
-		super(arg0, arg1, arg2);
-		// TODO Auto-generated constructor stub
+	
+	public ASTNode getNode() {
+		return node;
 	}
 
 }
