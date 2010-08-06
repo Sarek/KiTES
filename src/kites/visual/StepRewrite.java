@@ -1,5 +1,7 @@
 package kites.visual;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -7,6 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JEditorPane;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import kites.TRSModel.ASTNode;
@@ -33,10 +37,11 @@ public class StepRewrite {
 	private int mode;
 	private int strategy;
 	private HashMap<String, Integer> signature;
-	private JEditorPane instance, results;
+	private JEditorPane instance;
+	private JPanel results;
 	private JTextField steps, size;
 	
-	public StepRewrite(RuleList rulelist, HashMap<String, Integer> signature, JEditorPane instance, JEditorPane results, JTextField steps, JTextField size) {
+	public StepRewrite(RuleList rulelist, HashMap<String, Integer> signature, JEditorPane instance, JPanel results, JTextField steps, JTextField size) {
 		firstStep = true;
 		this.rulelist = rulelist;
 
@@ -60,6 +65,11 @@ public class StepRewrite {
 	}
 	
 	public void run() throws SyntaxErrorException, DecompositionException, NoRewritePossibleException, RecognitionException {
+		/**
+		 * A JEditorPane is unusable for what I want to do (i. e. non-deterministic programs.
+		 * Therefore, this is mostly crap. (At least anything that has anything to do with output)
+		 */
+		/*
 		if(firstStep) {
 			TRSLexer lexer = new TRSLexer(new ANTLRStringStream(instance.getText()));
 			TokenStream tokenStream = new CommonTokenStream(lexer);
@@ -98,28 +108,24 @@ public class StepRewrite {
 			firstStep = false;
 		}
 		
-		if(instanceTree != null) {
-			if(mode == Decomposition.M_PROGRAM) {
-				try {
-					ProgramRewrite rwrt = new ProgramRewrite(strategy, instanceTree, rulelist);
-					ASTNode newTree = rwrt.findRewrite();
-					
-					results.setText(results.getText() + "\n\n" + newTree.toString());
-					steps.setText(String.valueOf(Integer.parseInt(steps.getText()) + 1));
-					Integer newSize = new Integer(newTree.getSize());
-					if(newSize.compareTo(Integer.parseInt(size.getText())) > 0) {
-						size.setText(String.valueOf(newTree.getSize()));
-					}
-					instanceTree = newTree;
+		if(mode == Decomposition.M_PROGRAM) {
+			try {
+				ProgramRewrite rwrt = new ProgramRewrite(strategy, instanceTree, rulelist);
+				ASTNode newTree = rwrt.findRewrite();
+				
+				results.setText(results.getText() + "\n\n" + newTree.toString());
+				steps.setText(String.valueOf(Integer.parseInt(steps.getText()) + 1));
+				Integer newSize = new Integer(newTree.getSize());
+				if(newSize.compareTo(Integer.parseInt(size.getText())) > 0) {
+					size.setText(String.valueOf(newTree.getSize()));
 				}
-				catch(Exception e) {
-					MsgBox.error(e);
-					e.printStackTrace();
-				}
+				instanceTree = newTree;
+			}
+			catch(Exception e) {
+				MsgBox.error(e);
+				e.printStackTrace();
 			}
 		}
-		else {
-			throw new SyntaxErrorException("Empty instance was given");
-		}
+		*/
 	}
 }

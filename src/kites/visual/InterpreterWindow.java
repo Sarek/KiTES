@@ -1,5 +1,6 @@
 package kites.visual;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -11,6 +12,7 @@ import java.awt.event.KeyListener;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
@@ -64,9 +66,10 @@ public class InterpreterWindow extends JFrame {
         setTitle("KiTES v0.1");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         
-        final JEditorPane results = new JEditorPane();
-        results.setEditable(false);
-        results.setAutoscrolls(true);
+        final JPanel results = new JPanel();
+        results.setBackground(Color.WHITE);
+        results.setLayout(new BoxLayout(results, BoxLayout.Y_AXIS));
+        
         JScrollPane scrollResults = new JScrollPane(results);
         final JEditorPane instance = new JEditorPane();
         JScrollPane scrollInstance = new JScrollPane(instance);
@@ -232,7 +235,7 @@ public class InterpreterWindow extends JFrame {
 				@Override
 				public void keyTyped(KeyEvent arg0) {
     				steprewrite.setFirst();
-    				results.setText("");
+    				results.removeAll();
     				txtSteps.setText("");
     				txtSize.setText("");
 				}
