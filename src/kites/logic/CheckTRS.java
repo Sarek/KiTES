@@ -27,6 +27,24 @@ public class CheckTRS {
 	}
 
 	/**
+	 * Checks whether an instance conforms to the Sigma-
+	 * Gamma-signatures given by the rule set.
+	 * If not, a <code>SyntaxErrorException</code> with a
+	 * meaningful message is thrown.
+	 * 
+	 * Basically, this just tests whether the root node
+	 * of the instance is a symbol from the Gamma signature.
+	 * @param instance The instance to be checked
+	 * @throws SyntaxErrorException
+	 */
+	public void isSigmaGammaInstance(ASTNode instance) throws SyntaxErrorException {
+		HashMap<String, Integer> gamma = getGammaSignature();
+		if(!gamma.containsKey(instance.getName())) {
+			throw new SyntaxErrorException("The instance " + instance + " is not a valid Sigma-Gamma program system instance");
+		}
+	}
+	
+	/**
 	 * Checks whether the given rule set is a Sigma-Gamma-
 	 * program system.
 	 * First it creates both signatures then performs the
