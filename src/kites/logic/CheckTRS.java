@@ -26,6 +26,14 @@ public class CheckTRS {
 		this.rulelist = rulelist;
 	}
 	
+	/**
+	 * Check an instance for its compliance with a given signature.
+	 * If a violation occurs, a <code>SyntaxErrorException</code> is thrown.
+	 * 
+	 * @param node The instance to be checked
+	 * @param signature The signature to be checked against.
+	 * @throws SyntaxErrorException
+	 */
 	public static void instanceCheck(ASTNode node, HashMap<String, Integer> signature) throws SyntaxErrorException {
 		if(signature.containsKey(node.getName()) && signature.get(node.getName()) != node.getParamCount()) {
 			throw new SyntaxErrorException("Parameter count for \"" + node.toString() + "\" violates signature. Expecting " + signature.get(node.getName()) + " parameters");
@@ -42,6 +50,13 @@ public class CheckTRS {
 			}
 		}
 	}
+	
+	/**
+	 * Checks whether two rules in the rule set are unifiable.
+	 * If that is the case a <code>SyntaxErrorException</code> is thrown.
+	 * 
+	 * @throws SyntaxErrorException
+	 */
 	public void unifiabilityCheck() throws SyntaxErrorException{
 		Iterator<Rule> rules = rulelist.getRules();
 		LinkedList<Rule> rules2 = rulelist.getRulesList();
@@ -62,6 +77,14 @@ public class CheckTRS {
 		}
 	}
 	
+	/**
+	 * Checks whether two trees are unifiable.
+	 * 
+	 * @param left The one tree
+	 * @param right The other tree
+	 * @param match Initialize as true, unless you know what you are doing.
+	 * @return <code>true</code> when trees are unifiable, <code>false</code> otherwise.
+	 */
 	private boolean unifiable(ASTNode left, ASTNode right, boolean match) {
 		if(!(left instanceof Variable || right instanceof Variable) && left.getName() != right.getName()) {
 			match = false;
@@ -87,7 +110,15 @@ public class CheckTRS {
 		return match;
 	}
 
-
+	/**
+	 * Check whether the rule system is consistent, i. e. whether nodes with the same
+	 * name always have the same parameter count.
+	 * The first occurence of a node determines the signature. If
+	 * a mismatch is encountered this throws a <code>SyntaxErrorException</code>.
+	 * 
+	 * @return The signature of the rule set
+	 * @throws SyntaxErrorException
+	 */
 	public HashMap<String, Integer> signatureCheck() throws SyntaxErrorException {
 		HashMap<String, Integer> signature = new HashMap<String, Integer>();
 		
@@ -101,6 +132,16 @@ public class CheckTRS {
 		return signature;
 	}
 
+	/**
+	 * Create the signature for a (sub-) tree.
+	 * Checks the tree for compliance with an already existing signature
+	 * and adds new nodes that are not yet present in the signature.
+	 * If a mismatch is encountered, this throws a <code>SyntaxErrorException</code>
+	 *  
+	 * @param signature The pre-existing signature
+	 * @param node The node to be checked
+	 * @throws SyntaxErrorException
+	 */
 	private void sigCheckNode(HashMap<String, Integer> signature, ASTNode node) throws SyntaxErrorException {
 		if(signature.containsKey(node.getName())) {
 			if(signature.get(node.getName()) != node.getParamCount())
@@ -122,6 +163,14 @@ public class CheckTRS {
 		}
 	}
 	
+	/**
+	 * Check the set of rules for their compliance with left-linearity
+	 * and also check whether there are variables used on the right-hand
+	 * side of a rule that were not used on the left-hand side.
+	 * When violations occur, a <code>SyntaxErrorException</code> is thrown.
+	 * 
+	 * @throws SyntaxErrorException
+	 */
 	public void variableCheck() throws SyntaxErrorException {
 		Iterator<Rule> it = rulelist.getRules();
 		
@@ -130,6 +179,19 @@ public class CheckTRS {
 		}
 	}
 	
+	/**
+	 * Check for left-linearity of a rule.
+	 * 
+	 * This gathers a list of the variables used on the left-hand side of a rule.
+	 * If a variable is used more than once on the left-hand side this throws a
+	 * <code>SyntaxErrorException</code> with an appropriate message.
+	 * Then the method goes on and checks if a variable that was not used on the
+	 * left-hand side was used on the right-hand side. If this is the case, a
+	 * <code>SyntaxErrorException</code> with an appropriate message is thrown.
+	 * 
+	 * @param rule The rule to be checked
+	 * @throws SyntaxErrorException See description
+	 */
 	private void variableCheckRule(Rule rule) throws SyntaxErrorException {
 		// Create a list of variables on left side
 		// and check for multiple usage at the same time
@@ -140,6 +202,15 @@ public class CheckTRS {
 		CheckVarRightSide(rule.getRight(), variables);
 	}
 	
+	/**
+	 * Checks whether variables not in <code>variables</code> is present in the tree
+	 * <code>node</code> and throws a <code>SyntaxErrorException</code> if this is
+	 * the case.
+	 * 
+	 * @param node The (sub-) tree to be checked
+	 * @param variables Set of variables to check against
+	 * @throws SyntaxErrorException
+	 */
 	private void CheckVarRightSide(ASTNode node, HashSet<String> variables) throws SyntaxErrorException {
 		try {
 			Iterator<ASTNode> children = node.getChildIterator();
@@ -157,6 +228,17 @@ public class CheckTRS {
 		
 	}
 
+	/**
+	 * Creates a set of variables used in a tree.
+	 * If a variable is encountered more than once, a <code>SyntaxErrorException</code>
+	 * is thrown, as this violates left-linearity.
+	 * 
+	 * @param node The tree to be checked
+	 * @param variables Temporary cache of already gathered variables. Initialize with
+	 * 		an empty <code>HashSet<String></code> unless you know what you are doing.
+	 * @return The set of variables used in the tree
+	 * @throws SyntaxErrorException
+	 */
 	private HashSet<String> GetVariables(ASTNode node, HashSet<String> variables) throws SyntaxErrorException {
 		try {
 			Iterator<ASTNode> children = node.getChildIterator();
