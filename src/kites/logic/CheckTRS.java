@@ -27,6 +27,55 @@ public class CheckTRS {
 	}
 
 	/**
+	 * Create the Gamma-signature of the rule set.
+	 * In a program system the root node in the tree representing
+	 * a left-hand side of a rule needs to belong to the Gamma-
+	 * signature, which is created by this method
+	 * @return
+	 * @throws SyntaxErrorException
+	 */
+	public HashMap<String, Integer> gammaSignature() throws SyntaxErrorException {
+		Iterator<Rule> rules = rulelist.getRules();
+		HashMap<String, Integer> retval = new HashMap<String, Integer>();
+		
+		while(rules.hasNext()) {
+			retval = gammaSigNode(rules.next().getLeft(), retval);
+		}
+		
+		return retval;
+	}
+	
+	/**
+	 * Create the Gamma-signature for a tree.
+	 * Checks whether the root node is already in the signature.
+	 * If not, it is added. If a node is found to contradict the
+	 * signature a <code>SyntaxErrorException</code> is thrown.
+	 * This is also the case when a tree with a <code>Variable</code>
+	 * as root is detected.
+	 * 
+	 * @param node The tree to genereate the signature from
+	 * @param signature The signature to which entries shall be added
+	 * @return The new signature
+	 * @throws SyntaxErrorException
+	 */
+	public HashMap<String, Integer> gammaSigNode(ASTNode node, HashMap<String, Integer> signature) throws SyntaxErrorException {
+		if(node instanceof Variable) {
+			throw new SyntaxErrorException("Variables are not allowed as root elements in a rule");
+		}
+		
+		if(signature.containsKey(node.getName())) {
+			if(signature.get(node.getName()) != node.getParamCount()) {
+				throw new SyntaxErrorException("Wrong parameter count for node: " + node);
+			}
+		}
+		else {
+			signature.put(node.getName(), node.getParamCount());
+		}
+		
+		return signature;
+	}
+	
+	/**
 	 * Create the Sigma-signature of the rule set.
 	 * In a program system all nodes except the root node in the tree
 	 * representing a left-hand side of a rule need to belong to the
@@ -64,7 +113,7 @@ public class CheckTRS {
 					throw new SyntaxErrorException("Wrong parameter count for node: " + node);
 				}
 			}
-			else {
+			else if(!(node instanceof Variable)) { // we don't want variables in our signature
 				signature.put(node.getName(), node.getParamCount());
 			}
 		}
@@ -87,6 +136,9 @@ public class CheckTRS {
 	 * This only checks for correct parameter count, not for consistency
 	 * with a Gamma-Signature as needed for interpretation as a program.
 	 * Use <code>instanceCheckGamma</code> for that!
+	 * 
+	 * This also checks that there are no <code>Variable</code>s present
+	 * in the instance.
 	 * If a violation occurs, a <code>SyntaxErrorException</code> is thrown.
 	 * 
 	 * @param node The instance to be checked
@@ -94,6 +146,9 @@ public class CheckTRS {
 	 * @throws SyntaxErrorException
 	 */
 	public static void instanceCheck(ASTNode node, HashMap<String, Integer> signature) throws SyntaxErrorException {
+		if(node instanceof Variable) {
+			throw new SyntaxErrorException("It is not allowed to use variables in an instance");
+		}
 		if(signature.containsKey(node.getName()) && signature.get(node.getName()) != node.getParamCount()) {
 			throw new SyntaxErrorException("Parameter count for \"" + node.toString() + "\" violates signature. Expecting " + signature.get(node.getName()) + " parameters");
 		}
@@ -206,7 +261,7 @@ public class CheckTRS {
 			if(signature.get(node.getName()) != node.getParamCount())
 				throw new SyntaxErrorException("Wrong parameter count for " + node + " on line " + node.getLine());
 		}
-		else {
+		else if(!(node instanceof Variable)) { // we don't want variables in our signature
 			signature.put(node.getName(), node.getParamCount());
 		}
 		
