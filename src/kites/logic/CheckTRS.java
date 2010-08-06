@@ -25,9 +25,68 @@ public class CheckTRS {
 	public CheckTRS(RuleList rulelist) {
 		this.rulelist = rulelist;
 	}
+
+	/**
+	 * Create the Sigma-signature of the rule set.
+	 * In a program system all nodes except the root node in the tree
+	 * representing a left-hand side of a rule need to belong to the
+	 * Sigma-signature, which is created by this method.
+	 * 
+	 * @return The Sigma-signature of the rule set
+	 * @throws SyntaxErrorException When signature is found to be contradicted
+	 * 		by a wrong parameter count
+	 */
+	public HashMap<String, Integer> sigmaSignature() throws SyntaxErrorException {
+		Iterator<Rule> rules = rulelist.getRules();
+		HashMap<String, Integer> retval = new HashMap<String, Integer>();
+		
+		while(rules.hasNext()) {
+			retval = sigmaSigNode(rules.next().getLeft(), retval, true);
+		}
+		
+		return retval;
+	}
+	
+	/**
+	 * Create the Sigma-signature of a tree, adding to a previously
+	 * existing signature.
+	 * 
+	 * @param node The tree to be checked
+	 * @param signature The pre-existing signature
+	 * @param root Indicates whether we are at the root of the tree
+	 * @throws SyntaxErrorException On encountering a node contradicting
+	 * 		the signature
+	 */
+	private HashMap<String, Integer> sigmaSigNode(ASTNode node, HashMap<String, Integer> signature, boolean root) throws SyntaxErrorException {
+		if(!root) {
+			if(signature.containsKey(node.getName())) {
+				if(signature.get(node.getName()) != node.getParamCount()) {
+					throw new SyntaxErrorException("Wrong parameter count for node: " + node);
+				}
+			}
+			else {
+				signature.put(node.getName(), node.getParamCount());
+			}
+		}
+		
+		try {
+			Iterator<ASTNode> childIt = node.getChildIterator();
+			while(childIt.hasNext()) {
+				signature = sigmaSigNode(childIt.next(), signature, false);
+			}
+		}
+		catch(NoChildrenException e) {
+			// Do nothing. We just reached a leaf node
+		}
+		
+		return signature;
+	}
 	
 	/**
 	 * Check an instance for its compliance with a given signature.
+	 * This only checks for correct parameter count, not for consistency
+	 * with a Gamma-Signature as needed for interpretation as a program.
+	 * Use <code>instanceCheckGamma</code> for that!
 	 * If a violation occurs, a <code>SyntaxErrorException</code> is thrown.
 	 * 
 	 * @param node The instance to be checked
