@@ -1,6 +1,7 @@
 package kites.TRSModel;
 
 import java.awt.Component;
+
 import kites.visual.NodeLabel;
 
 public class Constant extends ASTNode {

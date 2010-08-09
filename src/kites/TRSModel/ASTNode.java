@@ -2,8 +2,11 @@ package kites.TRSModel;
 
 import java.awt.Component;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 
 import kites.exceptions.NoChildrenException;
+import kites.visual.NodeLabel;
 
 public abstract class ASTNode {
 	protected String name;
@@ -53,4 +56,14 @@ public abstract class ASTNode {
 	}
 	
 	public abstract Component toLabel();
+	
+	public Component toLabelWithRule(LinkedHashMap<ASTNode, LinkedList<Rule>> decomp) {
+		// is this constant reducible?
+		if(decomp.containsKey(this)) {
+			return new NodeLabel(this, decomp.get(this));
+		}
+		else {
+			return new NodeLabel(this);
+		}
+	}
 }

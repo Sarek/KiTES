@@ -297,4 +297,43 @@ public class ProgramRewrite {
 		
 		return assignments;
 	}
+	
+	/**
+	 * Rewrite a node using a specific rule
+	 * 
+	 * @param tree The tree to rewrite
+	 * @param node The node to rewrite
+	 * @param rule The rule to apply
+	 * @return The rewritten tree
+	 * @throws SyntaxErrorException 
+	 */
+	public static ASTNode rewrite(ASTNode tree, ASTNode node, Rule rule) throws SyntaxErrorException {
+		ASTNode retval;
+		
+		// check if we shall rewrite this node
+		if(tree == node) {
+			HashMap<String, ASTNode> assignments = getVarAssignments(tree, rule.getLeft(), new HashMap<String, ASTNode>());
+			retval = buildTree(rule.getRight(), assignments);
+		}
+		else if(tree instanceof Function) {
+			// create new node and add new children
+			retval = new Function(tree.getName());
+			Iterator<ASTNode> childIt = ((Function)tree).getChildIterator();
+			
+			while(childIt.hasNext()) {
+				retval.add(rewrite(childIt.next(), node, rule));
+			}
+		}
+		else {
+			// tree has to be a constant or something is seriously wrong
+			if(!(tree instanceof Constant)) {
+				throw new SyntaxErrorException("Found an unknown node type while rewriting. Node content: " + tree + ". Node type: " + tree.getClass());
+			}
+			else {
+				retval = new Constant(tree.getName());
+			}
+		}
+		
+		return retval;
+	}
 }

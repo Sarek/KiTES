@@ -4,7 +4,6 @@ import java.awt.Component;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import kites.exceptions.NoChildrenException;
 import kites.visual.NodeBox;
 import kites.visual.NodeLabel;
 
