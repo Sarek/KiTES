@@ -95,81 +95,57 @@ public class StepRewrite {
 			// syntax check instance
 			CheckTRS.instanceCheck(instanceTree, signature);
 			
-			try {
-				javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
-			Component nodelabel = instanceTree.toLabel();
-			nodelabel.validate();
-			System.out.println(nodelabel);
-			wnd.addToResults(nodelabel);
-			wnd.getStepsField().setText("1");
-			wnd.getSizeField().setText(String.valueOf(instanceTree.getSize()));
-	
-			firstStep = false;
-		}
-		/**
-		 * A JEditorPane is unusable for what I want to do (i. e. non-deterministic programs.
-		 * Therefore, this is mostly crap. (At least anything that has anything to do with output)
-		 */
-		/*
-		if(firstStep) {
-			TRSLexer lexer = new TRSLexer(new ANTLRStringStream(instance.getText()));
-			TokenStream tokenStream = new CommonTokenStream(lexer);
-			TRSParser parser = new TRSParser(tokenStream);
-			instanceTree = parser.instance();
 			
-			List<String> lexerErrors = lexer.getErrors();
-    		if(!lexerErrors.isEmpty()) {
-    			System.out.println("Displaying lexer errors");
-    			String errors = "Detected errors during lexing:\n\n";
-    			Iterator<String> errIt = lexerErrors.iterator();
-    			while(errIt.hasNext()) {
-    				errors += errIt.next() + "\n";
-    			}
-    			MsgBox.error(errors);
-    			return;
-    		}
-    		List<String> parseErrors = parser.getErrors();
-    		System.out.println(parseErrors);
-    		if(!parseErrors.isEmpty()) {
-    			String errors = "Detected errors during parsing:\n\n";
-    			Iterator<String> errIt = parseErrors.iterator();
-    			while(errIt.hasNext()) {
-    				errors += errIt.next() + "\n";
-    			}
-    			MsgBox.error(errors);
-    			return;
-    		}
-			
-			// syntax check instance
-			CheckTRS.instanceCheck(instanceTree, signature);
-			
-			results.setText(instanceTree.toString());
-			steps.setText("1");
-			size.setText(String.valueOf(instanceTree.getSize()));
-			firstStep = false;
 		}
 		
-		if(mode == Decomposition.M_PROGRAM) {
-			try {
-				ProgramRewrite rwrt = new ProgramRewrite(strategy, instanceTree, rulelist);
-				ASTNode newTree = rwrt.findRewrite();
+		switch(mode) {
+			case Decomposition.M_PROGRAM:
+				try {
+					if(firstStep) {
+						Component nodelabel = instanceTree.toLabel();
+						System.out.println(nodelabel);
+						wnd.addToResults(nodelabel);
+						wnd.getStepsField().setText("1");
+						wnd.getSizeField().setText(String.valueOf(instanceTree.getSize()));
 				
-				results.setText(results.getText() + "\n\n" + newTree.toString());
-				steps.setText(String.valueOf(Integer.parseInt(steps.getText()) + 1));
-				Integer newSize = new Integer(newTree.getSize());
-				if(newSize.compareTo(Integer.parseInt(size.getText())) > 0) {
-					size.setText(String.valueOf(newTree.getSize()));
+						firstStep = false;
+					}
+					
+					ProgramRewrite rwrt = new ProgramRewrite(strategy, instanceTree, rulelist);
+					ASTNode newTree = rwrt.findRewrite();
+					
+					wnd.addToResults(newTree.toLabel());
+					wnd.getStepsField().setText(String.valueOf(Integer.parseInt(wnd.getStepsField().getText()) + 1));
+					Integer newSize = new Integer(newTree.getSize());
+					if(newSize.compareTo(Integer.parseInt(wnd.getSizeField().getText())) > 0) {
+						wnd.getSizeField().setText(String.valueOf(newTree.getSize()));
+					}
+					instanceTree = newTree;
+					break;
 				}
-				instanceTree = newTree;
-			}
-			catch(Exception e) {
-				MsgBox.error(e);
-				e.printStackTrace();
-			}
+				catch(Exception e) {
+					MsgBox.error(e);
+					e.printStackTrace();
+				}
+				
+			case Decomposition.M_TRS:
+			case Decomposition.M_NONDET:
+				Component nodelabel;
+				if(!firstStep) {
+					ASTNode newTree = ProgramRewrite.rewrite(instanceTree, wnd.getNode(), wnd.getRule());
+					nodelabel = newTree.toLabelWithRule(Decomposition.getDecomp(mode, rulelist, newTree));
+				}
+				else {
+					nodelabel = instanceTree.toLabel();
+				}
+
+				wnd.addToResults(nodelabel);
+				wnd.getStepsField().setText("1");
+				wnd.getSizeField().setText(String.valueOf(instanceTree.getSize()));
+				firstStep = false;
+				break;
+			default:
+				MsgBox.error("Oops. Attempted to run in a unknown interpretation mode");
 		}
-		*/
 	}
 }

@@ -30,7 +30,9 @@ import javax.swing.border.TitledBorder;
 
 import org.antlr.runtime.RecognitionException;
 
+import kites.TRSModel.ASTNode;
 import kites.TRSModel.Constant;
+import kites.TRSModel.Rule;
 import kites.TRSModel.RuleList;
 import kites.exceptions.DecompositionException;
 import kites.exceptions.NoRewritePossibleException;
@@ -60,6 +62,9 @@ public class InterpreterWindow extends JFrame {
     private JTextField txtSteps;
     private JTextField txtSize;
     private JEditorPane instance;
+    
+    private Rule rule;
+	private ASTNode node;
 
 
 	public InterpreterWindow(final RuleList rulelist, final int mode) {
@@ -384,5 +389,13 @@ public class InterpreterWindow extends JFrame {
 	
 	public JEditorPane getInstance() {
 		return instance;
+	}
+	
+	public Rule getRule() {
+		return rule;
+	}
+	
+	public ASTNode getNode() {
+		return node;
 	}
 }
