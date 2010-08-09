@@ -37,7 +37,7 @@ public class Decomposition {
 		
 		switch(type) {
 		case M_NONDET:
-			return ndetDecomp(rulelist, instance, matches);
+			return ndetDecomp(rulelist, instance);
 			
 		case M_TRS:
 			return trsDecomp(rulelist, instance, matches);
@@ -76,9 +76,128 @@ public class Decomposition {
 		return matches;
 	}
 
-	private static LinkedHashMap<ASTNode, LinkedList<Rule>> ndetDecomp(RuleList rulelist, ASTNode node, LinkedHashMap<ASTNode,LinkedList<Rule>> matches) {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * This checks for all possible rewrites according to the non-deterministic
+	 * decomposition rules.
+	 * Such a decomposition consists of all outermost rewrite possibilities.
+	 * 
+	 * @param rulelist The rule set specifying the rewrites
+	 * @param node The tree to be checked
+	 * @return
+	 * @throws SyntaxErrorException 
+	 */
+	private static LinkedHashMap<ASTNode, LinkedList<Rule>> ndetDecomp(RuleList rulelist, ASTNode node) throws SyntaxErrorException {
+		// check, if this node is a match
+		Iterator<Rule> ruleChildren = rulelist.getRules();
+		LinkedHashMap<ASTNode,LinkedList<Rule>> matches = new LinkedHashMap<ASTNode, LinkedList<Rule>>();
+		boolean match = false;
+		
+		while(ruleChildren.hasNext()) {
+			Rule rule = ruleChildren.next();
+			if(match(rule.getLeft(), node)) {
+				if(!matches.containsKey(node)) {
+					matches.put(node, new LinkedList<Rule>());
+				}
+				matches.get(node).add(rule);
+				match = true;
+			}
+		}
+		
+		if(!match) {
+			try {
+				Iterator<ASTNode> childIt = node.getChildIterator();
+				Iterator<ASTNode> revChildIt = node.getRevChildIterator();
+				ASTNode left = childIt.next();
+				ASTNode right = revChildIt.next();
+				
+				// if the root node has only one child we have to call this
+				// method again. If we would not do that, the match would be
+				// noted twice and we would not get both the leftmost and
+				// rightmost decompositions.
+				if(left == right) {
+					matches = ndetDecomp(rulelist, left);
+				}
+				else {
+					matches = ndetLODecomp(rulelist, node, matches);
+					matches = ndetRODecomp(rulelist, node, matches);
+				}
+			}
+			catch(NoChildrenException e) {
+				// Do nothing, we simply reached a leaf node
+				// yes, it really is a leaf although it is the root node
+			}
+		}
+		
+		return matches;
+	}
+	
+	/**
+	 * Calculate a leftmost-outermost decomposition for use with non-deterministic interpretation.
+	 * 
+	 * @param rulelist The rule set specifying the rewrites
+	 * @param node The tree to be checked
+	 * @param matches A set of pre-existing matches
+	 * @return
+	 * @throws SyntaxErrorException 
+	 */
+	private static LinkedHashMap<ASTNode, LinkedList<Rule>> ndetLODecomp(RuleList rulelist, ASTNode node, LinkedHashMap<ASTNode, LinkedList<Rule>> matches) throws SyntaxErrorException {
+		// check for a match in this node
+		boolean match = false;
+		Iterator<Rule> ruleChildren = rulelist.getRules();
+		
+		while(ruleChildren.hasNext()) {
+			Rule rule = ruleChildren.next();
+			if(match(rule.getLeft(), node)) {
+				if(!matches.containsKey(node)) {
+					matches.put(node, new LinkedList<Rule>());
+				}
+				matches.get(node).add(rule);
+				match = true;
+			}
+		}
+		
+		// no match, go deeper into the tree
+		if(!match) {
+			try {
+				Iterator<ASTNode> childIt = node.getChildIterator();
+				matches = ndetLODecomp(rulelist, childIt.next(), matches);
+			}
+			catch(NoChildrenException e) {
+				// Do nothing. We simply reached a leaf node.
+			}
+		}
+		
+		return matches;
+	}
+	
+	private static LinkedHashMap<ASTNode, LinkedList<Rule>> ndetRODecomp(RuleList rulelist, ASTNode node, LinkedHashMap<ASTNode, LinkedList<Rule>> matches) throws SyntaxErrorException {
+		// check for a match in this node
+		boolean match = false;
+		Iterator<Rule> ruleChildren = rulelist.getRules();
+		
+		while(ruleChildren.hasNext()) {
+			Rule rule = ruleChildren.next();
+			if(match(rule.getLeft(), node)) {
+				if(!matches.containsKey(node)) {
+					matches.put(node, new LinkedList<Rule>());
+				}
+				matches.get(node).add(rule);
+				match = true;
+			}
+		}
+		
+		// no match found, go deeper into the tree
+		if(!match) {
+			try {
+				Iterator<ASTNode> childIt = node.getChildIterator();
+				matches = ndetLODecomp(rulelist, childIt.next(), matches);
+			}
+			catch(NoChildrenException e) {
+				// Do nothing. We simply reached a leaf node.
+			}
+		}
+		
+		return matches;
 	}
 
 	public static boolean match(ASTNode rule, ASTNode node) throws SyntaxErrorException {
