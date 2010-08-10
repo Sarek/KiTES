@@ -14,6 +14,7 @@ import java.awt.event.KeyListener;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -83,11 +84,6 @@ public class InterpreterWindow extends JFrame {
         results = new JPanel();
         results.setBackground(Color.WHITE);
         results.setLayout(new BoxLayout(results, BoxLayout.Y_AXIS));
-        
-        Constant alpha = new Constant("alpha");
-        Component alphaLabel = alpha.toLabel();
-        addToResults(alphaLabel);
-        
         
         JScrollPane scrollResults = new JScrollPane(getResultsPanel());
         instance = new JEditorPane();
@@ -290,19 +286,13 @@ public class InterpreterWindow extends JFrame {
     						wnd.getStepRewrite().run();
     					}
     				}
-    				catch(SyntaxErrorException e) {
-    					MsgBox.error(e);
-    				}
-    				catch(DecompositionException e) {
-    					MsgBox.error(e);
-    				}
     				catch(NoRewritePossibleException e) {
+    					System.out.println("Caught the fricking exception...");
     					// Do nothing. Execution is complete.
     				}
-    				catch (RecognitionException e) {
-						// TODO Auto-generated catch block
-						MsgBox.error(e);
-					}
+    				catch(Exception e) {
+    					MsgBox.error(e);
+    				}
     			}
     		}
         	
@@ -384,6 +374,7 @@ public class InterpreterWindow extends JFrame {
 
 	public void addToResults(Component label) {
 		getResultsPanel().add(label);
+		getResultsPanel().add(Box.createVerticalStrut(15));
 		getResultsPanel().revalidate();
 	}
 	

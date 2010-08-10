@@ -28,6 +28,7 @@ public class NodeBox extends JPanel {
 		this.setLayout(new GridBagLayout());
 		this.setAlignmentX(JPanel.LEFT_ALIGNMENT);
 		this.setAlignmentY(JPanel.TOP_ALIGNMENT);
+		this.setBackground(Color.WHITE);
 		openPar = new JLabel("(");
 		openPar.setAlignmentX(JLabel.LEFT_ALIGNMENT);
 		openPar.setHorizontalAlignment(JLabel.LEFT);
@@ -56,7 +57,6 @@ public class NodeBox extends JPanel {
 		constraints.gridx = 3;
 		for(int i = 0; i < params - 1; i++) {
 			constraints.gridy = i;
-			System.out.println("Adding comma at " + constraints.gridx + ", " + constraints.gridy);
 			JLabel comma = new JLabel(",");
 			comma.setAlignmentX(JLabel.LEFT_ALIGNMENT);
 			comma.setHorizontalAlignment(JLabel.LEFT);
@@ -82,7 +82,6 @@ public class NodeBox extends JPanel {
 		if(children.size() < params) {
 			constraints.gridx = 2;
 			constraints.gridy = children.size();
-			System.out.println("Constraints: " + constraints);
 			this.add(child, constraints);
 			children.add(child);
 		}

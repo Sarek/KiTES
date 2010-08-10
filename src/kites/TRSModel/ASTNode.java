@@ -57,13 +57,5 @@ public abstract class ASTNode {
 	
 	public abstract Component toLabel();
 	
-	public Component toLabelWithRule(LinkedHashMap<ASTNode, LinkedList<Rule>> decomp) {
-		// is this constant reducible?
-		if(decomp.containsKey(this)) {
-			return new NodeLabel(this, decomp.get(this));
-		}
-		else {
-			return new NodeLabel(this);
-		}
-	}
+	public abstract Component toLabelWithRule(LinkedHashMap<ASTNode, LinkedList<Rule>> decomp);
 }

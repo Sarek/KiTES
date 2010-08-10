@@ -2,6 +2,7 @@ package kites.TRSModel;
 
 import java.awt.Component;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 import kites.visual.NodeBox;
@@ -84,6 +85,27 @@ public class Function extends ASTNode {
 		Iterator<ASTNode> childIt = getChildIterator();
 		while(childIt.hasNext()) {
 			nodeBox.addChild(childIt.next().toLabel());
+		}
+		
+		return nodeBox;
+	}
+	
+	@Override
+	public Component toLabelWithRule(LinkedHashMap<ASTNode, LinkedList<Rule>> decomp) {
+		NodeBox nodeBox = new NodeBox(getParamCount());
+		NodeLabel head;
+		
+		if(decomp.containsKey(this)) {
+			head = new NodeLabel(this, decomp.get(this));
+		}
+		else {
+			head = new NodeLabel(this);
+		}
+		
+		nodeBox.setHead(head);
+		Iterator<ASTNode> childIt = getChildIterator();
+		while(childIt.hasNext()) {
+			nodeBox.addChild(childIt.next().toLabelWithRule(decomp));
 		}
 		
 		return nodeBox;

@@ -20,6 +20,7 @@ import kites.TRSModel.ASTNode;
 import kites.TRSModel.Rule;
 import kites.TRSModel.RuleList;
 import kites.exceptions.DecompositionException;
+import kites.exceptions.NoChildrenException;
 import kites.exceptions.NoRewritePossibleException;
 import kites.exceptions.SyntaxErrorException;
 import kites.logic.CheckTRS;
@@ -62,7 +63,8 @@ public class StepRewrite {
 		this.strategy = strategy;
 	}
 	
-	public void run() throws SyntaxErrorException, DecompositionException, NoRewritePossibleException, RecognitionException {
+	public void run() throws SyntaxErrorException, DecompositionException, NoRewritePossibleException, RecognitionException, NoChildrenException {
+		ASTNode newTree;
 		if(firstStep) {
 			TRSLexer lexer = new TRSLexer(new ANTLRStringStream(wnd.getInstance().getText()));
 			TokenStream tokenStream = new CommonTokenStream(lexer);
@@ -100,43 +102,36 @@ public class StepRewrite {
 		
 		switch(mode) {
 			case Decomposition.M_PROGRAM:
-				try {
-					if(firstStep) {
-						Component nodelabel = instanceTree.toLabel();
-						System.out.println(nodelabel);
-						wnd.addToResults(nodelabel);
-						wnd.getStepsField().setText("1");
-						wnd.getSizeField().setText(String.valueOf(instanceTree.getSize()));
+				if(firstStep) {
+					Component nodelabel = instanceTree.toLabel();
+					wnd.addToResults(nodelabel);
+					wnd.getStepsField().setText("1");
+					wnd.getSizeField().setText(String.valueOf(instanceTree.getSize()));
+			
+					firstStep = false;
+				}
 				
-						firstStep = false;
-					}
-					
-					ProgramRewrite rwrt = new ProgramRewrite(strategy, instanceTree, rulelist);
-					ASTNode newTree = rwrt.findRewrite();
-					
-					wnd.addToResults(newTree.toLabel());
-					wnd.getStepsField().setText(String.valueOf(Integer.parseInt(wnd.getStepsField().getText()) + 1));
-					Integer newSize = new Integer(newTree.getSize());
-					if(newSize.compareTo(Integer.parseInt(wnd.getSizeField().getText())) > 0) {
-						wnd.getSizeField().setText(String.valueOf(newTree.getSize()));
-					}
-					instanceTree = newTree;
-					break;
+				ProgramRewrite rwrt = new ProgramRewrite(strategy, instanceTree, rulelist);
+				newTree = rwrt.findRewrite();
+				
+				wnd.addToResults(newTree.toLabel());
+				wnd.getStepsField().setText(String.valueOf(Integer.parseInt(wnd.getStepsField().getText()) + 1));
+				Integer newSize = new Integer(newTree.getSize());
+				if(newSize.compareTo(Integer.parseInt(wnd.getSizeField().getText())) > 0) {
+					wnd.getSizeField().setText(String.valueOf(newTree.getSize()));
 				}
-				catch(Exception e) {
-					MsgBox.error(e);
-					e.printStackTrace();
-				}
+				instanceTree = newTree;
+				break;
 				
 			case Decomposition.M_TRS:
 			case Decomposition.M_NONDET:
 				Component nodelabel;
 				if(!firstStep) {
-					ASTNode newTree = ProgramRewrite.rewrite(instanceTree, wnd.getNode(), wnd.getRule());
+					newTree = ProgramRewrite.rewrite(instanceTree, wnd.getNode(), wnd.getRule());
 					nodelabel = newTree.toLabelWithRule(Decomposition.getDecomp(mode, rulelist, newTree));
 				}
 				else {
-					nodelabel = instanceTree.toLabel();
+					nodelabel = instanceTree.toLabelWithRule(Decomposition.getDecomp(mode, rulelist, instanceTree));
 				}
 
 				wnd.addToResults(nodelabel);

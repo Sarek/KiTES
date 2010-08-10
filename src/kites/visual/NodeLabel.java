@@ -22,26 +22,30 @@ public class NodeLabel extends JLabel {
 		super();
 		this.setText(node.getName());
 		this.setVisible(true);
-		this.invalidate();
 		this.node = node;
 		this.rules = null;
 		this.setAlignmentX(JLabel.LEFT_ALIGNMENT);
 		this.setHorizontalAlignment(JLabel.LEFT);
 		this.setAlignmentY(JLabel.TOP_ALIGNMENT);
 		this.setVerticalAlignment(JLabel.TOP);
+		this.invalidate();
 	}
 	
 	public NodeLabel(ASTNode node, LinkedList<Rule> rules) {
 		super();
+		System.out.println("Creating node with rule:\n\t" + node);
 		this.setText(node.getName());
 		this.setVisible(true);
-		this.invalidate();
+		this.setOpaque(true);
+		this.setBackground(Color.YELLOW);
+		this.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
 		this.node = node;
 		this.rules = rules;
 		this.setAlignmentX(JLabel.LEFT_ALIGNMENT);
 		this.setHorizontalAlignment(JLabel.LEFT);
 		this.setAlignmentY(JLabel.TOP_ALIGNMENT);
 		this.setVerticalAlignment(JLabel.TOP);
+		this.invalidate();
 	}
 	
 	public ASTNode getNode() {
