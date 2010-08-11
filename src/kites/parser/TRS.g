@@ -88,10 +88,9 @@ instance returns [ASTNode e]:
   ;
 
 INCLUDE:
-	'#include' (WS)? f=IDENT
+	'#include' (WS)? f=FILENAME
 	{
        String name = f.getText();
-       name = name.substring(1,name.length()-1);
        try {
         // save current lexer's state
          SaveStruct ss = new SaveStruct(input);
@@ -158,6 +157,25 @@ VAR:
 	'A'..'Z'
 	('a'..'z' | 'A'..'Z' | '0'..'9')*
 	;
+	
+FILENAME:
+  ( 'a'..'z'
+  | 'A'..'Z'
+  | '0'..'9'
+  | 'Ä' | 'ä'
+  | 'Ö' | 'ö'
+  | 'Ü' | 'ü'
+  | 'ß'
+  | '.'
+  | '-'
+  | '_'
+  | '/'
+  | '\\'
+  | '~'
+  | '+'
+  | '*'
+  )+
+  ;
 
 WS:
 	(' ' | ',' | '\n' | '\r' | '\t' | '\f')+
