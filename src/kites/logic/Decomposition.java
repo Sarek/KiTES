@@ -115,6 +115,7 @@ public class Decomposition {
 				// noted twice and we would not get both the leftmost and
 				// rightmost decompositions.
 				if(left == right) {
+					System.out.println("Left == right, using the left");
 					matches = ndetDecomp(rulelist, left);
 				}
 				else {
@@ -141,6 +142,7 @@ public class Decomposition {
 	 * @throws SyntaxErrorException 
 	 */
 	private static LinkedHashMap<ASTNode, LinkedList<Rule>> ndetLODecomp(RuleList rulelist, ASTNode node, LinkedHashMap<ASTNode, LinkedList<Rule>> matches) throws SyntaxErrorException {
+		System.out.println("ndetLODecomp: " + node);
 		// check for a match in this node
 		boolean match = false;
 		Iterator<Rule> ruleChildren = rulelist.getRules();
@@ -148,6 +150,7 @@ public class Decomposition {
 		while(ruleChildren.hasNext()) {
 			Rule rule = ruleChildren.next();
 			if(match(rule.getLeft(), node)) {
+				System.out.println("Match found");
 				if(!matches.containsKey(node)) {
 					matches.put(node, new LinkedList<Rule>());
 				}
@@ -171,6 +174,7 @@ public class Decomposition {
 	}
 	
 	private static LinkedHashMap<ASTNode, LinkedList<Rule>> ndetRODecomp(RuleList rulelist, ASTNode node, LinkedHashMap<ASTNode, LinkedList<Rule>> matches) throws SyntaxErrorException {
+		System.out.println("ndetRODecomp: " + node);
 		// check for a match in this node
 		boolean match = false;
 		Iterator<Rule> ruleChildren = rulelist.getRules();
@@ -178,6 +182,7 @@ public class Decomposition {
 		while(ruleChildren.hasNext()) {
 			Rule rule = ruleChildren.next();
 			if(match(rule.getLeft(), node)) {
+				System.out.println("Match found");
 				if(!matches.containsKey(node)) {
 					matches.put(node, new LinkedList<Rule>());
 				}
@@ -189,8 +194,8 @@ public class Decomposition {
 		// no match found, go deeper into the tree
 		if(!match) {
 			try {
-				Iterator<ASTNode> childIt = node.getChildIterator();
-				matches = ndetLODecomp(rulelist, childIt.next(), matches);
+				Iterator<ASTNode> childIt = node.getRevChildIterator();
+				matches = ndetRODecomp(rulelist, childIt.next(), matches);
 			}
 			catch(NoChildrenException e) {
 				// Do nothing. We simply reached a leaf node.

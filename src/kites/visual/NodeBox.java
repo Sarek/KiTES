@@ -5,13 +5,14 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Component;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class NodeBox extends JPanel {
+public class NodeBox extends JPanel implements NodeContainer {
 	/**
 	 * 
 	 */
@@ -19,7 +20,7 @@ public class NodeBox extends JPanel {
 	private GridBagConstraints constraints;
 	private JLabel openPar;
 	private JLabel closePar;
-	private LinkedList<Component> children;
+	private LinkedList<NodeContainer> children;
 	private NodeLabel head;
 	private int params;
 	
@@ -40,7 +41,7 @@ public class NodeBox extends JPanel {
 		closePar.setHorizontalAlignment(JLabel.LEFT);
 		closePar.setAlignmentY(JLabel.TOP_ALIGNMENT);
 		closePar.setVerticalAlignment(JLabel.BOTTOM);
-		children = new LinkedList<Component>();
+		children = new LinkedList<NodeContainer>();
 		this.params = params;
 
 		constraints = new GridBagConstraints();
@@ -78,11 +79,11 @@ public class NodeBox extends JPanel {
 		this.invalidate();
 	}
 	
-	public void addChild(Component child) {
+	public void addChild(NodeContainer child) {
 		if(children.size() < params) {
 			constraints.gridx = 2;
 			constraints.gridy = children.size();
-			this.add(child, constraints);
+			this.add((Component)child, constraints);
 			children.add(child);
 		}
 		this.invalidate();
@@ -99,5 +100,15 @@ public class NodeBox extends JPanel {
 	
 	public Dimension getMaximumSize() {
 		return this.getMinimumSize();
+	}
+	
+	public void setInterpreterWindow(InterpreterWindow wnd) {
+		Iterator<NodeContainer> it = children.iterator();
+		
+		head.setInterpreterWindow(wnd);
+		while(it.hasNext()) {
+			NodeContainer cont = it.next();
+			cont.setInterpreterWindow(wnd);
+		}
 	}
 }

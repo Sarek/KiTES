@@ -372,8 +372,10 @@ public class InterpreterWindow extends JFrame {
 		return txtSize;
 	}
 
-	public void addToResults(Component label) {
-		getResultsPanel().add(label);
+	public void addToResults(NodeContainer label) {
+		label.setInterpreterWindow(this);
+		
+		getResultsPanel().add((Component)label);
 		getResultsPanel().add(Box.createVerticalStrut(15));
 		getResultsPanel().revalidate();
 	}
@@ -388,5 +390,16 @@ public class InterpreterWindow extends JFrame {
 	
 	public ASTNode getNode() {
 		return node;
+	}
+	
+	public void nextStep(ASTNode node, Rule rule) {
+		this.node = node;
+		this.rule = rule;
+		try {
+			steprewrite.run();
+		}
+		catch(Exception e) {
+			MsgBox.error(e);
+		}
 	}
 }

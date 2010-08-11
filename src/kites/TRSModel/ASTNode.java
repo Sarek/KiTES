@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 import kites.exceptions.NoChildrenException;
+import kites.visual.NodeContainer;
 import kites.visual.NodeLabel;
 
 public abstract class ASTNode {
@@ -55,7 +56,7 @@ public abstract class ASTNode {
 		// Do nothing
 	}
 	
-	public abstract Component toLabel();
+	public abstract NodeContainer toLabel();
 	
-	public abstract Component toLabelWithRule(LinkedHashMap<ASTNode, LinkedList<Rule>> decomp);
+	public abstract NodeContainer toLabelWithRule(LinkedHashMap<ASTNode, LinkedList<Rule>> decomp);
 }

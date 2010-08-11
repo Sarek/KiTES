@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
+import kites.visual.NodeContainer;
 import kites.visual.NodeLabel;
 
 public class Variable extends ASTNode {
@@ -12,12 +13,12 @@ public class Variable extends ASTNode {
 	}
 
 	@Override
-	public Component toLabel() {
+	public NodeContainer toLabel() {
 		return new NodeLabel(this);
 	}
 
 	@Override
-	public Component toLabelWithRule(LinkedHashMap<ASTNode, LinkedList<Rule>> decomp) {
+	public NodeContainer toLabelWithRule(LinkedHashMap<ASTNode, LinkedList<Rule>> decomp) {
 		return new NodeLabel(this);
 	}
 }

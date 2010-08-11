@@ -103,7 +103,7 @@ public class StepRewrite {
 		switch(mode) {
 			case Decomposition.M_PROGRAM:
 				if(firstStep) {
-					Component nodelabel = instanceTree.toLabel();
+					NodeContainer nodelabel = instanceTree.toLabel();
 					wnd.addToResults(nodelabel);
 					wnd.getStepsField().setText("1");
 					wnd.getSizeField().setText(String.valueOf(instanceTree.getSize()));
@@ -125,10 +125,11 @@ public class StepRewrite {
 				
 			case Decomposition.M_TRS:
 			case Decomposition.M_NONDET:
-				Component nodelabel;
+				NodeContainer nodelabel;
 				if(!firstStep) {
 					newTree = ProgramRewrite.rewrite(instanceTree, wnd.getNode(), wnd.getRule());
 					nodelabel = newTree.toLabelWithRule(Decomposition.getDecomp(mode, rulelist, newTree));
+					instanceTree = newTree;
 				}
 				else {
 					nodelabel = instanceTree.toLabelWithRule(Decomposition.getDecomp(mode, rulelist, instanceTree));

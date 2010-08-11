@@ -5,8 +5,6 @@ package kites.logic;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
 
 import kites.TRSModel.ASTNode;
 import kites.TRSModel.Constant;

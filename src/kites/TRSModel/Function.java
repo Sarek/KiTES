@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 import kites.visual.NodeBox;
+import kites.visual.NodeContainer;
 import kites.visual.NodeLabel;
 
 public class Function extends ASTNode {
@@ -78,7 +79,7 @@ public class Function extends ASTNode {
 	}
 
 	@Override
-	public Component toLabel() {
+	public NodeContainer toLabel() {
 		NodeBox nodeBox = new NodeBox(getParamCount());
 		nodeBox.setHead(new NodeLabel(this));
 		
@@ -91,7 +92,7 @@ public class Function extends ASTNode {
 	}
 	
 	@Override
-	public Component toLabelWithRule(LinkedHashMap<ASTNode, LinkedList<Rule>> decomp) {
+	public NodeContainer toLabelWithRule(LinkedHashMap<ASTNode, LinkedList<Rule>> decomp) {
 		NodeBox nodeBox = new NodeBox(getParamCount());
 		NodeLabel head;
 		
