@@ -27,6 +27,7 @@ options {
   package kites.parser;
   
   import java.util.LinkedList;
+  import java.io.File;
 }
 
 @lexer::members {
@@ -92,14 +93,17 @@ INCLUDE:
 	{
        String name = f.getText();
        try {
-        // save current lexer's state
-         SaveStruct ss = new SaveStruct(input);
-         includes.push(ss);
+          // save current lexer's state
+          SaveStruct ss = new SaveStruct(input);
+          includes.push(ss);
+         
+          // replace path delimiters by the correct, platform-dependent ones
+          name = name.replace("/", File.separator);
+          System.out.println(name);
 
-        // switch on new input stream
-         setCharStream(new ANTLRFileStream(name));
-         reset();
-
+          // switch on new input stream
+          setCharStream(new ANTLRFileStream(name));
+          reset();
        } catch(Exception fnf) { throw new Error("Cannot open file " + name); }
      }
      ;
