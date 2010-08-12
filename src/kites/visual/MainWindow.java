@@ -151,6 +151,16 @@ public class MainWindow extends JFrame {
         /*
          * Actions
          */
+        class AboutAction implements ActionListener {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				AboutWindow wnd = new AboutWindow();
+				wnd.setVisible(true);
+			}
+        }
+        
+        menuHelpAbout.addActionListener(new AboutAction());
+        
         class IncludeAction implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
