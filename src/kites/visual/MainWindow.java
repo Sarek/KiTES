@@ -4,13 +4,20 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -43,6 +50,8 @@ public class MainWindow extends JFrame {
 	 * Eclipse thinks every serializable class should have a field called serialVersionUID
 	 */
 	private static final long serialVersionUID = -5132318887749930073L;
+	private File curFile;
+	private boolean hasChanged;
 
 	public MainWindow() {
 		super();
@@ -123,15 +132,6 @@ public class MainWindow extends JFrame {
         menuEditHeaders.add(menuEditHeadersIf);
         menuEditHeaders.add(menuEditHeadersEqual);
         
-        /*
-        menuInterpretation.add(menuInterpretationStart);
-        menuInterpretation.add(menuSeparator3);
-        menuInterpretation.add(menuInterpretationNonDet);
-        menuInterpretation.add(menuInterpretationProg);
-        menuInterpretation.add(menuInterpretationNonDet);
-        menuInterpretation.add(menuInterpretationTRS);
-        */
-        
         menuHelp.add(menuHelpAbout);
         
         /*
@@ -151,6 +151,110 @@ public class MainWindow extends JFrame {
         /*
          * Actions
          */
+        class OpenAction implements ActionListener {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if(hasChanged()) {
+					boolean answer = MsgBox.question("Die derzeitig geöffnete Datei wurde verändert.\n\nMöchte Sie die Änderungen sichern?");
+					if(answer) {
+						MsgBox.error("Bähähä, doing nothing");
+					}
+				}
+
+				JFileChooser fc = new JFileChooser();
+				int fcRetval = fc.showOpenDialog(MainWindow.this);
+				if(fcRetval == JFileChooser.APPROVE_OPTION) {
+					setCurFile(fc.getSelectedFile());
+					
+					try {
+						String nl = System.getProperty("line.separator");
+						String editorText = new String();
+						Scanner reader = new Scanner(getCurFile());
+						while(reader.hasNextLine()) {
+							editorText += reader.nextLine() + nl;
+						}
+						editor.setText(editorText);
+					}
+					catch(Exception e) {
+						MsgBox.error(e);
+					}
+					setChanged(false);
+				}
+			}    	
+        }
+        
+        menuFileOpen.addActionListener(new OpenAction());
+        tbOpen.addActionListener(new OpenAction());
+        
+        class SaveAction implements ActionListener {
+        	private boolean saveAs;
+        	
+        	public SaveAction(boolean saveAs) {
+        		this.saveAs = saveAs;
+        	}
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if(saveAs) {
+					doSaveAs();
+				}
+				else {
+					if(getCurFile() == null) {
+						doSaveAs();
+					}
+					else {
+						doSave();
+					}
+				}
+			}
+			
+			public void doSaveAs() {
+				JFileChooser fc = new JFileChooser();
+				int diaRetval = fc.showSaveDialog(MainWindow.this);
+				
+				if(diaRetval == JFileChooser.APPROVE_OPTION) {
+					setCurFile(fc.getSelectedFile());
+					doSave();
+				}
+			}
+        	
+			public void doSave() {
+				try {
+					FileWriter writer = new FileWriter(getCurFile());
+					writer.write(editor.getText());
+					writer.close();
+					setChanged(false);
+				}
+				catch(Exception e) {
+					MsgBox.error(e);
+				}
+			}
+        }
+        tbSave.addActionListener(new SaveAction(false));
+        menuFileSave.addActionListener(new SaveAction(false));
+        menuFileSaveAs.addActionListener(new SaveAction(true));
+        
+        class ChangeListener implements KeyListener {
+
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				setChanged(true);
+			}
+        	
+        }
+        editor.addKeyListener(new ChangeListener());
         class QuitAction implements ActionListener {
 
 			@Override
@@ -197,8 +301,11 @@ public class MainWindow extends JFrame {
 					InterpreterWindow wndInterpreter = new InterpreterWindow(rulelist, 0);
 					wndInterpreter = null;
 					System.gc();
-				} catch (RecognitionException e) {
-					e.printStackTrace();
+				} catch (Exception e) {
+					MsgBox.error(e);
+				}
+				catch (Error e) {
+					MsgBox.error("Error during include:\n\n" + e.getMessage());
 				}
         	}
         }
@@ -210,9 +317,41 @@ public class MainWindow extends JFrame {
 	 * @param args will be ignored
 	 */
 	public static void main(String[] args) {
-		MainWindow simple = new MainWindow();
-        simple.setVisible(true);
-
+		MainWindow main = new MainWindow();
+        main.setVisible(true);
 	}
 
+
+	public void setCurFile(File curFile) {
+		this.curFile = curFile;
+	}
+
+
+	public File getCurFile() {
+		return curFile;
+	}
+
+
+	public void setChanged(boolean changed) {
+		this.hasChanged = changed;
+		updateTitle();
+	}
+
+	public void updateTitle() {
+		String title = "KiTES - ";
+		if(hasChanged())
+			title += "* ";
+		
+		if(getCurFile() != null) {
+			title += getCurFile().getName();
+		}
+		else {
+			title += "Unbenannt";
+		}
+		this.setTitle(title);
+	}
+	
+	public boolean hasChanged() {
+		return hasChanged;
+	}
 }

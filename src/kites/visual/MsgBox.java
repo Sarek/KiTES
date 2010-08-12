@@ -33,6 +33,17 @@ public class MsgBox {
 		JOptionPane.showMessageDialog(null, e, "KiTES - Warning", JOptionPane.WARNING_MESSAGE);
 	}
 	
+	public static boolean question(String e) {
+		int retval = JOptionPane.showConfirmDialog(null, e, "KiTES", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		
+		if(retval == JOptionPane.YES_OPTION) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
 	private static String getHeadline(Exception e) {
 		String headline = e.getClass().toString();
 		
