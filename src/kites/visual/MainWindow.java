@@ -100,9 +100,9 @@ public class MainWindow extends JFrame {
         JMenuItem menuEditCut = new JMenuItem("Ausschneiden");
         JMenuItem menuEditPaste = new JMenuItem("Einfügen");
         JMenu	  menuEditHeaders = new JMenu("Regelsätze laden");
-        JMenuItem menuEditHeadersLists = new JMenuItem("Listenregeln");
-        JMenuItem menuEditHeadersIf = new JMenuItem("If-then-else");
-        JMenuItem menuEditHeadersEqual = new JMenuItem("Equal");
+        final JMenuItem menuEditHeadersLists = new JMenuItem("Listenregeln");
+        final JMenuItem menuEditHeadersIf = new JMenuItem("If-then-else");
+        final JMenuItem menuEditHeadersInterpreter = new JMenuItem("Interpreter");
         
         ButtonGroup grpInterpretation = new ButtonGroup();
         //JMenuItem menuInterpretationStart = new JMenuItem("Interpreter starten");
@@ -123,14 +123,14 @@ public class MainWindow extends JFrame {
         menuFile.add(menuSeparator);
         menuFile.add(menuFileQuit);
         
-        menuEdit.add(menuEditCut);
-        menuEdit.add(menuEditCopy);
-        menuEdit.add(menuEditPaste);
-        menuEdit.add(menuSeparator2);
+        //menuEdit.add(menuEditCut);
+        //menuEdit.add(menuEditCopy);
+        //menuEdit.add(menuEditPaste);
+        //menuEdit.add(menuSeparator2);
         menuEdit.add(menuEditHeaders);
         menuEditHeaders.add(menuEditHeadersLists);
         menuEditHeaders.add(menuEditHeadersIf);
-        menuEditHeaders.add(menuEditHeadersEqual);
+        menuEditHeaders.add(menuEditHeadersInterpreter);
         
         menuHelp.add(menuHelpAbout);
         
@@ -151,6 +151,29 @@ public class MainWindow extends JFrame {
         /*
          * Actions
          */
+        class IncludeAction implements ActionListener {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				String addString = new String();
+				
+				if(arg0.getSource() == menuEditHeadersLists) {
+					addString = "#include lib/lists.trs" + System.getProperty("line.separator");
+				}
+				else if(arg0.getSource() == menuEditHeadersIf) {
+					addString = "#include lib/if-then-else.trs" + System.getProperty("line.separator");
+				}
+				else if(arg0.getSource() == menuEditHeadersInterpreter) {
+					addString = "#include lib/interpreter.trs" + System.getProperty("line.separator");
+				}
+				
+				editor.setText(addString + editor.getText());
+			}
+        }
+        
+        menuEditHeadersLists.addActionListener(new IncludeAction());
+        menuEditHeadersIf.addActionListener(new IncludeAction());
+        menuEditHeadersInterpreter.addActionListener(new IncludeAction());
+        
         class OpenAction implements ActionListener {
 
 			@Override
