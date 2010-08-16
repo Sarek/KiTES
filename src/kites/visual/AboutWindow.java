@@ -1,24 +1,32 @@
 package kites.visual;
 
-import java.awt.Color;
-import java.awt.FlowLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 
-import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class AboutWindow extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6022651378659252251L;
+
 	public AboutWindow() {
+	    Toolkit tk = Toolkit.getDefaultToolkit();
+	    Dimension screenSize = tk.getScreenSize();
+	    
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
 		panel.setAlignmentY(JPanel.CENTER_ALIGNMENT);
-		panel.setBorder(BorderFactory.createLineBorder(Color.RED));
 		
 		setSize(500, 400);
-        setTitle("KiTES v0.1");
+	    setLocation((screenSize.width - this.getWidth()) / 2, (screenSize.height - this.getHeight()) / 2);
+		setTitle("KiTES v0.1");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		JLabel name = new JLabel("KiTES");
@@ -26,7 +34,6 @@ public class AboutWindow extends JFrame {
 		name.setAlignmentY(JLabel.CENTER_ALIGNMENT);
 		name.setVerticalAlignment(JLabel.CENTER);
 		name.setHorizontalAlignment(JLabel.CENTER);
-		name.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 		name.setFont(name.getFont().deriveFont((float) 80.0));
 		
 		JLabel version = new JLabel("v1.0 - 2010-09-20");
@@ -34,14 +41,12 @@ public class AboutWindow extends JFrame {
 		version.setAlignmentY(JLabel.CENTER_ALIGNMENT);
 		version.setVerticalAlignment(JLabel.CENTER);
 		version.setHorizontalAlignment(JLabel.CENTER);
-		version.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 		
 		JLabel subtitle = new JLabel("Ein Interpreter für Termersetzungssysteme");
 		subtitle.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 		subtitle.setAlignmentY(JLabel.CENTER_ALIGNMENT);
 		subtitle.setVerticalAlignment(JLabel.CENTER);
 		subtitle.setHorizontalAlignment(JLabel.CENTER);
-		subtitle.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 		subtitle.setFont(subtitle.getFont().deriveFont((float) 16.0));
 		
 		JLabel description = new JLabel("Entstanden im Rahmen einer gleichnamigen Bachelorarbeit");
@@ -59,9 +64,6 @@ public class AboutWindow extends JFrame {
 		description.setHorizontalAlignment(JLabel.CENTER);
 		description2.setHorizontalAlignment(JLabel.CENTER);
 		description3.setHorizontalAlignment(JLabel.CENTER);
-		description.setBorder(BorderFactory.createLineBorder(Color.WHITE));
-		description2.setBorder(BorderFactory.createLineBorder(Color.WHITE));
-		description3.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 		
 		JLabel copyright = new JLabel("Copyright (C) 2010 Sebastian Schäfer.");
 		JLabel copyright2 = new JLabel("Diese Software ist unter der GNU General Public License lizenziert.");
@@ -73,15 +75,18 @@ public class AboutWindow extends JFrame {
 		copyright2.setVerticalAlignment(JLabel.CENTER);
 		copyright.setHorizontalAlignment(JLabel.CENTER);
 		copyright2.setHorizontalAlignment(JLabel.CENTER);
-		copyright.setBorder(BorderFactory.createLineBorder(Color.WHITE));
-		copyright2.setBorder(BorderFactory.createLineBorder(Color.WHITE));
-				
+		
+		panel.add(Box.createVerticalStrut(40));				
 		panel.add(name);
+		panel.add(Box.createVerticalStrut(15));
 		panel.add(version);
+		panel.add(Box.createVerticalStrut(25));
 		panel.add(subtitle);
+		panel.add(Box.createVerticalStrut(15));
 		panel.add(description);
 		panel.add(description2);
 		panel.add(description3);
+		panel.add(Box.createVerticalStrut(15));
 		panel.add(copyright);
 		panel.add(copyright2);
 		this.add(panel);
