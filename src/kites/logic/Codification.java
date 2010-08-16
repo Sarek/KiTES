@@ -45,17 +45,15 @@ public class Codification {
 			// (Possibly) extend translation map of functions and variables
 		createMap(instance);
 			// Create new instance tree in standard form
-		codifyInstance();
+		codifyTree(instance);
 	}
 
-	private void codifyInstance() {
-		// TODO Auto-generated method stub
+	private void codifyTree(ASTNode node) {
 		
 	}
 
 	private void codifyRuleList() {
-		// TODO Auto-generated method stub
-		
+				
 	}
 
 	private void createMap(ASTNode node) {
