@@ -5,6 +5,8 @@ import java.util.Iterator;
 
 import kites.TRSModel.ASTNode;
 import kites.TRSModel.CodificationContainer;
+import kites.TRSModel.Constant;
+import kites.TRSModel.Function;
 import kites.TRSModel.Rule;
 import kites.TRSModel.RuleList;
 import kites.TRSModel.Variable;
@@ -45,15 +47,76 @@ public class Codification {
 			// (Possibly) extend translation map of functions and variables
 		createMap(instance);
 			// Create new instance tree in standard form
-		codifyTree(instance);
+		codifyTree(instance, true);
 	}
 
-	private void codifyTree(ASTNode node) {
+	private ASTNode codifyTree(ASTNode node, boolean rightmost) {
+		// new cons
+		ASTNode cons = new Function("cons");
+		cons.add(genCode(node));
 		
+		try {
+			Iterator<ASTNode> childIt = node.getChildIterator();
+			
+			while(childIt.hasNext()) {
+				cons.add(codifyTree(childIt.next(), !childIt.hasNext() && rightmost));
+			}
+		}
+		catch(NoChildrenException e) {
+			ASTNode empty = new Constant("empty");
+			cons.add(empty);
+		}
+		
+		return cons;
+	}
+	
+	private ASTNode genCode(ASTNode node) {
+		ASTNode retval;
+		if(node instanceof Variable) {
+			retval = new Function("var");
+		}
+		else {
+			retval = new Function("fun");
+		}
+		
+		retval.add(genNumber(codes.get(node.getName()).number));
+		
+		return retval;
+	}
+	
+	private ASTNode genNumber(int number) {
+		if(number > 0) {
+			ASTNode retval = new Function("suc");
+			retval.add(genNumber(number - 1));
+			return retval;
+		}
+		else {
+			return new Constant("zero");
+		}
 	}
 
 	private void codifyRuleList() {
-				
+		ASTNode firstCons, secondCons, retval = null, toAdd = null;
+		
+		Iterator<Rule> ruleIt = rulelist.getRules();
+		while(ruleIt.hasNext()) {
+			Rule rule = ruleIt.next();
+			firstCons = new Function("cons");
+			secondCons = new Function("cons");
+			
+			secondCons.add(codifyTree(rule.getLeft(), true));
+			secondCons.add(codifyTree(rule.getRight(), true));
+			firstCons.add(secondCons);
+
+			if(retval == null) {
+				retval = firstCons;
+				toAdd = retval;
+			}
+			else {
+				toAdd.add(firstCons);
+				toAdd = firstCons;
+			}
+		}
 	}
 
 	private void createMap(ASTNode node) {
