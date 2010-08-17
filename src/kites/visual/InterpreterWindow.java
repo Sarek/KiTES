@@ -207,10 +207,93 @@ public class InterpreterWindow extends JFrame {
         
         this.setJMenuBar(menuBar);
         
+        class StepAction implements ActionListener {
+        	private InterpreterWindow wnd;
+        	
+        	public StepAction(InterpreterWindow wnd) {
+        		this.wnd = wnd;
+        	}
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				wnd.getStepRewrite().setMode(getMode());
+				wnd.getStepRewrite().setStrategy(getStrategy());
+				try {
+					wnd.getStepRewrite().run();
+				}
+				catch (Exception e) {
+					MsgBox.error(e);
+					e.printStackTrace();
+				}
+			}
+        }
+        
+        class ResetAction implements KeyListener {
+        	private InterpreterWindow wnd;
+        	
+        	public ResetAction(InterpreterWindow wnd) {
+        		this.wnd = wnd;
+        	}
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				int num = wnd.getResultsPanel().getComponentCount();
+				System.out.println("Results panel contains " + num + "components before clearing");
+				wnd.getStepRewrite().setFirst();
+				System.out.println("Removing everything from results panel...");
+				wnd.getResultsPanel().removeAll();
+				wnd.getResultsPanel().repaint();
+				txtSteps.setText("");
+				txtSize.setText("");
+			}
+        }
+        
+		class RunAction implements ActionListener {
+			private InterpreterWindow wnd;
+			
+			public RunAction(InterpreterWindow wnd) {
+				this.wnd = wnd;
+			}
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				wnd.getStepRewrite().setMode(getMode());
+				wnd.getStepRewrite().setStrategy(getStrategy());
+				try {
+					while(true) {
+						wnd.getStepRewrite().run();
+					}
+				}
+				catch(NoRewritePossibleException e) {
+					System.out.println("Caught the fricking exception...");
+					// Do nothing. Execution is complete.
+				}
+				catch(Exception e) {
+					MsgBox.error(e);
+				}
+			}
+		}
+		
+		instance.addKeyListener(new ResetAction(this));
+    	btnStep.addActionListener(new StepAction(this));
+    	btnGo.addActionListener(new RunAction(this));
         
         // Check syntax of rules
         final HashMap<String, Integer> signature;
         try {
+        	btnStep.setEnabled(false);
+        	btnGo.setEnabled(false);
+        	
         	CheckTRS checktrs = new CheckTRS(this.getRuleList());
         	
         	checktrs.variableCheck();
@@ -218,88 +301,8 @@ public class InterpreterWindow extends JFrame {
         	
         	steprewrite = new StepRewrite(getRuleList(), signature, this);
 			
-        	
-            class StepAction implements ActionListener {
-            	private InterpreterWindow wnd;
-            	
-            	public StepAction(InterpreterWindow wnd) {
-            		this.wnd = wnd;
-            	}
-    			@Override
-    			public void actionPerformed(ActionEvent arg0) {
-    				wnd.getStepRewrite().setMode(getMode());
-    				wnd.getStepRewrite().setStrategy(getStrategy());
-    				try {
-    					wnd.getStepRewrite().run();
-					}
-    				catch (Exception e) {
-						MsgBox.error(e);
-						e.printStackTrace();
-					}
-    			}
-            }
-            
-            class ResetAction implements KeyListener {
-            	private InterpreterWindow wnd;
-            	
-            	public ResetAction(InterpreterWindow wnd) {
-            		this.wnd = wnd;
-            	}
-				@Override
-				public void keyPressed(KeyEvent arg0) {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void keyReleased(KeyEvent arg0) {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void keyTyped(KeyEvent arg0) {
-					int num = wnd.getResultsPanel().countComponents();
-					System.out.println("Results panel contains " + num + "components before clearing");
-					wnd.getStepRewrite().setFirst();
-					System.out.println("Removing everything from results panel...");
-    				wnd.getResultsPanel().removeAll();
-    				wnd.getResultsPanel().repaint();
-    				txtSteps.setText("");
-    				txtSize.setText("");
-				}
-            }
-            
-    		class RunAction implements ActionListener {
-    			private InterpreterWindow wnd;
-    			
-    			public RunAction(InterpreterWindow wnd) {
-    				this.wnd = wnd;
-    			}
-    			
-    			@Override
-    			public void actionPerformed(ActionEvent arg0) {
-    				wnd.getStepRewrite().setMode(getMode());
-    				wnd.getStepRewrite().setStrategy(getStrategy());
-    				try {
-    					while(true) {
-    						wnd.getStepRewrite().run();
-    					}
-    				}
-    				catch(NoRewritePossibleException e) {
-    					System.out.println("Caught the fricking exception...");
-    					// Do nothing. Execution is complete.
-    				}
-    				catch(Exception e) {
-    					MsgBox.error(e);
-    				}
-    			}
-    		}
-        	
-    		instance.addKeyListener(new ResetAction(this));
-        	btnStep.addActionListener(new StepAction(this));
-        	btnGo.addActionListener(new RunAction(this));
-        	
+        	btnStep.setEnabled(true);
+        	btnGo.setEnabled(true);
         	this.setVisible(true);
         }
         catch(SyntaxErrorException e) {
