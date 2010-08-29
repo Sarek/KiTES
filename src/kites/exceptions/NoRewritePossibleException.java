@@ -1,10 +1,11 @@
 package kites.exceptions;
 
+/**
+ * This exception is thrown when no rewrite can be performed on a syntax tree
+ * This is a non-critical exception and merely signifies the end of an
+ * execution chain.
+ */
 public class NoRewritePossibleException extends Exception {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -9060583215581412930L;
 
 	public NoRewritePossibleException() {
