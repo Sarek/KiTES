@@ -279,6 +279,7 @@ public class InterpreterWindow extends JFrame {
 					// Do nothing. Execution is complete.
 				}
 				catch(Exception e) {
+					System.out.println("Caught the other fricking exception...");
 					MsgBox.error(e);
 				}
 			}

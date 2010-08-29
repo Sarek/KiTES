@@ -79,9 +79,9 @@ public class StepRewrite {
     			while(errIt.hasNext()) {
     				errors += errIt.next() + "\n";
     			}
-    			MsgBox.error(errors);
-    			return;
+    			throw new SyntaxErrorException(errors);
     		}
+    		
     		List<String> parseErrors = parser.getErrors();
     		System.out.println(parseErrors);
     		if(!parseErrors.isEmpty()) {
@@ -90,8 +90,7 @@ public class StepRewrite {
     			while(errIt.hasNext()) {
     				errors += errIt.next() + "\n";
     			}
-    			MsgBox.error(errors);
-    			return;
+    			throw new SyntaxErrorException(errors);
     		}
 			
 			// syntax check instance

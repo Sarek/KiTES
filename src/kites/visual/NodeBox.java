@@ -26,10 +26,10 @@ public class NodeBox extends JPanel implements NodeContainer {
 	
 	public NodeBox(int params) {
 		super();
+		this.setBackground(new Color(240, 240, 240));
 		this.setLayout(new GridBagLayout());
 		this.setAlignmentX(JPanel.LEFT_ALIGNMENT);
 		this.setAlignmentY(JPanel.TOP_ALIGNMENT);
-		this.setBackground(Color.WHITE);
 		openPar = new JLabel("(");
 		openPar.setAlignmentX(JLabel.LEFT_ALIGNMENT);
 		openPar.setHorizontalAlignment(JLabel.LEFT);

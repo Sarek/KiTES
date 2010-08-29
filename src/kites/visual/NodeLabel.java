@@ -30,6 +30,7 @@ public class NodeLabel extends JLabel implements NodeContainer {
 	
 	public NodeLabel(ASTNode node) {
 		super();
+		this.setBackground(Color.LIGHT_GRAY);
 		this.setText(node.getName());
 		this.setVisible(true);
 		this.node = node;
