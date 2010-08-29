@@ -7,6 +7,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.datatransfer.Clipboard;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -23,6 +24,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
@@ -183,6 +185,40 @@ public class InterpreterWindow extends JFrame {
         menuStrategy.add(menuStrategyRO);
         
         menuBar.add(menuStrategy);
+        
+        JMenu menuEdit = new JMenu("Bearbeiten");
+        
+        JMenuItem menuEditCopy = new JMenuItem("Ergebnis kopieren");
+        JMenuItem menuEditClear = new JMenuItem("Ergebnis löschen");
+        
+        class ClearAction implements ActionListener {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				getResultsPanel().removeAll();
+				getResultsPanel().invalidate();
+				getResultsPanel().repaint();
+			}
+        }
+        menuEditClear.addActionListener(new ClearAction());
+        
+        class CopyAction implements ActionListener {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				String results = "";
+				
+				Object[] objects = getResultsPanel().getComponents();
+				for(int i = 0; i < getResultsPanel().getComponentCount(); i++) {
+					results += objects[i].toString() + "\n";
+				}
+				
+				// TODO: copy to system clipboard
+			}
+        }
+        
+        menuEdit.add(menuEditCopy);
+        menuEdit.add(menuEditClear);
+        
+        menuBar.add(menuEdit);
         
         class StrategyAction implements ActionListener {
 			@Override

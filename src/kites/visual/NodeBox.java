@@ -111,4 +111,20 @@ public class NodeBox extends JPanel implements NodeContainer {
 			cont.setInterpreterWindow(wnd);
 		}
 	}
+	
+	public Iterator<NodeContainer> getChildIterator() {
+		return children.iterator();
+	}
+	
+	@Override
+	public String toString() {
+		String retval = getHead().toString();
+		
+		Iterator<NodeContainer> it = getChildIterator();
+		while(it.hasNext()) {
+			retval += it.next().toString();
+		}
+		
+		return retval;
+	}
 }

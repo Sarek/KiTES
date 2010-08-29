@@ -143,4 +143,9 @@ public class NodeLabel extends JLabel implements NodeContainer {
 		}
 		
 	}
+	
+	@Override
+	public String toString() {
+		return getNode().toString();
+	}
 }
