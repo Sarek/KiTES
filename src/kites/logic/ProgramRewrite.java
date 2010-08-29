@@ -30,6 +30,13 @@ public class ProgramRewrite {
 	ASTNode instance;
 	RuleList rulelist;
 	
+	/**
+	 * Initialize class for use.
+	 * 
+	 * @param strategy The strategy (LO, RO, LI, RO) to be used
+	 * @param instance The instance to be rewritten
+	 * @param rulelist The <code>RuleList</code> used for finding possible rewrites
+	 */
 	public ProgramRewrite(int strategy, ASTNode instance, RuleList rulelist) {
 		this.strategy = strategy;
 		this.instance = instance;
@@ -37,6 +44,14 @@ public class ProgramRewrite {
 		this.rulelist = rulelist;
 	}
 	
+	/**
+	 * Find and perform a rewrite <b>in program execution mode</b>
+	 * 
+	 * @return The rewritten tree
+	 * @throws NoChildrenException
+	 * @throws SyntaxErrorException
+	 * @throws NoRewritePossibleException
+	 */
 	public ASTNode findRewrite() throws NoChildrenException, SyntaxErrorException, NoRewritePossibleException {
 		ASTNode retval = null;
 		switch(strategy) {
@@ -60,6 +75,14 @@ public class ProgramRewrite {
 		return retval;
 	}
 
+	/**
+	 * Find and perform a RI rewrite
+	 * 
+	 * @param node The node to be checked (and possibly be rewritten) - Initialize with root node.
+	 * @return The rewritten tree or original tree with rewritten subtree
+	 * @throws SyntaxErrorException
+	 * @throws NoChildrenException
+	 */
 	private ASTNode findRewriteRI(ASTNode node) throws SyntaxErrorException, NoChildrenException {
 		ASTNode retval = null;
 		boolean tryChildren = true;
@@ -121,6 +144,14 @@ public class ProgramRewrite {
 		return retval;
 	}
 
+	/**
+	 * Find and perform a RO rewrite
+	 * 
+	 * @param node The node to be checked (and possibly be rewritten) - Initialize with root node.
+	 * @return The rewritten tree or original tree with rewritten subtree
+	 * @throws SyntaxErrorException
+	 * @throws NoChildrenException
+	 */
 	private ASTNode findRewriteRO(ASTNode node) throws SyntaxErrorException, NoChildrenException {
 		ASTNode retval = null;
 		
@@ -157,6 +188,14 @@ public class ProgramRewrite {
 		return retval;
 	}
 
+	/**
+	 * Find and perform a LI rewrite
+	 * 
+	 * @param node The node to be checked (and possibly be rewritten) - Initialize with root node.
+	 * @return The rewritten tree or original tree with rewritten subtree
+	 * @throws SyntaxErrorException
+	 * @throws NoChildrenException
+	 */
 	private ASTNode findRewriteLI(ASTNode node) throws NoChildrenException, SyntaxErrorException {
 		ASTNode retval = null;
 		boolean tryChildren = true;
@@ -213,6 +252,14 @@ public class ProgramRewrite {
 		return retval;
 	}
 
+	/**
+	 * Find and perform a LO rewrite
+	 * 
+	 * @param node The node to be checked (and possibly be rewritten) - Initialize with root node.
+	 * @return The rewritten tree or original tree with rewritten subtree
+	 * @throws SyntaxErrorException
+	 * @throws NoChildrenException
+	 */
 	private ASTNode findRewriteLO(ASTNode node) throws NoChildrenException, SyntaxErrorException {
 		ASTNode retval = null;
 		
@@ -246,6 +293,16 @@ public class ProgramRewrite {
 		return retval;
 	}
 
+	/**
+	 * Build a new tree from the right-hand side of a rule and a map of variable
+	 * assignments.
+	 * Performed when a rewrite possibility was found.
+	 * 
+	 * @param right The right-hand side of the rule to be applied
+	 * @param assignments The map of variable assignments to be used
+	 * @return The new tree
+	 * @throws SyntaxErrorException
+	 */
 	private static ASTNode buildTree(ASTNode right, HashMap<String, ASTNode> assignments) throws SyntaxErrorException {
 		// we need to determine what kind of node we want to create
 		// and the creation of every kind of node is different
@@ -275,6 +332,14 @@ public class ProgramRewrite {
 		}
 	}
 
+	/**
+	 * Find the variable assignments needed to apply a rule.
+	 * 
+	 * @param node The node to be rewritten
+	 * @param rule The rule to be applied
+	 * @param assignments Temporary map of known assignments - Initialize as empty
+	 * @return Map of Variable-->Tree assignments
+	 */
 	private static HashMap<String, ASTNode> getVarAssignments(ASTNode node, ASTNode rule, HashMap<String, ASTNode> assignments) {
 		if(rule instanceof Variable) {
 			assignments.put(rule.getName(), node);
@@ -297,7 +362,8 @@ public class ProgramRewrite {
 	}
 	
 	/**
-	 * Rewrite a node using a specific rule
+	 * Rewrite a node using a specific rule.
+	 * This is also used when not in program execution mode.
 	 * 
 	 * @param tree The tree to rewrite
 	 * @param node The node to rewrite

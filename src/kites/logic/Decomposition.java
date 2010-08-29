@@ -18,20 +18,53 @@ import kites.exceptions.NoChildrenException;
 import kites.exceptions.SyntaxErrorException;
 
 /**
+ * This class provides means for generating decompositions in
+ * two modes:
+ * <ul>
+ * <li>Decomposition as term rewrite system</li>
+ * <li>Decomposition as non-deterministic program</li>
+ * </ul>
+ * 
+ * Decomposition for execution in program mode is performed at
+ * the same time as the rewrite and can therefore be found in
+ * <code> ProgramRewrite</code>.
+ * 
+ * Non-deterministic decomposition is available in two different
+ * flavours: LO and RO.
+ * 
+ * For a detailed description of execution modes and strategies
+ * please refer to my bachelor thesis.
+ * 
  * @author sarek
- *
  */
 public class Decomposition {
+	/** Use LO decomposition */
 	public static final int S_LO = 1;
+	/** Use RO decomposition */
 	public static final int S_RO = 2;
+	/** Use LI decomposition */
 	public static final int S_LI = 5;
+	/** Use RI decomposition */
 	public static final int S_RI = 6;
 	
+	/** Execution in program mode */
 	public static final int M_PROGRAM = 0;
+	/** Execution in non-deterministic mode */
 	public static final int M_NONDET = 1;
+	/** Execution in term rewrite system mode */
 	public static final int M_TRS = 2;
 	
-	
+	/**
+	 * find all possible nodes that can be rewritten and return them
+	 * along with the rule that has to be used for performing the rewrite.
+	 * 
+	 * @param type The execution mode
+	 * @param rulelist The <code>RuleList</code> to be applied
+	 * @param instance The instance to be rewritten
+	 * @return Map of nodes and the rules which can be applied unto them
+	 * @throws DecompositionException If a non-existing decomposition is to be used
+	 * @throws SyntaxErrorException If a syntax error in the <code>RuleList</code> or instance is encountered.
+	 */
 	public static LinkedHashMap<ASTNode, LinkedList<Rule>> getDecomp(int type, RuleList rulelist, ASTNode instance) throws DecompositionException, SyntaxErrorException {
 		LinkedHashMap<ASTNode, LinkedList<Rule>> matches = new LinkedHashMap<ASTNode, LinkedList<Rule>>();
 		
@@ -46,6 +79,15 @@ public class Decomposition {
 		}
 	}
 
+	/**
+	 * Return possible rewrites in TRS mode - which is all possible rewrites.
+	 * 
+	 * @param rulelist The <code>RuleList</code> to be applied
+	 * @param node The node to be checked. Initialize with root of tree.
+	 * @param matches Map of possible rewrites that were already found. Initialize as empty.
+	 * @return Map of nodes and the rules which can be applied unto them.
+	 * @throws SyntaxErrorException
+	 */
 	private static LinkedHashMap<ASTNode, LinkedList<Rule>> trsDecomp(RuleList rulelist, ASTNode node, LinkedHashMap<ASTNode,LinkedList<Rule>> matches) throws SyntaxErrorException {
 		// The decomposition for the execution as a TRS is quite easy, because we have no specific execution order
 		// and can apply whatever rule we want at whatever position in the tree we want
@@ -172,7 +214,17 @@ public class Decomposition {
 		
 		return matches;
 	}
-	
+
+	/**
+	 * Calculate a rightmost-outermost decomposition for use with non-deterministic interpretation.
+	 * 
+	 * @param rulelist The rule set specifying the rewrites
+	 * @param node The tree to be checked
+	 * @param matches A set of pre-existing matches
+	 * @return
+	 * @throws SyntaxErrorException 
+	 */
+
 	private static LinkedHashMap<ASTNode, LinkedList<Rule>> ndetRODecomp(RuleList rulelist, ASTNode node, LinkedHashMap<ASTNode, LinkedList<Rule>> matches) throws SyntaxErrorException {
 		System.out.println("ndetRODecomp: " + node);
 		// check for a match in this node
@@ -205,6 +257,17 @@ public class Decomposition {
 		return matches;
 	}
 
+	/**
+	 * Checks whether two trees match.
+	 * A match is achieved if they are structurally equal and the symbols used
+	 * match each other. The only exception are <code>Variable</code>s which match
+	 * everything including subtrees.
+	 * 
+	 * @param rule The rule (or tree 1)
+	 * @param node The tree (or tree 2)
+	 * @return true if both trees match, false otherwise
+	 * @throws SyntaxErrorException
+	 */
 	public static boolean match(ASTNode rule, ASTNode node) throws SyntaxErrorException {
 		boolean retval = false;
 		
