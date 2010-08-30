@@ -19,7 +19,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
@@ -69,7 +71,7 @@ public class MainWindow extends JFrame {
 		
 		//setLocationRelativeTo(null);
         setSize(1000, 500);
-        setTitle("KiTES v0.1");
+        setTitle("KiTES");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         
         final JEditorPane editor = new JEditorPane();
@@ -97,9 +99,14 @@ public class MainWindow extends JFrame {
         JSeparator menuSeparator = new JSeparator();
         JSeparator menuSeparator2 = new JSeparator();
         
-        JMenuItem menuFileOpen = new JMenuItem("Öffnen...");
-        JMenuItem menuFileSave = new JMenuItem("Speichern");
-        JMenuItem menuFileSaveAs = new JMenuItem("Speichern unter...");
+        ImageIcon icoOpenSmall = new ImageIcon("icons/open-small.png");
+        JMenuItem menuFileOpen = new JMenuItem("Öffnen...", icoOpenSmall);
+        
+        ImageIcon icoSaveSmall = new ImageIcon("icons/save-small.png");
+        JMenuItem menuFileSave = new JMenuItem("Speichern", icoSaveSmall);
+        
+        ImageIcon icoSaveAsSmall = new ImageIcon("icons/saveas-small.png");
+        JMenuItem menuFileSaveAs = new JMenuItem("Speichern unter...", icoSaveAsSmall);
         JMenuItem menuFileQuit = new JMenuItem("Beenden");
         
         JMenuItem menuEditCopy = new JMenuItem("Kopieren");
@@ -144,9 +151,21 @@ public class MainWindow extends JFrame {
          * Build toolbar
          */
         JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
-        JButton tbSave = new JButton("Speichern");
-        JButton tbOpen = new JButton("Öffnen");
-        JButton tbRun = new JButton("Interpreter starten");
+        
+        ImageIcon icoSaveBig = new ImageIcon("icons/save-big.png");
+        JButton tbSave = new JButton("Speichern", icoSaveBig);
+        tbSave.setVerticalTextPosition(AbstractButton.BOTTOM);
+        tbSave.setHorizontalTextPosition(AbstractButton.CENTER);
+        
+        ImageIcon icoOpenBig = new ImageIcon("icons/open-big.png");
+        JButton tbOpen = new JButton("Öffnen", icoOpenBig);
+        tbOpen.setVerticalTextPosition(AbstractButton.BOTTOM);
+        tbOpen.setHorizontalTextPosition(AbstractButton.CENTER);
+        
+        ImageIcon icoRun = new ImageIcon("icons/startint.png");
+        JButton tbRun = new JButton("Interpreter starten", icoRun);
+        tbRun.setVerticalTextPosition(AbstractButton.BOTTOM);
+        tbRun.setHorizontalTextPosition(AbstractButton.CENTER);
         
         toolBar.add(tbSave);
         toolBar.add(tbOpen);

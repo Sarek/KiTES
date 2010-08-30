@@ -22,6 +22,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
@@ -88,7 +89,7 @@ public class InterpreterWindow extends JFrame {
 		}
 		
         setSize(1000, 500);
-        setTitle("KiTES v0.1");
+        setTitle("KiTES");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         
         results = new JPanel();
@@ -132,12 +133,19 @@ public class InterpreterWindow extends JFrame {
         instance = new JEditorPane();
         instance.setToolTipText("Hier eine Instanz des Regelsystems eingeben");
         JScrollPane scrollInstance = new JScrollPane(instance);
-        JButton btnStep = new JButton("Schritt");
+        
+        ImageIcon icoStep = new ImageIcon("icons/step.png");
+        JButton btnStep = new JButton("Schritt", icoStep);
         btnStep.setToolTipText("Eine Reduktion durchführen");
-        final JButton btnGo = new JButton("Ausführen");
+        
+        ImageIcon icoGo = new ImageIcon("icons/run.png");
+        final JButton btnGo = new JButton("Ausführen", icoGo);
         btnGo.setToolTipText("Alle möglichen Reduktionen durchführen");
-        JButton btnCodify = new JButton("Kodifizieren");
+        
+        ImageIcon icoCodify = new ImageIcon("icons/codify.png");
+        JButton btnCodify = new JButton("Kodifizieren", icoCodify);
         btnCodify.setToolTipText("Regelsystem und Instanz in Normalform überführen");
+        
         JPanel pane = new JPanel();
         JPanel paneStatistics = new JPanel();
         TitledBorder titlePaneStatistics = BorderFactory.createTitledBorder("Statistik");

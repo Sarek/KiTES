@@ -36,7 +36,7 @@ public class AboutWindow extends JFrame {
 		name.setHorizontalAlignment(JLabel.CENTER);
 		name.setFont(name.getFont().deriveFont((float) 80.0));
 		
-		JLabel version = new JLabel("v1.0 - 2010-09-20");
+		JLabel version = new JLabel("v0.9 - 2010-08-30");
 		version.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 		version.setAlignmentY(JLabel.CENTER_ALIGNMENT);
 		version.setVerticalAlignment(JLabel.CENTER);
