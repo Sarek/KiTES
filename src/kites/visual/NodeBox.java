@@ -128,4 +128,13 @@ public class NodeBox extends JPanel implements NodeContainer {
 	public String toString() {
 		return getHead().toString();
 	}
+
+	@Override
+	public void disablePopupMenu() {
+		getHead().disablePopupMenu();
+		Iterator<NodeContainer> childIt = getChildIterator();
+		while(childIt.hasNext()) {
+			childIt.next().disablePopupMenu();
+		}
+	}
 }

@@ -131,7 +131,7 @@ public class InterpreterWindow extends JFrame {
         JScrollPane scrollInstance = new JScrollPane(instance);
         JButton btnStep = new JButton("Schritt");
         btnStep.setToolTipText("Eine Reduktion durchführen");
-        JButton btnGo = new JButton("Ausführen");
+        final JButton btnGo = new JButton("Ausführen");
         btnGo.setToolTipText("Alle möglichen Reduktionen durchführen");
         JButton btnCodify = new JButton("Kodifizieren");
         btnCodify.setToolTipText("Regelsystem und Instanz in Normalform überführen");
@@ -274,12 +274,12 @@ public class InterpreterWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if(menuInterpretationProg.isSelected()) {
-					System.out.println("Aktiviere Menü");
 					menuStrategy.setEnabled(true);
+					btnGo.setEnabled(true);
 				}
 				else {
-					System.out.println("Deaktiviere Menü");
 					menuStrategy.setEnabled(false);
+					btnGo.setEnabled(false);
 				}
 			}
         }
@@ -484,6 +484,14 @@ public class InterpreterWindow extends JFrame {
 
 	public void addToResults(NodeContainer label) {
 		label.setInterpreterWindow(this);
+		
+		// deactivate popup-menus of already added containers
+		Component[] comps = getResultsPanel().getComponents();
+		for(int i = 0; i < getResultsPanel().getComponentCount(); i++) {
+			if(comps[i] instanceof NodeContainer) {
+				((NodeContainer)comps[i]).disablePopupMenu();
+			}
+		}
 		
 		getResultsPanel().add((Component)label);
 		getResultsPanel().add(Box.createVerticalStrut(15));

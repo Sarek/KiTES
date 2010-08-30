@@ -27,6 +27,7 @@ public class NodeLabel extends JLabel implements NodeContainer {
 	private LinkedList<Rule> rules;
 	private InterpreterWindow wnd;
 	JPopupMenu popup;
+	PopupListener popupListener;
 	
 	public NodeLabel(ASTNode node) {
 		super();
@@ -35,6 +36,7 @@ public class NodeLabel extends JLabel implements NodeContainer {
 		this.setVisible(true);
 		this.node = node;
 		this.rules = null;
+		this.popupListener = null;
 		this.setAlignmentX(JLabel.LEFT_ALIGNMENT);
 		this.setHorizontalAlignment(JLabel.LEFT);
 		this.setAlignmentY(JLabel.TOP_ALIGNMENT);
@@ -66,7 +68,8 @@ public class NodeLabel extends JLabel implements NodeContainer {
 			popup.add(item);
 		}
 		
-		this.addMouseListener(new PopupListener());
+		this.popupListener = new PopupListener();
+		this.addMouseListener(this.popupListener);
 		
 		this.invalidate();
 	}
@@ -139,6 +142,8 @@ public class NodeLabel extends JLabel implements NodeContainer {
 			System.out.println("Node: " + node);
 			System.out.println("Rule: " + rule);
 			System.out.println("Window: " + wnd);
+			getThis().setBackground(Color.GREEN);
+			getThis().setBorder(BorderFactory.createLineBorder(Color.GREEN));
 			getInterpreterWindow().nextStep(node, rule);
 		}
 		
@@ -147,5 +152,9 @@ public class NodeLabel extends JLabel implements NodeContainer {
 	@Override
 	public String toString() {
 		return getNode().toString();
+	}
+	
+	public void disablePopupMenu() {
+		this.removeMouseListener(this.popupListener);
 	}
 }
