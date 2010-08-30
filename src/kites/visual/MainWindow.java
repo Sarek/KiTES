@@ -74,6 +74,7 @@ public class MainWindow extends JFrame {
         
         final JEditorPane editor = new JEditorPane();
         editor.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        editor.setToolTipText("Regelsystem mit Regeln der Form \"linke Seite\" --> \"rechte Seite\" eingeben");
         JScrollPane scrollEditor = new JScrollPane(editor);
         this.add(scrollEditor, BorderLayout.CENTER);
         

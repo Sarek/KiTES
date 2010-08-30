@@ -22,6 +22,7 @@ import kites.TRSModel.RuleList;
 import kites.exceptions.DecompositionException;
 import kites.exceptions.NoChildrenException;
 import kites.exceptions.NoRewritePossibleException;
+import kites.exceptions.NodeException;
 import kites.exceptions.SyntaxErrorException;
 import kites.logic.CheckTRS;
 import kites.logic.Decomposition;
@@ -47,12 +48,13 @@ public class StepRewrite {
 		firstStep = true;
 		this.rulelist = rulelist;
 		this.wnd = wnd;
-
 		this.signature = signature;
+		this.instanceTree = null;
 	}
 	
 	public void setFirst() {
 		this.firstStep = true;
+		this.instanceTree = null;
 	}
 	
 	public void setMode(int mode) {
@@ -63,40 +65,10 @@ public class StepRewrite {
 		this.strategy = strategy;
 	}
 	
-	public void run() throws SyntaxErrorException, DecompositionException, NoRewritePossibleException, RecognitionException, NoChildrenException {
+	public void run() throws SyntaxErrorException, DecompositionException, NoRewritePossibleException, RecognitionException, NoChildrenException, NodeException {
 		ASTNode newTree;
 		if(firstStep) {
-			TRSLexer lexer = new TRSLexer(new ANTLRStringStream(wnd.getInstance().getText()));
-			TokenStream tokenStream = new CommonTokenStream(lexer);
-			TRSParser parser = new TRSParser(tokenStream);
-			instanceTree = parser.instance();
-			
-			List<String> lexerErrors = lexer.getErrors();
-    		if(!lexerErrors.isEmpty()) {
-    			System.out.println("Displaying lexer errors");
-    			String errors = "Detected errors during lexing:\n\n";
-    			Iterator<String> errIt = lexerErrors.iterator();
-    			while(errIt.hasNext()) {
-    				errors += errIt.next() + "\n";
-    			}
-    			throw new SyntaxErrorException(errors);
-    		}
-    		
-    		List<String> parseErrors = parser.getErrors();
-    		System.out.println(parseErrors);
-    		if(!parseErrors.isEmpty()) {
-    			String errors = "Detected errors during parsing:\n\n";
-    			Iterator<String> errIt = parseErrors.iterator();
-    			while(errIt.hasNext()) {
-    				errors += errIt.next() + "\n";
-    			}
-    			throw new SyntaxErrorException(errors);
-    		}
-			
-			// syntax check instance
-			CheckTRS.instanceCheck(instanceTree, signature);
-			
-			
+			parseInstance();
 		}
 		
 		switch(mode) {
@@ -142,5 +114,46 @@ public class StepRewrite {
 			default:
 				MsgBox.error("Oops. Attempted to run in a unknown interpretation mode");
 		}
+	}
+	
+	public void parseInstance() throws RecognitionException, SyntaxErrorException, NodeException {
+		if(instanceTree != null) {
+			// the object has already been used. When parsing a possibly new instance
+			// we then have to reset the object
+			setFirst();
+		}
+		TRSLexer lexer = new TRSLexer(new ANTLRStringStream(wnd.getInstance().getText()));
+		TokenStream tokenStream = new CommonTokenStream(lexer);
+		TRSParser parser = new TRSParser(tokenStream);
+		instanceTree = parser.instance();
+		
+		List<String> lexerErrors = lexer.getErrors();
+		if(!lexerErrors.isEmpty()) {
+			System.out.println("Displaying lexer errors");
+			String errors = "Detected errors during lexing:\n\n";
+			Iterator<String> errIt = lexerErrors.iterator();
+			while(errIt.hasNext()) {
+				errors += errIt.next() + "\n";
+			}
+			throw new SyntaxErrorException(errors);
+		}
+		
+		List<String> parseErrors = parser.getErrors();
+		System.out.println(parseErrors);
+		if(!parseErrors.isEmpty()) {
+			String errors = "Detected errors during parsing:\n\n";
+			Iterator<String> errIt = parseErrors.iterator();
+			while(errIt.hasNext()) {
+				errors += errIt.next() + "\n";
+			}
+			throw new SyntaxErrorException(errors);
+		}
+		
+		// syntax check instance
+		CheckTRS.instanceCheck(instanceTree, signature);
+	}
+
+	public ASTNode getInstanceTree() {
+		return instanceTree;
 	}
 }

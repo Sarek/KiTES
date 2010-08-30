@@ -13,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
@@ -27,6 +29,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -42,6 +45,7 @@ import kites.exceptions.DecompositionException;
 import kites.exceptions.NoRewritePossibleException;
 import kites.exceptions.SyntaxErrorException;
 import kites.logic.CheckTRS;
+import kites.logic.Codification;
 import kites.logic.Decomposition;
 
 public class InterpreterWindow extends JFrame {
@@ -88,12 +92,49 @@ public class InterpreterWindow extends JFrame {
         results.setBackground(Color.WHITE);
         results.setLayout(new BoxLayout(results, BoxLayout.Y_AXIS));
         
+        final JPopupMenu resultsPopup = new JPopupMenu();
+        JMenuItem resultsPopupClear = new JMenuItem("Ergebnis löschen");
+        JMenuItem resultsPopupCopy = new JMenuItem("Ergebnis kopieren");
+        resultsPopup.add(resultsPopupCopy);
+        resultsPopup.add(resultsPopupClear);
+        
+        class PopupListener implements MouseListener {
+
+    		@Override
+    		public void mouseClicked(MouseEvent arg0) {
+    			if(arg0.getButton() == 3) {
+    				resultsPopup.show(getResultsPanel(), arg0.getX(), arg0.getY());
+    			}
+    		}
+
+    		@Override
+    		public void mouseEntered(MouseEvent arg0) {
+    		}
+
+    		@Override
+    		public void mouseExited(MouseEvent arg0) {
+    		}
+
+    		@Override
+    		public void mousePressed(MouseEvent arg0) {
+    		}
+
+    		@Override
+    		public void mouseReleased(MouseEvent arg0) {
+    		}
+    	}
+        results.addMouseListener(new PopupListener());
+        
         JScrollPane scrollResults = new JScrollPane(getResultsPanel());
         instance = new JEditorPane();
+        instance.setToolTipText("Hier eine Instanz des Regelsystems eingeben");
         JScrollPane scrollInstance = new JScrollPane(instance);
         JButton btnStep = new JButton("Schritt");
+        btnStep.setToolTipText("Eine Reduktion durchführen");
         JButton btnGo = new JButton("Ausführen");
+        btnGo.setToolTipText("Alle möglichen Reduktionen durchführen");
         JButton btnCodify = new JButton("Kodifizieren");
+        btnCodify.setToolTipText("Regelsystem und Instanz in Normalform überführen");
         JPanel pane = new JPanel();
         JPanel paneStatistics = new JPanel();
         TitledBorder titlePaneStatistics = BorderFactory.createTitledBorder("Statistik");
@@ -101,7 +142,9 @@ public class InterpreterWindow extends JFrame {
         JLabel lblSteps = new JLabel("Schritte");
         JLabel lblSize = new JLabel("Max. Größe");
         txtSteps = new JTextField();
+        txtSteps.setToolTipText("Durchgeführte Reduktionsschritte");
         txtSize = new JTextField();
+        txtSize.setToolTipText("Größte Anzahl von Symbolen während der Ausführung");
         txtSteps.setEditable(false);
         txtSize.setEditable(false);
         paneStatistics.setLayout(new GridLayout(2, 2));
@@ -132,6 +175,7 @@ public class InterpreterWindow extends JFrame {
         c.gridx = 1;
         c.gridy = 0;
         c.weighty = 0.5;
+        c.weightx = 0;
         pane.add(btnStep, c);
         c.gridy = 1;
         pane.add(btnGo, c);
@@ -201,6 +245,7 @@ public class InterpreterWindow extends JFrame {
 			}
         }
         menuEditClear.addActionListener(new ClearAction());
+        resultsPopupClear.addActionListener(new ClearAction());
         
         class CopyAction implements ActionListener {
 			@Override
@@ -218,6 +263,7 @@ public class InterpreterWindow extends JFrame {
 			}
         }
         menuEditCopy.addActionListener(new CopyAction());
+        resultsPopupCopy.addActionListener(new CopyAction());
         
         menuEdit.add(menuEditCopy);
         menuEdit.add(menuEditClear);
@@ -288,9 +334,7 @@ public class InterpreterWindow extends JFrame {
 			@Override
 			public void keyTyped(KeyEvent arg0) {
 				int num = wnd.getResultsPanel().getComponentCount();
-				System.out.println("Results panel contains " + num + "components before clearing");
 				wnd.getStepRewrite().setFirst();
-				System.out.println("Removing everything from results panel...");
 				wnd.getResultsPanel().removeAll();
 				wnd.getResultsPanel().repaint();
 				txtSteps.setText("");
@@ -307,6 +351,11 @@ public class InterpreterWindow extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				// clear the results pane
+				wnd.getResultsPanel().removeAll();
+				wnd.getResultsPanel().invalidate();
+				wnd.getResultsPanel().repaint();
+				
 				wnd.getStepRewrite().setMode(getMode());
 				wnd.getStepRewrite().setStrategy(getStrategy());
 				try {
@@ -315,11 +364,9 @@ public class InterpreterWindow extends JFrame {
 					}
 				}
 				catch(NoRewritePossibleException e) {
-					System.out.println("Caught the fricking exception...");
 					// Do nothing. Execution is complete.
 				}
 				catch(Exception e) {
-					System.out.println("Caught the other fricking exception...");
 					MsgBox.error(e);
 				}
 			}
@@ -328,6 +375,25 @@ public class InterpreterWindow extends JFrame {
 		instance.addKeyListener(new ResetAction(this));
     	btnStep.addActionListener(new StepAction(this));
     	btnGo.addActionListener(new RunAction(this));
+    	
+    	class CodifyAction implements ActionListener {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				StepRewrite steprwrt = getStepRewrite();
+				try {
+					steprwrt.parseInstance();
+				}
+				catch(Exception e) {
+					MsgBox.error(e);
+				}
+				Codification codification = new Codification(getRuleList(), steprwrt.getInstanceTree());
+				steprwrt.setFirst(); // Reset the object. Future executions will have to reparse the tree...
+				codification.codify();
+				addToResults(codification.getCodifiedRuleList().toLabel());
+				addToResults(codification.getCodifiedInstance().toLabel());
+			}
+    	}
+    	btnCodify.addActionListener(new CodifyAction());
         
         // Check syntax of rules
         final HashMap<String, Integer> signature;

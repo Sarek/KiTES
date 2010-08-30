@@ -36,6 +36,8 @@ public class Codification {
 	private int curNumVariable;
 	private RuleList rulelist;
 	private ASTNode instance;
+	private ASTNode codifiedRuleList;
+	private ASTNode codifiedInstance;
 
 	/**
 	 * Initialize the class to perform the codification
@@ -49,6 +51,8 @@ public class Codification {
 		this.curNumVariable = 0;
 		this.rulelist = rulelist;
 		this.instance = instance;
+		this.codifiedInstance = null;
+		this.codifiedRuleList = null;
 	}
 	
 	/**
@@ -73,13 +77,13 @@ public class Codification {
 		}
 		
 		// Create new list of rules in standard form using translation map
-		codifyRuleList();
+		codifiedRuleList = codifyRuleList();
 		
 		// Create standard form of the instance
 			// (Possibly) extend translation map of functions and variables
 		createMap(instance);
 			// Create new instance tree in standard form
-		codifyTree(instance, true);
+		codifiedInstance = codifyTree(instance, true);
 	}
 
 	/**
@@ -151,8 +155,9 @@ public class Codification {
 	/**
 	 * Create the normal form of a <code>RuleList</code>.
 	 * The existence of a mapping is pre-supposed.
+	 * @return 
 	 */
-	private void codifyRuleList() {
+	private ASTNode codifyRuleList() {
 		ASTNode firstCons, secondCons, retval = null, toAdd = null;
 		
 		Iterator<Rule> ruleIt = rulelist.getRules();
@@ -173,7 +178,9 @@ public class Codification {
 				toAdd.add(firstCons);
 				toAdd = firstCons;
 			}
+			
 		}
+		return retval;
 	}
 
 	/**
@@ -205,5 +212,13 @@ public class Codification {
 		catch(NoChildrenException e) {
 			// do nothing. we simply reached a leaf node
 		}
+	}
+
+	public ASTNode getCodifiedRuleList() {
+		return codifiedRuleList;
+	}
+
+	public ASTNode getCodifiedInstance() {
+		return codifiedInstance;
 	}
 }
