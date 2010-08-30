@@ -45,6 +45,7 @@ import kites.TRSModel.RuleList;
 import kites.exceptions.DecompositionException;
 import kites.exceptions.NoRewritePossibleException;
 import kites.exceptions.SyntaxErrorException;
+import kites.exceptions.UnificationException;
 import kites.logic.CheckTRS;
 import kites.logic.Codification;
 import kites.logic.Decomposition;
@@ -201,8 +202,6 @@ public class InterpreterWindow extends JFrame {
         grpInterpretation.add(menuInterpretationNonDet);
         grpInterpretation.add(menuInterpretationProg);
         grpInterpretation.add(menuInterpretationTRS);
-        
-        menuInterpretationProg.setSelected(true);
         
         menuInterpretation.add(menuInterpretationNonDet);
         menuInterpretation.add(menuInterpretationProg);
@@ -395,23 +394,52 @@ public class InterpreterWindow extends JFrame {
     	btnCodify.addActionListener(new CodifyAction());
         
         // Check syntax of rules
-        final HashMap<String, Integer> signature;
+        HashMap<String, Integer> signature;
+        
+        btnStep.setEnabled(false);
+    	btnGo.setEnabled(false);
+    	CheckTRS checktrs = new CheckTRS(this.getRuleList());
+    	signature = null;
+    	menuInterpretationTRS.setEnabled(false);
+    	menuInterpretationNonDet.setEnabled(false);
+    	menuInterpretationProg.setEnabled(false);
+    	
         try {
-        	btnStep.setEnabled(false);
-        	btnGo.setEnabled(false);
-        	
-        	CheckTRS checktrs = new CheckTRS(this.getRuleList());
-        	
+        	// check for TRS execution mode
         	checktrs.variableCheck();
         	signature = checktrs.signatureCheck();
-        	
-        	steprewrite = new StepRewrite(getRuleList(), signature, this);
-			
+		
+        	menuInterpretationTRS.setEnabled(true);
+        	menuInterpretationTRS.setSelected(true);
         	btnStep.setEnabled(true);
-        	btnGo.setEnabled(true);
+        	
+        	try {
+            	// check for non-deterministic execution
+            	checktrs.isSigmaGammaSystem();
+            	menuInterpretationNonDet.setEnabled(true);
+            	menuInterpretationNonDet.setSelected(true);
+            	
+            	try {
+            		checktrs.unifiabilityCheck();
+            		menuInterpretationProg.setEnabled(true);
+            		menuInterpretationProg.setSelected(true);
+            		btnGo.setEnabled(true);
+            	}
+            	catch(SyntaxErrorException e) {
+            		MsgBox.info("Das Termersetzungssystem kann nicht als Programm ausgeführt werden: \n" + e.getLocalizedMessage());
+            	}
+            }
+            catch(SyntaxErrorException e) {
+            	MsgBox.info("Das Termersetzungssystem kann nicht als nicht-deterministisches Programm ausgeführt werden: \n" + e.getLocalizedMessage());
+            }
+            
         	this.setVisible(true);
+        	steprewrite = new StepRewrite(getRuleList(), signature, this);
+
         }
         catch(SyntaxErrorException e) {
+        	// if not even the basic requirements are fulfilled, we only print an
+        	// error message and destroy this window.
         	MsgBox.error(e);
         	this.dispose();
         	System.gc();
