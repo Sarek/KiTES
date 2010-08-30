@@ -241,30 +241,10 @@ public class CheckTRS {
 	 * @param right The other tree
 	 * @param match Initialize as true, unless you know what you are doing.
 	 * @return <code>true</code> when trees are unifiable, <code>false</code> otherwise.
+	 * @throws SyntaxErrorException 
 	 */
-	private boolean unifiable(ASTNode left, ASTNode right, boolean match) {
-		if(!(left instanceof Variable || right instanceof Variable) && left.getName() != right.getName()) {
-			match = false;
-		}
-		else {
-			try {
-				Iterator<ASTNode> leftChildren = left.getChildIterator();
-				Iterator<ASTNode> rightChildren = right.getChildIterator();
-				
-				while(leftChildren.hasNext() && rightChildren.hasNext()) {
-					match = unifiable(leftChildren.next(), rightChildren.next(), match);
-					if(match == false)
-						break;		// stop going through the tree if we already know that it is not unifiable
-									// with the other one.
-				}
-			}
-			catch(NoChildrenException e) {
-				// just return, maybe there are other nodes with children
-				// if not we will return to the original caller.
-			}
-		}
-		
-		return match;
+	private boolean unifiable(ASTNode left, ASTNode right, boolean match) throws SyntaxErrorException {
+		return (Decomposition.match(left, right) || Decomposition.match(right, left));
 	}
 
 	/**
