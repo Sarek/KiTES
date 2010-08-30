@@ -7,6 +7,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -208,12 +209,15 @@ public class InterpreterWindow extends JFrame {
 				
 				Object[] objects = getResultsPanel().getComponents();
 				for(int i = 0; i < getResultsPanel().getComponentCount(); i++) {
-					results += objects[i].toString() + "\n";
+					if(objects[i] instanceof NodeContainer) {
+						results += objects[i].toString() + System.getProperty("line.separator");
+					}
 				}
 				
-				// TODO: copy to system clipboard
+				MainWindow.writeToClipboard(results, null);
 			}
         }
+        menuEditCopy.addActionListener(new CopyAction());
         
         menuEdit.add(menuEditCopy);
         menuEdit.add(menuEditClear);
@@ -441,5 +445,9 @@ public class InterpreterWindow extends JFrame {
 		catch(Exception e) {
 			MsgBox.error(e);
 		}
+	}
+	
+	public InterpreterWindow getWindow() {
+		return this;
 	}
 }

@@ -2,6 +2,11 @@ package kites.visual;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -386,5 +391,12 @@ public class MainWindow extends JFrame {
 	
 	public boolean hasChanged() {
 		return hasChanged;
+	}
+	
+	public static void writeToClipboard(String s, ClipboardOwner owner)
+	{
+	  Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+	  Transferable transferable = new StringSelection(s);
+	  clipboard.setContents(transferable, owner);
 	}
 }

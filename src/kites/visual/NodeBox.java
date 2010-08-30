@@ -116,15 +116,16 @@ public class NodeBox extends JPanel implements NodeContainer {
 		return children.iterator();
 	}
 	
+	/**
+	 * Return a string representation of the tree beginning from this node.
+	 * As an ASTNode is saved in this object, there is no need to iterate
+	 * over this node's children again, as they will be the same as the
+	 * ASTNode's children.
+	 * 
+	 * @return The string representation
+	 */
 	@Override
 	public String toString() {
-		String retval = getHead().toString();
-		
-		Iterator<NodeContainer> it = getChildIterator();
-		while(it.hasNext()) {
-			retval += it.next().toString();
-		}
-		
-		return retval;
+		return getHead().toString();
 	}
 }
