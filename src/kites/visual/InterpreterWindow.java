@@ -244,6 +244,7 @@ public class InterpreterWindow extends JFrame {
 				getResultsPanel().removeAll();
 				getResultsPanel().invalidate();
 				getResultsPanel().repaint();
+				getStepRewrite().setFirst();
 			}
         }
         menuEditClear.addActionListener(new ClearAction());
