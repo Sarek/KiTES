@@ -7,6 +7,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.event.ActionEvent;
@@ -66,6 +67,7 @@ public class InterpreterWindow extends JFrame {
     private final JRadioButtonMenuItem menuStrategyRO;
     
     private JPanel results;
+    private JScrollPane scrollResults;
     private StepRewrite steprewrite;
     private JTextField txtSteps;
     private JTextField txtSize;
@@ -125,7 +127,7 @@ public class InterpreterWindow extends JFrame {
     	}
         results.addMouseListener(new PopupListener());
         
-        JScrollPane scrollResults = new JScrollPane(getResultsPanel());
+        scrollResults = new JScrollPane(getResultsPanel());
         instance = new JEditorPane();
         instance.setToolTipText("Hier eine Instanz des Regelsystems eingeben");
         JScrollPane scrollInstance = new JScrollPane(instance);
@@ -321,14 +323,10 @@ public class InterpreterWindow extends JFrame {
         	}
 			@Override
 			public void keyPressed(KeyEvent arg0) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
@@ -496,6 +494,11 @@ public class InterpreterWindow extends JFrame {
 		getResultsPanel().add((Component)label);
 		getResultsPanel().add(Box.createVerticalStrut(15));
 		getResultsPanel().revalidate();
+		
+		// for some reason Java misses the lowest NodeContainer when calculating the height of the
+		// results panel. To work around that, just simply double the height to be sure to get to the
+		// bottom...
+		getResultsPanel().scrollRectToVisible(new Rectangle(0, getResultsPanel().getHeight() * 2, 1, 1));
 	}
 	
 	public JEditorPane getInstance() {
