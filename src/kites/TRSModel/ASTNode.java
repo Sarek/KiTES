@@ -129,5 +129,5 @@ public abstract class ASTNode {
 	 * @param decomp map of the nodes and their possible rewrites
 	 * @return The node's graphical representation
 	 */
-	public abstract NodeContainer toLabelWithRule(LinkedHashMap<ASTNode, LinkedList<Rule>> decomp);
+	public abstract NodeContainer toLabelWithRule(LinkedHashMap<ASTNode, LinkedList<Rule>> decomp, boolean highlight);
 }

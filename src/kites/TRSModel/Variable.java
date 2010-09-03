@@ -18,7 +18,7 @@ public class Variable extends ASTNode {
 	}
 
 	@Override
-	public NodeContainer toLabelWithRule(LinkedHashMap<ASTNode, LinkedList<Rule>> decomp) {
+	public NodeContainer toLabelWithRule(LinkedHashMap<ASTNode, LinkedList<Rule>> decomp, boolean highlight) {
 		return new NodeLabel(this);
 	}
 }

@@ -81,7 +81,7 @@ rulelist returns [RuleList e]:
 	| INCLUDE
 	)*
 	(WS)?
-	'#instance' (instance { $e.addInstance($instance.e); })?
+	('#instance' instance { $e.addInstance($instance.e); })?
 	;
 	
 instance returns [ASTNode e]:

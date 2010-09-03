@@ -52,7 +52,7 @@ public class ProgramRewrite {
 	 * @throws SyntaxErrorException
 	 * @throws NoRewritePossibleException
 	 */
-	public ASTNode findRewrite() throws NoChildrenException, SyntaxErrorException, NoRewritePossibleException {
+/*	public ASTNode findRewrite() throws NoChildrenException, SyntaxErrorException, NoRewritePossibleException {
 		ASTNode retval = null;
 		switch(strategy) {
 		case Decomposition.S_LO:
@@ -74,7 +74,7 @@ public class ProgramRewrite {
 		}
 		return retval;
 	}
-
+*/
 	/**
 	 * Find and perform a RI rewrite
 	 * 
@@ -83,7 +83,7 @@ public class ProgramRewrite {
 	 * @throws SyntaxErrorException
 	 * @throws NoChildrenException
 	 */
-	private ASTNode findRewriteRI(ASTNode node) throws SyntaxErrorException, NoChildrenException {
+/*	private ASTNode findRewriteRI(ASTNode node) throws SyntaxErrorException, NoChildrenException {
 		ASTNode retval = null;
 		boolean tryChildren = true;
 		
@@ -142,7 +142,7 @@ public class ProgramRewrite {
 		
 		retval.reverse();
 		return retval;
-	}
+	}*/
 
 	/**
 	 * Find and perform a RO rewrite
@@ -152,7 +152,7 @@ public class ProgramRewrite {
 	 * @throws SyntaxErrorException
 	 * @throws NoChildrenException
 	 */
-	private ASTNode findRewriteRO(ASTNode node) throws SyntaxErrorException, NoChildrenException {
+/*	private ASTNode findRewriteRO(ASTNode node) throws SyntaxErrorException, NoChildrenException {
 		ASTNode retval = null;
 		
 		if(!rewriteDone) {
@@ -186,7 +186,7 @@ public class ProgramRewrite {
 
 		retval.reverse();
 		return retval;
-	}
+	}*/
 
 	/**
 	 * Find and perform a LI rewrite
@@ -196,7 +196,7 @@ public class ProgramRewrite {
 	 * @throws SyntaxErrorException
 	 * @throws NoChildrenException
 	 */
-	private ASTNode findRewriteLI(ASTNode node) throws NoChildrenException, SyntaxErrorException {
+/*	private ASTNode findRewriteLI(ASTNode node) throws NoChildrenException, SyntaxErrorException {
 		ASTNode retval = null;
 		boolean tryChildren = true;
 		
@@ -250,7 +250,7 @@ public class ProgramRewrite {
 		}
 		
 		return retval;
-	}
+	}*/
 
 	/**
 	 * Find and perform a LO rewrite
@@ -260,7 +260,7 @@ public class ProgramRewrite {
 	 * @throws SyntaxErrorException
 	 * @throws NoChildrenException
 	 */
-	private ASTNode findRewriteLO(ASTNode node) throws NoChildrenException, SyntaxErrorException {
+/*	private ASTNode findRewriteLO(ASTNode node) throws NoChildrenException, SyntaxErrorException {
 		ASTNode retval = null;
 		
 		if(!rewriteDone) {
@@ -291,7 +291,7 @@ public class ProgramRewrite {
 			throw new SyntaxErrorException("Invalid instance given");
 		}
 		return retval;
-	}
+	}*/
 
 	/**
 	 * Build a new tree from the right-hand side of a rule and a map of variable

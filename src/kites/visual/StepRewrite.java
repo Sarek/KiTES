@@ -70,50 +70,32 @@ public class StepRewrite {
 		if(firstStep) {
 			parseInstance();
 		}
+		Decomposition decomp = new Decomposition(rulelist);
 		
-		switch(mode) {
-			case Decomposition.M_PROGRAM:
-				if(firstStep) {
-					NodeContainer nodelabel = instanceTree.toLabel();
-					wnd.addToResults(nodelabel);
-					wnd.getStepsField().setText("1");
-					wnd.getSizeField().setText(String.valueOf(instanceTree.getSize()));
-			
-					firstStep = false;
-				}
-				
-				ProgramRewrite rwrt = new ProgramRewrite(strategy, instanceTree, rulelist);
-				newTree = rwrt.findRewrite();
-				
-				wnd.addToResults(newTree.toLabel());
-				wnd.getStepsField().setText(String.valueOf(Integer.parseInt(wnd.getStepsField().getText()) + 1));
-				Integer newSize = new Integer(newTree.getSize());
-				if(newSize.compareTo(Integer.parseInt(wnd.getSizeField().getText())) > 0) {
-					wnd.getSizeField().setText(String.valueOf(newTree.getSize()));
-				}
-				instanceTree = newTree;
-				break;
-				
-			case Decomposition.M_TRS:
-			case Decomposition.M_NONDET:
-				NodeContainer nodelabel;
-				if(!firstStep) {
-					newTree = ProgramRewrite.rewrite(instanceTree, wnd.getNode(), wnd.getRule());
-					nodelabel = newTree.toLabelWithRule(Decomposition.getDecomp(mode, rulelist, newTree));
-					instanceTree = newTree;
-				}
-				else {
-					nodelabel = instanceTree.toLabelWithRule(Decomposition.getDecomp(mode, rulelist, instanceTree));
-				}
-
-				wnd.addToResults(nodelabel);
-				wnd.getStepsField().setText("1");
-				wnd.getSizeField().setText(String.valueOf(instanceTree.getSize()));
-				firstStep = false;
-				break;
-			default:
-				MsgBox.error("Oops. Attempted to run in a unknown interpretation mode");
+		NodeContainer nodelabel;
+		if(!firstStep) {
+			newTree = ProgramRewrite.rewrite(instanceTree, wnd.getNode(), wnd.getRule());
+			if(mode == Decomposition.M_PROGRAM) {
+				nodelabel = newTree.toLabelWithRule(decomp.getDecomp(mode, strategy, newTree), false);
+			}
+			else {
+				nodelabel = newTree.toLabelWithRule(decomp.getDecomp(mode, strategy, newTree), true);
+			}
+			instanceTree = newTree;
 		}
+		else {
+			if(mode == Decomposition.M_PROGRAM) {
+				nodelabel = instanceTree.toLabelWithRule(decomp.getDecomp(mode, strategy, instanceTree), false);
+			}
+			else {
+				nodelabel = instanceTree.toLabelWithRule(decomp.getDecomp(mode, strategy, instanceTree), true);
+			}
+		}
+
+		wnd.addToResults(nodelabel);
+		wnd.getStepsField().setText("1");
+		wnd.getSizeField().setText(String.valueOf(instanceTree.getSize()));
+		firstStep = false;
 	}
 	
 	public void parseInstance() throws RecognitionException, SyntaxErrorException, NodeException {

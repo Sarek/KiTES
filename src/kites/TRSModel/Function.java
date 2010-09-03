@@ -92,12 +92,12 @@ public class Function extends ASTNode {
 	}
 	
 	@Override
-	public NodeContainer toLabelWithRule(LinkedHashMap<ASTNode, LinkedList<Rule>> decomp) {
+	public NodeContainer toLabelWithRule(LinkedHashMap<ASTNode, LinkedList<Rule>> decomp, boolean highlight) {
 		NodeBox nodeBox = new NodeBox(getParamCount());
 		NodeLabel head;
 		
 		if(decomp.containsKey(this)) {
-			head = new NodeLabel(this, decomp.get(this));
+			head = new NodeLabel(this, decomp.get(this), highlight);
 		}
 		else {
 			head = new NodeLabel(this);
@@ -106,7 +106,7 @@ public class Function extends ASTNode {
 		nodeBox.setHead(head);
 		Iterator<ASTNode> childIt = getChildIterator();
 		while(childIt.hasNext()) {
-			nodeBox.addChild(childIt.next().toLabelWithRule(decomp));
+			nodeBox.addChild(childIt.next().toLabelWithRule(decomp, highlight));
 		}
 		
 		return nodeBox;

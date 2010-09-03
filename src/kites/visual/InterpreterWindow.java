@@ -68,11 +68,10 @@ public class InterpreterWindow extends JFrame {
     private final JRadioButtonMenuItem menuStrategyRI;
     private final JRadioButtonMenuItem menuStrategyRO;
     
-    private JPanel results;
+    private JPanel results, leftSide;
     private JScrollPane scrollResults;
     private StepRewrite steprewrite;
-    private JTextField txtSteps;
-    private JTextField txtSize;
+    private JTextField txtSteps, txtSize;
     private JEditorPane instance;
     
     private Rule rule;
@@ -91,6 +90,9 @@ public class InterpreterWindow extends JFrame {
         setSize(1000, 500);
         setTitle("KiTES");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        
+        leftSide = new JPanel();
+        leftSide.setLayout(new GridBagLayout());
         
         results = new JPanel();
         results.setBackground(Color.WHITE);
@@ -132,11 +134,44 @@ public class InterpreterWindow extends JFrame {
         scrollResults = new JScrollPane(getResultsPanel());
         instance = new JEditorPane();
         instance.setToolTipText("Hier eine Instanz des Regelsystems eingeben");
+
+        JScrollPane scrollInstance = new JScrollPane(instance);
+        
+        JEditorPane source = new JEditorPane();
+        source.setEditable(false);
+        JScrollPane scrollSource = new JScrollPane(source);
+        
+        final JEditorPane endResult = new JEditorPane();
+        endResult.setEditable(false);
+        final JScrollPane scrollEndResult = new JScrollPane(endResult);
+        
+        scrollResults.setVisible(false);
+        scrollEndResult.setVisible(false);
+        
+        GridBagConstraints a = new GridBagConstraints();
+        a.fill = GridBagConstraints.BOTH;
+        a.insets = new Insets(2, 2, 2, 2);
+        a.gridheight = 1;
+        a.gridwidth = 1;
+        a.gridx = 0;
+        a.gridy = 0;
+        a.weightx = 1;
+        a.weighty = 0.15;
+        leftSide.add(scrollSource, a);
+        a.gridy = 1;
+        a.weighty = 0.1;
+        leftSide.add(scrollInstance, a);
+        a.gridy = 2;
+        a.weighty = 0.7;
+        leftSide.add(scrollResults, a);
+        a.gridy = 3;
+        a.weighty = 0.05;
+        leftSide.add(scrollEndResult, a);
+        
         if(rulelist.getInstance() != null) {
         	instance.setText(rulelist.getInstance().toString());
         }
-        
-        JScrollPane scrollInstance = new JScrollPane(instance);
+        source.setText(rulelist.toString());
         
         ImageIcon icoStep = new ImageIcon("icons/step-big.png");
         JButton btnStep = new JButton("Schritt", icoStep);
@@ -178,15 +213,16 @@ public class InterpreterWindow extends JFrame {
         c.gridy = 0;
         c.weightx = 1;
         c.weighty = 0.8;
-        pane.add(scrollResults, c);
+        pane.add(leftSide, c);
+        
         c.fill = GridBagConstraints.BOTH;
         c.gridheight = 1;
         c.gridwidth = 1;
         c.gridy = 4;
         c.weightx = 1;
         c.weighty = 0.2;
+        //pane.add(scrollInstance, c);
         
-        pane.add(scrollInstance, c);
         c.gridx = 1;
         c.gridy = 0;
         c.weighty = 0.5;
@@ -251,7 +287,10 @@ public class InterpreterWindow extends JFrame {
         
         class ClearAction implements ActionListener {
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent arg0) { 
+				scrollResults.setVisible(false);
+				scrollEndResult.setVisible(false);
+				leftSide.revalidate();
 				getResultsPanel().removeAll();
 				getResultsPanel().invalidate();
 				getResultsPanel().repaint();
@@ -322,7 +361,6 @@ public class InterpreterWindow extends JFrame {
 				}
 				catch (Exception e) {
 					MsgBox.error(e);
-					e.printStackTrace();
 				}
 			}
         }
@@ -366,6 +404,7 @@ public class InterpreterWindow extends JFrame {
 				wnd.getResultsPanel().invalidate();
 				wnd.getResultsPanel().repaint();
 				
+				wnd.getStepRewrite().setFirst();
 				wnd.getStepRewrite().setMode(getMode());
 				wnd.getStepRewrite().setStrategy(getStrategy());
 				try {
@@ -374,7 +413,9 @@ public class InterpreterWindow extends JFrame {
 					}
 				}
 				catch(NoRewritePossibleException e) {
-					// Do nothing. Execution is complete.
+					endResult.setText(wnd.getStepRewrite().getInstanceTree().toString());
+					scrollEndResult.setVisible(true);
+					leftSide.revalidate();
 				}
 				catch(Exception e) {
 					MsgBox.error(e);
@@ -522,6 +563,7 @@ public class InterpreterWindow extends JFrame {
 	}
 
 	public void addToResults(NodeContainer label) {
+		scrollResults.setVisible(true);
 		label.setInterpreterWindow(this);
 		
 		// deactivate popup-menus of already added containers
@@ -540,6 +582,7 @@ public class InterpreterWindow extends JFrame {
 		// results panel. To work around that, just simply double the height to be sure to get to the
 		// bottom...
 		getResultsPanel().scrollRectToVisible(new Rectangle(0, getResultsPanel().getHeight() * 2, 1, 1));
+		leftSide.revalidate();
 	}
 	
 	public JEditorPane getInstance() {

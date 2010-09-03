@@ -28,6 +28,7 @@ public class NodeLabel extends JLabel implements NodeContainer {
 	private InterpreterWindow wnd;
 	JPopupMenu popup;
 	PopupListener popupListener;
+	private boolean canHighlight;
 	
 	public NodeLabel(ASTNode node) {
 		super();
@@ -41,17 +42,17 @@ public class NodeLabel extends JLabel implements NodeContainer {
 		this.setHorizontalAlignment(JLabel.LEFT);
 		this.setAlignmentY(JLabel.TOP_ALIGNMENT);
 		this.setVerticalAlignment(JLabel.TOP);
+		//this.setBorder(BorderFactory.createLineBorder(Color.RED));
 		this.invalidate();
 	}
 	
-	public NodeLabel(ASTNode node, LinkedList<Rule> rules) {
+	public NodeLabel(ASTNode node, LinkedList<Rule> rules, boolean highlight) {
 		super();
-		System.out.println("Creating node with rule:\n\t" + node);
+		this.canHighlight = highlight;
 		this.setText(node.getName());
 		this.setVisible(true);
 		this.setOpaque(true);
-		this.setBackground(Color.YELLOW);
-		this.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
+
 		this.node = node;
 		this.rules = rules;
 		this.setAlignmentX(JLabel.LEFT_ALIGNMENT);
@@ -59,19 +60,30 @@ public class NodeLabel extends JLabel implements NodeContainer {
 		this.setAlignmentY(JLabel.TOP_ALIGNMENT);
 		this.setVerticalAlignment(JLabel.TOP);
 		
-		popup = new JPopupMenu();
-		Iterator<Rule> ruleIt = rules.iterator();
-		while(ruleIt.hasNext()) {
-			Rule rule = ruleIt.next();
-			JMenuItem item = new JMenuItem(rule.toString());
-			item.addActionListener(new MenuAction(getNode(), rule));
-			popup.add(item);
-		}
-		
-		this.popupListener = new PopupListener();
-		this.addMouseListener(this.popupListener);
+		if(highlight)
+			highlight();
 		
 		this.invalidate();
+	}
+	
+	public void highlight() {
+		if(canHighlight) {
+			this.setBackground(Color.YELLOW);
+			this.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
+			
+			popup = new JPopupMenu();
+			Iterator<Rule> ruleIt = rules.iterator();
+			while(ruleIt.hasNext()) {
+				Rule rule = ruleIt.next();
+				JMenuItem item = new JMenuItem(rule.toString());
+				item.addActionListener(new MenuAction(getNode(), rule));
+				popup.add(item);
+			}
+			
+			this.popupListener = new PopupListener();
+			this.addMouseListener(this.popupListener);
+			this.invalidate();
+		}
 	}
 	
 	public ASTNode getNode() {
@@ -156,5 +168,14 @@ public class NodeLabel extends JLabel implements NodeContainer {
 	
 	public void disablePopupMenu() {
 		this.removeMouseListener(this.popupListener);
+	}
+	
+	public void addClosePar() {
+		this.setText(this.getText() + ")");
+		this.revalidate();
+	}
+	public void addComma() {
+		this.setText(this.getText() + ",");
+		this.revalidate();
 	}
 }

@@ -37,10 +37,10 @@ public class Constant extends ASTNode {
 	 * @return The constant's graphical representation
 	 */
 	@Override
-	public NodeContainer toLabelWithRule(LinkedHashMap<ASTNode, LinkedList<Rule>> decomp) {
+	public NodeContainer toLabelWithRule(LinkedHashMap<ASTNode, LinkedList<Rule>> decomp, boolean highlight) {
 		// is this constant reducible?
 		if(decomp.containsKey(this)) {
-			return new NodeLabel(this, decomp.get(this));
+			return new NodeLabel(this, decomp.get(this), highlight);
 		}
 		else {
 			return new NodeLabel(this);
