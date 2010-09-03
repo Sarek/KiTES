@@ -20,6 +20,10 @@ public class RuleList {
 		instance = node;
 	}
 	
+	public ASTNode getInstance() {
+		return instance;
+	}
+	
 	public Iterator<Rule> getRules() {
 		return rules.iterator();
 	}

@@ -132,6 +132,10 @@ public class InterpreterWindow extends JFrame {
         scrollResults = new JScrollPane(getResultsPanel());
         instance = new JEditorPane();
         instance.setToolTipText("Hier eine Instanz des Regelsystems eingeben");
+        if(rulelist.getInstance() != null) {
+        	instance.setText(rulelist.getInstance().toString());
+        }
+        
         JScrollPane scrollInstance = new JScrollPane(instance);
         
         ImageIcon icoStep = new ImageIcon("icons/step-big.png");
