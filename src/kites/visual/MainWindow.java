@@ -162,7 +162,7 @@ public class MainWindow extends JFrame {
         tbOpen.setVerticalTextPosition(AbstractButton.BOTTOM);
         tbOpen.setHorizontalTextPosition(AbstractButton.CENTER);
         
-        ImageIcon icoRun = new ImageIcon("icons/startint.png");
+        ImageIcon icoRun = new ImageIcon("icons/startint-big.png");
         JButton tbRun = new JButton("Interpreter starten", icoRun);
         tbRun.setVerticalTextPosition(AbstractButton.BOTTOM);
         tbRun.setHorizontalTextPosition(AbstractButton.CENTER);

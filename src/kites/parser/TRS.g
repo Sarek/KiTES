@@ -80,6 +80,8 @@ rulelist returns [RuleList e]:
 	( rule	{ $e.add($rule.e); }
 	| INCLUDE
 	)*
+	(WS)?
+	'#instance' (instance { $e.addInstance($instance.e); })?
 	;
 	
 instance returns [ASTNode e]:

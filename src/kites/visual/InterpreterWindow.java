@@ -134,15 +134,15 @@ public class InterpreterWindow extends JFrame {
         instance.setToolTipText("Hier eine Instanz des Regelsystems eingeben");
         JScrollPane scrollInstance = new JScrollPane(instance);
         
-        ImageIcon icoStep = new ImageIcon("icons/step.png");
+        ImageIcon icoStep = new ImageIcon("icons/step-big.png");
         JButton btnStep = new JButton("Schritt", icoStep);
         btnStep.setToolTipText("Eine Reduktion durchführen");
         
-        ImageIcon icoGo = new ImageIcon("icons/run.png");
+        ImageIcon icoGo = new ImageIcon("icons/run-big.png");
         final JButton btnGo = new JButton("Ausführen", icoGo);
         btnGo.setToolTipText("Alle möglichen Reduktionen durchführen");
         
-        ImageIcon icoCodify = new ImageIcon("icons/codify.png");
+        ImageIcon icoCodify = new ImageIcon("icons/codify-big.png");
         JButton btnCodify = new JButton("Kodifizieren", icoCodify);
         btnCodify.setToolTipText("Regelsystem und Instanz in Normalform überführen");
         

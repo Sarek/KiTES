@@ -5,13 +5,19 @@ import java.util.LinkedList;
 
 public class RuleList {
 	LinkedList<Rule> rules;
+	ASTNode instance;
 	
 	public RuleList() {
 		rules = new LinkedList<Rule>();
+		instance = null;
 	}
 	
 	public void add(Rule rule) {
 		rules.add(rule);
+	}
+	
+	public void addInstance(ASTNode node) {
+		instance = node;
 	}
 	
 	public Iterator<Rule> getRules() {
