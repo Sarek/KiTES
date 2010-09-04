@@ -152,11 +152,11 @@ public class NodeBox extends JPanel implements NodeContainer {
 	}
 
 	@Override
-	public void disablePopupMenu() {
-		getHead().disablePopupMenu();
+	public void deactivate() {
+		getHead().deactivate();
 		Iterator<NodeContainer> childIt = getChildIterator();
 		while(childIt.hasNext()) {
-			childIt.next().disablePopupMenu();
+			childIt.next().deactivate();
 		}
 	}
 	
@@ -166,5 +166,22 @@ public class NodeBox extends JPanel implements NodeContainer {
 	
 	public void addComma() {
 		children.getLast().addComma();
+	}
+	
+	public void activate() {
+		getHead().activate();
+		Iterator<NodeContainer> childIt = getChildIterator();
+		while(childIt.hasNext()) {
+			childIt.next().activate();
+		}
+	}
+	
+	public void colorize() {
+		System.out.println("NodeBox trying to colorize");
+		getHead().colorize();
+		Iterator<NodeContainer> childIt = getChildIterator();
+		while(childIt.hasNext()) {
+			childIt.next().colorize();
+		}
 	}
 }

@@ -66,7 +66,6 @@ public class StepRewrite {
 	}
 	
 	public void run() throws SyntaxErrorException, DecompositionException, NoRewritePossibleException, RecognitionException, NoChildrenException, NodeException {
-		ASTNode newTree;
 		if(firstStep) {
 			parseInstance();
 		}
@@ -74,22 +73,36 @@ public class StepRewrite {
 		
 		NodeContainer nodelabel;
 		if(!firstStep) {
-			newTree = ProgramRewrite.rewrite(instanceTree, wnd.getNode(), wnd.getRule());
 			if(mode == Decomposition.M_PROGRAM) {
-				nodelabel = newTree.toLabelWithRule(decomp.getDecomp(mode, strategy, newTree), false);
+				System.out.println("Running in program mode");
+				LinkedHashMap<ASTNode, LinkedList<Rule>> rewriteOption = decomp.getDecomp(mode, strategy, instanceTree);
+				Iterator<ASTNode> keyIt = rewriteOption.keySet().iterator();
+				if(keyIt.hasNext()) {
+					ASTNode node = keyIt.next();
+					Rule rule = rewriteOption.get(node).getFirst();
+					instanceTree = ProgramRewrite.rewrite(instanceTree, node, rule);
+					nodelabel = instanceTree.toLabelWithRule(decomp.getDecomp(mode, strategy, instanceTree), false);
+				}
+				else {
+					throw(new NoRewritePossibleException("No more rewrites possible"));
+				}
 			}
 			else {
-				nodelabel = newTree.toLabelWithRule(decomp.getDecomp(mode, strategy, newTree), true);
+				System.out.println("Running in other mode");
+				instanceTree = ProgramRewrite.rewrite(instanceTree, wnd.getNode(), wnd.getRule());
+				nodelabel = instanceTree.toLabelWithRule(decomp.getDecomp(mode, strategy, instanceTree), true);
 			}
-			instanceTree = newTree;
 		}
 		else {
 			if(mode == Decomposition.M_PROGRAM) {
+				System.out.println("Running in program mode first step");
 				nodelabel = instanceTree.toLabelWithRule(decomp.getDecomp(mode, strategy, instanceTree), false);
 			}
 			else {
+				System.out.println("Running in other mode first step");
 				nodelabel = instanceTree.toLabelWithRule(decomp.getDecomp(mode, strategy, instanceTree), true);
 			}
+			firstStep = false;
 		}
 
 		wnd.addToResults(nodelabel);

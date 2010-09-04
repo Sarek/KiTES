@@ -348,19 +348,68 @@ public class InterpreterWindow extends JFrame {
         
         class StepAction implements ActionListener {
         	private InterpreterWindow wnd;
+        	boolean rewriteState;
         	
         	public StepAction(InterpreterWindow wnd) {
         		this.wnd = wnd;
+        		this.rewriteState = true;
+				wnd.getStepRewrite().setMode(getMode());
+				wnd.getStepRewrite().setStrategy(getStrategy());
         	}
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				wnd.getStepRewrite().setMode(getMode());
 				wnd.getStepRewrite().setStrategy(getStrategy());
+				
+				switch(getMode()) {
+				case Decomposition.M_NONDET:
+				case Decomposition.M_TRS:
+					clickableStep(arg0);
+					break;
+					
+				case Decomposition.M_PROGRAM:
+					programStep(arg0);
+					break;
+				
+				default:
+					MsgBox.error("Unknown interpretation mode!");
+				}
+			}
+			
+			private void clickableStep(ActionEvent arg0) {
 				try {
 					wnd.getStepRewrite().run();
+					((JButton) arg0.getSource()).setEnabled(false);
 				}
-				catch (Exception e) {
+				catch(Exception e) {
 					MsgBox.error(e);
+				}
+			}
+			
+			private void programStep(ActionEvent arg0) {
+				if(rewriteState) {
+					// do the rewrite
+					try {
+						wnd.getStepRewrite().run();
+						rewriteState = !rewriteState;
+						((JButton) arg0.getSource()).setText("Ersetzung\nfinden");
+					}
+					catch(Exception e) {
+						MsgBox.error(e);
+					}
+				}
+				else {
+					try {
+						// colorize the last element in the results pane
+						NodeContainer comp = (NodeContainer)getResultsPanel().getComponent(getResultsPanel().getComponentCount() - 2);
+						comp.colorize();
+						getResultsPanel().revalidate();
+						rewriteState = !rewriteState;
+						((JButton) arg0.getSource()).setText("Ersetzen");
+					}
+					catch (Exception e) {
+						MsgBox.error(e);
+					}
 				}
 			}
         }
@@ -381,7 +430,6 @@ public class InterpreterWindow extends JFrame {
 
 			@Override
 			public void keyTyped(KeyEvent arg0) {
-				int num = wnd.getResultsPanel().getComponentCount();
 				wnd.getStepRewrite().setFirst();
 				wnd.getResultsPanel().removeAll();
 				wnd.getResultsPanel().repaint();
@@ -424,8 +472,6 @@ public class InterpreterWindow extends JFrame {
 		}
 		
 		instance.addKeyListener(new ResetAction(this));
-    	btnStep.addActionListener(new StepAction(this));
-    	btnGo.addActionListener(new RunAction(this));
     	
     	class CodifyAction implements ActionListener {
 			@Override
@@ -488,7 +534,8 @@ public class InterpreterWindow extends JFrame {
             
         	this.setVisible(true);
         	steprewrite = new StepRewrite(getRuleList(), signature, this);
-
+        	btnStep.addActionListener(new StepAction(this));
+        	btnGo.addActionListener(new RunAction(this));
         }
         catch(SyntaxErrorException e) {
         	// if not even the basic requirements are fulfilled, we only print an
@@ -570,7 +617,7 @@ public class InterpreterWindow extends JFrame {
 		Component[] comps = getResultsPanel().getComponents();
 		for(int i = 0; i < getResultsPanel().getComponentCount(); i++) {
 			if(comps[i] instanceof NodeContainer) {
-				((NodeContainer)comps[i]).disablePopupMenu();
+				((NodeContainer)comps[i]).deactivate();
 			}
 		}
 		

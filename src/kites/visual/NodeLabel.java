@@ -32,7 +32,7 @@ public class NodeLabel extends JLabel implements NodeContainer {
 	
 	public NodeLabel(ASTNode node) {
 		super();
-		this.setBackground(Color.LIGHT_GRAY);
+		this.setBackground(new Color(240, 240, 240));
 		this.setText(node.getName());
 		this.setVisible(true);
 		this.node = node;
@@ -46,9 +46,10 @@ public class NodeLabel extends JLabel implements NodeContainer {
 		this.invalidate();
 	}
 	
-	public NodeLabel(ASTNode node, LinkedList<Rule> rules, boolean highlight) {
+	public NodeLabel(ASTNode node, LinkedList<Rule> rules, boolean activate) {
 		super();
-		this.canHighlight = highlight;
+		this.setBackground(new Color(240, 240, 240));
+		this.canHighlight = !rules.isEmpty();
 		this.setText(node.getName());
 		this.setVisible(true);
 		this.setOpaque(true);
@@ -60,17 +61,15 @@ public class NodeLabel extends JLabel implements NodeContainer {
 		this.setAlignmentY(JLabel.TOP_ALIGNMENT);
 		this.setVerticalAlignment(JLabel.TOP);
 		
-		if(highlight)
-			highlight();
+		if(activate)
+			activate();
 		
 		this.invalidate();
 	}
 	
-	public void highlight() {
+	public void activate() {
 		if(canHighlight) {
-			this.setBackground(Color.YELLOW);
-			this.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
-			
+			colorize();
 			popup = new JPopupMenu();
 			Iterator<Rule> ruleIt = rules.iterator();
 			while(ruleIt.hasNext()) {
@@ -83,6 +82,15 @@ public class NodeLabel extends JLabel implements NodeContainer {
 			this.popupListener = new PopupListener();
 			this.addMouseListener(this.popupListener);
 			this.invalidate();
+		}
+	}
+	
+	public void colorize() {
+		System.out.println("NodeLabel " + node.toString() + " trying to colorize");
+		if(canHighlight) {
+			System.out.println("It's actually colorizing");
+			this.setBackground(Color.YELLOW);
+			this.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
 		}
 	}
 	
@@ -166,7 +174,7 @@ public class NodeLabel extends JLabel implements NodeContainer {
 		return getNode().toString();
 	}
 	
-	public void disablePopupMenu() {
+	public void deactivate() {
 		this.removeMouseListener(this.popupListener);
 	}
 	

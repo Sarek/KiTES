@@ -183,7 +183,6 @@ public class Decomposition {
 				// noted twice and we would not get both the leftmost and
 				// rightmost decompositions.
 				if(left == right) {
-					System.out.println("Left == right, using the left");
 					matches = ndetDecomp(left);
 				}
 				else {
@@ -210,7 +209,6 @@ public class Decomposition {
 	 * @throws SyntaxErrorException 
 	 */
 	private LinkedHashMap<ASTNode, LinkedList<Rule>> ndetLODecomp(ASTNode node, LinkedHashMap<ASTNode, LinkedList<Rule>> matches) throws SyntaxErrorException {
-		System.out.println("ndetLODecomp: " + node);
 		// check for a match in this node
 		boolean match = false;
 		Iterator<Rule> ruleChildren = rulelist.getRules();
@@ -218,7 +216,6 @@ public class Decomposition {
 		while(ruleChildren.hasNext()) {
 			Rule rule = ruleChildren.next();
 			if(match(rule.getLeft(), node)) {
-				System.out.println("Match found");
 				if(!matches.containsKey(node)) {
 					matches.put(node, new LinkedList<Rule>());
 				}
@@ -252,7 +249,6 @@ public class Decomposition {
 	 */
 
 	private LinkedHashMap<ASTNode, LinkedList<Rule>> ndetRODecomp(ASTNode node, LinkedHashMap<ASTNode, LinkedList<Rule>> matches) throws SyntaxErrorException {
-		System.out.println("ndetRODecomp: " + node);
 		// check for a match in this node
 		boolean match = false;
 		Iterator<Rule> ruleChildren = rulelist.getRules();
@@ -260,7 +256,6 @@ public class Decomposition {
 		while(ruleChildren.hasNext()) {
 			Rule rule = ruleChildren.next();
 			if(match(rule.getLeft(), node)) {
-				System.out.println("Match found");
 				if(!matches.containsKey(node)) {
 					matches.put(node, new LinkedList<Rule>());
 				}
@@ -384,7 +379,6 @@ public class Decomposition {
 		Iterator<Rule> ruleIt = rulelist.getRules();
 		while(ruleIt.hasNext()) {
 			Rule rule = ruleIt.next();
-			System.out.println("Checking:\n\t" + node + "\n\t" + rule);
 			if(match(rule.getLeft(), node)) {
 				LinkedHashMap<ASTNode, LinkedList<Rule>> retval = new LinkedHashMap<ASTNode, LinkedList<Rule>>();
 				LinkedList<Rule> rules = new LinkedList<Rule>();
