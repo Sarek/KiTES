@@ -3,11 +3,11 @@ package kites.TRSModel;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class RuleList {
+public class TRSFile {
 	LinkedList<Rule> rules;
 	ASTNode instance;
 	
-	public RuleList() {
+	public TRSFile() {
 		rules = new LinkedList<Rule>();
 		instance = null;
 	}

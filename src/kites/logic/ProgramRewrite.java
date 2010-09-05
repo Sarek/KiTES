@@ -10,7 +10,7 @@ import kites.TRSModel.ASTNode;
 import kites.TRSModel.Constant;
 import kites.TRSModel.Function;
 import kites.TRSModel.Rule;
-import kites.TRSModel.RuleList;
+import kites.TRSModel.TRSFile;
 import kites.TRSModel.Variable;
 import kites.exceptions.NoChildrenException;
 import kites.exceptions.NoRewritePossibleException;
@@ -28,7 +28,7 @@ public class ProgramRewrite {
 	boolean rewriteDone;
 	int strategy;
 	ASTNode instance;
-	RuleList rulelist;
+	TRSFile rulelist;
 	
 	/**
 	 * Initialize class for use.
@@ -37,7 +37,7 @@ public class ProgramRewrite {
 	 * @param instance The instance to be rewritten
 	 * @param rulelist The <code>RuleList</code> used for finding possible rewrites
 	 */
-	public ProgramRewrite(int strategy, ASTNode instance, RuleList rulelist) {
+	public ProgramRewrite(int strategy, ASTNode instance, TRSFile rulelist) {
 		this.strategy = strategy;
 		this.instance = instance;
 		this.rewriteDone = false;

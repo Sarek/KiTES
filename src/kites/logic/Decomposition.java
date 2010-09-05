@@ -13,7 +13,7 @@ import kites.TRSModel.Constant;
 import kites.TRSModel.Function;
 import kites.TRSModel.Rule;
 import kites.TRSModel.ASTNode;
-import kites.TRSModel.RuleList;
+import kites.TRSModel.TRSFile;
 import kites.TRSModel.Variable;
 import kites.exceptions.DecompositionException;
 import kites.exceptions.NoChildrenException;
@@ -56,9 +56,9 @@ public class Decomposition {
 	/** Execution in term rewrite system mode */
 	public static final int M_TRS = 2;
 	
-	private RuleList rulelist;
+	private TRSFile rulelist;
 	
-	public Decomposition(RuleList rulelist) {
+	public Decomposition(TRSFile rulelist) {
 		this.rulelist = rulelist;
 	}
 	

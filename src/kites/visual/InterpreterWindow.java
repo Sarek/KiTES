@@ -42,7 +42,7 @@ import org.antlr.runtime.RecognitionException;
 import kites.TRSModel.ASTNode;
 import kites.TRSModel.Constant;
 import kites.TRSModel.Rule;
-import kites.TRSModel.RuleList;
+import kites.TRSModel.TRSFile;
 import kites.exceptions.DecompositionException;
 import kites.exceptions.NoRewritePossibleException;
 import kites.exceptions.SyntaxErrorException;
@@ -57,7 +57,7 @@ public class InterpreterWindow extends JFrame {
 	 */
 	private static final long serialVersionUID = -8983460115872591238L;
 
-	private RuleList rulelist;
+	private TRSFile rulelist;
 
     private final JRadioButtonMenuItem menuInterpretationNonDet;
     private final JRadioButtonMenuItem menuInterpretationProg;
@@ -78,7 +78,7 @@ public class InterpreterWindow extends JFrame {
 	private ASTNode node;
 
 
-	public InterpreterWindow(final RuleList rulelist, final int mode) {
+	public InterpreterWindow(final TRSFile rulelist, final int mode) {
 		super();
 		setRuleList(rulelist);
 		try {
@@ -174,7 +174,7 @@ public class InterpreterWindow extends JFrame {
         source.setText(rulelist.toString());
         
         ImageIcon icoStep = new ImageIcon("icons/step-big.png");
-        JButton btnStep = new JButton("Schritt", icoStep);
+        final JButton btnStep = new JButton("Schritt", icoStep);
         btnStep.setToolTipText("Eine Reduktion durchführen");
         
         ImageIcon icoGo = new ImageIcon("icons/run-big.png");
@@ -323,27 +323,6 @@ public class InterpreterWindow extends JFrame {
         
         menuBar.add(menuEdit);
         
-        class StrategyAction implements ActionListener {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if(menuInterpretationProg.isSelected()) {
-					menuStrategy.setEnabled(true);
-					btnGo.setEnabled(true);
-				}
-				else {
-					menuStrategy.setEnabled(false);
-					btnGo.setEnabled(false);
-				}
-			}
-        }
-        
-
-        
-        StrategyAction stratAction = new StrategyAction();
-        menuInterpretationProg.addActionListener(stratAction);
-        menuInterpretationNonDet.addActionListener(stratAction);
-        menuInterpretationTRS.addActionListener(stratAction);
-        
         this.setJMenuBar(menuBar);
         
         class StepAction implements ActionListener {
@@ -376,6 +355,10 @@ public class InterpreterWindow extends JFrame {
 				}
 			}
 			
+			private void reset() {
+				rewriteState = true;
+			}
+			
 			private void clickableStep(ActionEvent arg0) {
 				try {
 					wnd.getStepRewrite().run();
@@ -392,7 +375,15 @@ public class InterpreterWindow extends JFrame {
 					try {
 						wnd.getStepRewrite().run();
 						rewriteState = !rewriteState;
-						((JButton) arg0.getSource()).setText("Ersetzung\nfinden");
+						if(getWindow().getStepRewrite().isStepPossible()) {
+							((JButton) arg0.getSource()).setText("Ersetzung\nfinden");
+						}
+						else {
+							((JButton) arg0.getSource()).setEnabled(false);
+							endResult.setText(getWindow().getStepRewrite().getInstanceTree().toString());
+							scrollEndResult.setVisible(true);
+							leftSide.revalidate();
+						}
 					}
 					catch(Exception e) {
 						MsgBox.error(e);
@@ -414,6 +405,43 @@ public class InterpreterWindow extends JFrame {
 			}
         }
         
+        class StrategyAction implements ActionListener {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if(menuInterpretationProg.isSelected()) {
+					menuStrategy.setEnabled(true);
+					getStepRewrite().setFirst();
+					getResultsPanel().removeAll();
+					scrollResults.setVisible(false);
+					endResult.setText("");
+					scrollEndResult.setVisible(false);
+					leftSide.revalidate();
+					btnStep.setEnabled(true);
+					((StepAction) btnStep.getActionListeners()[0]).reset();
+					btnGo.setEnabled(true);
+				}
+				else {
+					menuStrategy.setEnabled(false);
+					getStepRewrite().setFirst();
+					getResultsPanel().removeAll();
+					scrollResults.setVisible(false);
+					endResult.setText("");
+					scrollEndResult.setVisible(false);
+					leftSide.revalidate();
+					btnStep.setEnabled(true);
+					((StepAction) btnStep.getActionListeners()[0]).reset();
+					btnStep.setText("Schritt");
+					btnGo.setEnabled(false);
+				}
+				updateTitle();
+			}
+        }
+        
+        StrategyAction stratAction = new StrategyAction();
+        menuInterpretationProg.addActionListener(stratAction);
+        menuInterpretationNonDet.addActionListener(stratAction);
+        menuInterpretationTRS.addActionListener(stratAction);
+        
         class ResetAction implements KeyListener {
         	private InterpreterWindow wnd;
         	
@@ -433,6 +461,9 @@ public class InterpreterWindow extends JFrame {
 				wnd.getStepRewrite().setFirst();
 				wnd.getResultsPanel().removeAll();
 				wnd.getResultsPanel().repaint();
+				btnStep.setEnabled(true);
+				((StepAction) btnStep.getActionListeners()[0]).reset();
+				btnStep.setText("Schritt");
 				txtSteps.setText("");
 				txtSize.setText("");
 			}
@@ -461,6 +492,12 @@ public class InterpreterWindow extends JFrame {
 					}
 				}
 				catch(NoRewritePossibleException e) {
+					Component[] comps = wnd.getResultsPanel().getComponents();
+					for(int i = 0; i < wnd.getResultsPanel().getComponentCount(); i++) {
+						if(comps[i] instanceof NodeContainer) {
+							((NodeContainer) comps[i]).colorize();
+						}
+					}
 					endResult.setText(wnd.getStepRewrite().getInstanceTree().toString());
 					scrollEndResult.setVisible(true);
 					leftSide.revalidate();
@@ -536,6 +573,7 @@ public class InterpreterWindow extends JFrame {
         	steprewrite = new StepRewrite(getRuleList(), signature, this);
         	btnStep.addActionListener(new StepAction(this));
         	btnGo.addActionListener(new RunAction(this));
+        	updateTitle();
         }
         catch(SyntaxErrorException e) {
         	// if not even the basic requirements are fulfilled, we only print an
@@ -549,14 +587,14 @@ public class InterpreterWindow extends JFrame {
 	/**
 	 * @param rulelist the rulelist to set
 	 */
-	public void setRuleList(RuleList rulelist) {
+	public void setRuleList(TRSFile rulelist) {
 		this.rulelist = rulelist;
 	}
 
 	/**
 	 * @return the rulelist
 	 */
-	public RuleList getRuleList() {
+	public TRSFile getRuleList() {
 		return rulelist;
 	}
 	
@@ -657,5 +695,22 @@ public class InterpreterWindow extends JFrame {
 	
 	public InterpreterWindow getWindow() {
 		return this;
+	}
+	
+	public void updateTitle() {
+		String title = "KiTES - Interpretation als ";
+		switch(getMode()) {
+		case Decomposition.M_NONDET:
+			title += "ndet. ";
+		case Decomposition.M_PROGRAM:
+			title += "Programm";
+			break;
+		case Decomposition.M_TRS:
+			title += "Termersetzungssystem";
+			break;
+		default:
+			title = "KiTES";
+		}
+		this.setTitle(title);
 	}
 }

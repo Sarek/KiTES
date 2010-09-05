@@ -75,8 +75,8 @@ options {
      }
  }
 
-rulelist returns [RuleList e]:
-	{ $e = new RuleList(); }
+rulelist returns [TRSFile e]:
+	{ $e = new TRSFile(); }
 	( rule	{ $e.add($rule.e); }
 	| INCLUDE
 	)*

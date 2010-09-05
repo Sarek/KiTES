@@ -8,7 +8,7 @@ import kites.TRSModel.CodificationContainer;
 import kites.TRSModel.Constant;
 import kites.TRSModel.Function;
 import kites.TRSModel.Rule;
-import kites.TRSModel.RuleList;
+import kites.TRSModel.TRSFile;
 import kites.TRSModel.Variable;
 import kites.exceptions.NoChildrenException;
 
@@ -34,7 +34,7 @@ public class Codification {
 	private HashMap<String,CodificationContainer> codes;
 	private int curNumFunction;
 	private int curNumVariable;
-	private RuleList rulelist;
+	private TRSFile rulelist;
 	private ASTNode instance;
 	private ASTNode codifiedRuleList;
 	private ASTNode codifiedInstance;
@@ -45,7 +45,7 @@ public class Codification {
 	 * @param rulelist The <code>RuleList</code> to be codified
 	 * @param instance The instance to be codified
 	 */
-	public Codification(RuleList rulelist, ASTNode instance) {
+	public Codification(TRSFile rulelist, ASTNode instance) {
 		this.codes = new HashMap<String,CodificationContainer>();
 		this.curNumFunction = 0;
 		this.curNumVariable = 0;

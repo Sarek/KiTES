@@ -39,7 +39,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 
-import kites.TRSModel.RuleList;
+import kites.TRSModel.TRSFile;
 import kites.parser.TRSLexer;
 import kites.parser.TRSParser;
 
@@ -333,7 +333,7 @@ public class MainWindow extends JFrame {
         		TRSParser parser = new TRSParser(tokenStream);
         		
         		try {
-					RuleList rulelist = parser.rulelist();
+					TRSFile rulelist = parser.rulelist();
 					
 					List<String> lexerErrors = lexer.getErrors();
 	        		if(!lexerErrors.isEmpty()) {

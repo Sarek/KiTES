@@ -18,7 +18,7 @@ import javax.swing.SwingUtilities;
 
 import kites.TRSModel.ASTNode;
 import kites.TRSModel.Rule;
-import kites.TRSModel.RuleList;
+import kites.TRSModel.TRSFile;
 import kites.exceptions.DecompositionException;
 import kites.exceptions.NoChildrenException;
 import kites.exceptions.NoRewritePossibleException;
@@ -37,14 +37,14 @@ import org.antlr.runtime.TokenStream;
 
 public class StepRewrite {
 	private boolean firstStep;
-	private RuleList rulelist;
+	private TRSFile rulelist;
 	private ASTNode instanceTree;
 	private int mode;
 	private int strategy;
 	private HashMap<String, Integer> signature;
 	private InterpreterWindow wnd;
 	
-	public StepRewrite(RuleList rulelist, HashMap<String, Integer> signature, InterpreterWindow wnd) {
+	public StepRewrite(TRSFile rulelist, HashMap<String, Integer> signature, InterpreterWindow wnd) {
 		firstStep = true;
 		this.rulelist = rulelist;
 		this.wnd = wnd;
@@ -63,6 +63,17 @@ public class StepRewrite {
 	
 	public void setStrategy(int strategy) {
 		this.strategy = strategy;
+	}
+	
+	public boolean isStepPossible() {
+		try {
+			Decomposition decomp = new Decomposition(rulelist);
+			LinkedHashMap<ASTNode, LinkedList<Rule>> rewriteOption = decomp.getDecomp(mode, strategy, instanceTree);
+			return !rewriteOption.isEmpty();
+		}
+		catch (Exception e) {
+			return false;
+		}
 	}
 	
 	public void run() throws SyntaxErrorException, DecompositionException, NoRewritePossibleException, RecognitionException, NoChildrenException, NodeException {

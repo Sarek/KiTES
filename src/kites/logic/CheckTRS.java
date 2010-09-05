@@ -10,7 +10,7 @@ import java.util.LinkedList;
 
 import kites.TRSModel.ASTNode;
 import kites.TRSModel.Rule;
-import kites.TRSModel.RuleList;
+import kites.TRSModel.TRSFile;
 import kites.TRSModel.Variable;
 import kites.exceptions.NoChildrenException;
 import kites.exceptions.SyntaxErrorException;
@@ -20,9 +20,9 @@ import kites.exceptions.SyntaxErrorException;
  *
  */
 public class CheckTRS {
-	RuleList rulelist;
+	TRSFile rulelist;
 	
-	public CheckTRS(RuleList rulelist) {
+	public CheckTRS(TRSFile rulelist) {
 		this.rulelist = rulelist;
 	}
 
