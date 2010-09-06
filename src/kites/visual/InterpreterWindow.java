@@ -16,6 +16,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.FileWriter;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
@@ -25,6 +26,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -34,6 +36,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
@@ -284,6 +287,7 @@ public class InterpreterWindow extends JFrame {
         
         JMenuItem menuEditCopy = new JMenuItem("Ergebnis kopieren");
         JMenuItem menuEditClear = new JMenuItem("Ergebnis löschen");
+        JMenuItem menuEditSave = new JMenuItem("Regeln und Term speichern");
         
         class ClearAction implements ActionListener {
 			@Override
@@ -318,8 +322,30 @@ public class InterpreterWindow extends JFrame {
         menuEditCopy.addActionListener(new CopyAction());
         resultsPopupCopy.addActionListener(new CopyAction());
         
+        class SaveAction implements ActionListener {
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser fc = new JFileChooser();
+				int diaRetval = fc.showSaveDialog(InterpreterWindow.this);
+				
+				if(diaRetval == JFileChooser.APPROVE_OPTION) {
+					try {
+						FileWriter writer = new FileWriter(fc.getSelectedFile());
+						writer.write(getRuleList().toString());
+						writer.write("\n\n#instance " + getInstance().getText());
+						writer.close();
+					}
+					catch(Exception e) {
+						MsgBox.error(e);
+					}
+				}
+			}
+        }
+        menuEditSave.addActionListener(new SaveAction());
+        
         menuEdit.add(menuEditCopy);
         menuEdit.add(menuEditClear);
+        menuEdit.add(new JSeparator());
+        menuEdit.add(menuEditSave);
         
         menuBar.add(menuEdit);
         
@@ -520,11 +546,8 @@ public class InterpreterWindow extends JFrame {
 				catch(Exception e) {
 					MsgBox.error(e);
 				}
-				Codification codification = new Codification(getRuleList(), steprwrt.getInstanceTree());
-				steprwrt.setFirst(); // Reset the object. Future executions will have to reparse the tree...
-				codification.codify();
-				addToResults(codification.getCodifiedRuleList().toLabel());
-				addToResults(codification.getCodifiedInstance().toLabel());
+				getRuleList().setInstance(steprwrt.getInstanceTree());
+				CodificationWindow codeWin = new CodificationWindow(getRuleList());
 			}
     	}
     	btnCodify.addActionListener(new CodifyAction());

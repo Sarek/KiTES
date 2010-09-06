@@ -24,6 +24,10 @@ public class TRSFile {
 		return instance;
 	}
 	
+	public void setInstance(ASTNode instance) {
+		this.instance = instance;
+	}
+	
 	public Iterator<Rule> getRules() {
 		return rules.iterator();
 	}

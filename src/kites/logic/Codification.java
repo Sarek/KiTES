@@ -35,7 +35,6 @@ public class Codification {
 	private int curNumFunction;
 	private int curNumVariable;
 	private TRSFile rulelist;
-	private ASTNode instance;
 	private ASTNode codifiedRuleList;
 	private ASTNode codifiedInstance;
 
@@ -45,12 +44,11 @@ public class Codification {
 	 * @param rulelist The <code>RuleList</code> to be codified
 	 * @param instance The instance to be codified
 	 */
-	public Codification(TRSFile rulelist, ASTNode instance) {
+	public Codification(TRSFile rulelist) {
 		this.codes = new HashMap<String,CodificationContainer>();
 		this.curNumFunction = 0;
 		this.curNumVariable = 0;
 		this.rulelist = rulelist;
-		this.instance = instance;
 		this.codifiedInstance = null;
 		this.codifiedRuleList = null;
 	}
@@ -81,9 +79,9 @@ public class Codification {
 		
 		// Create standard form of the instance
 			// (Possibly) extend translation map of functions and variables
-		createMap(instance);
+		createMap(rulelist.getInstance());
 			// Create new instance tree in standard form
-		codifiedInstance = codifyTree(instance, true);
+		codifiedInstance = codifyTree(rulelist.getInstance(), true);
 	}
 
 	/**
