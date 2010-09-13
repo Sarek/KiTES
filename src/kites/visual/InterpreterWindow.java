@@ -106,7 +106,7 @@ public class InterpreterWindow extends JFrame {
         JMenuItem resultsPopupCopy = new JMenuItem("Ergebnis kopieren");
         resultsPopup.add(resultsPopupCopy);
         resultsPopup.add(resultsPopupClear);
-        
+                
         class PopupListener implements MouseListener {
 
     		@Override
@@ -515,6 +515,13 @@ public class InterpreterWindow extends JFrame {
 				try {
 					while(true) {
 						wnd.getStepRewrite().run();
+						
+						if(Integer.valueOf(txtSteps.getText()) % 250 == 0) {
+							System.out.println("Gotta break!");
+							if(MsgBox.question("Es wurden " + txtSteps.getText() + " Reduktionen durchgeführt.\nSoll die Berechnung abgebrochen werden?")) {
+								break;
+							}
+						}
 					}
 				}
 				catch(NoRewritePossibleException e) {

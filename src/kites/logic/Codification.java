@@ -2,6 +2,7 @@ package kites.logic;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import kites.TRSModel.ASTNode;
 import kites.TRSModel.CodificationContainer;
@@ -81,35 +82,81 @@ public class Codification {
 			// (Possibly) extend translation map of functions and variables
 		createMap(rulelist.getInstance());
 			// Create new instance tree in standard form
-		codifiedInstance = codifyTree(rulelist.getInstance(), true);
+		codifiedInstance = codifyTree(genFlatTree(rulelist.getInstance()));
 	}
 
 	/**
 	 * This method transforms a given tree to its normal form.
 	 * It is supposed the mapping has already been created.
 	 * 
-	 * @param node The tree to be performed
-	 * @param rightmost Is this a rightmost node? - Initialize with true
+	 * @param node The tree to be transformed
 	 * @return The normal form of the tree
 	 */
-	private ASTNode codifyTree(ASTNode node, boolean rightmost) {
-		// new cons
-		ASTNode cons = new Function("cons");
-		cons.add(genCode(node));
+	@SuppressWarnings("unchecked")
+	private ASTNode codifyTree(LinkedList<Object> flatTree) {
+		Iterator<Object> it = flatTree.iterator();
+		Function firstCons = new Function("cons");
+		ASTNode retval = firstCons;
 		
-		try {
-			Iterator<ASTNode> childIt = node.getChildIterator();
+		while(it.hasNext()) {
+			Object entry = it.next();
+			if(entry instanceof LinkedList<?>) {
+				firstCons.add(codifyTree((LinkedList<Object>) entry));
+			}
+			else {
+				firstCons.add(genCode((ASTNode) entry));
+			}
 			
-			while(childIt.hasNext()) {
-				cons.add(codifyTree(childIt.next(), !childIt.hasNext() && rightmost));
+			// second parameter
+			if(!it.hasNext()) {
+				firstCons.add(new Constant("empty"));
+			}
+			else {
+				Function secCons = new Function("cons");
+				firstCons.add(secCons);
+				firstCons = secCons;
 			}
 		}
-		catch(NoChildrenException e) {
-			ASTNode empty = new Constant("empty");
-			cons.add(empty);
+		
+		return retval;
+	}
+	
+	/**
+	 * This method creates a flat list from a node tree
+	 * 
+	 * @param node The tree to be flattened
+	 * @return The flattened tree
+	 */
+	private LinkedList<Object> genFlatTree(ASTNode node) {
+		LinkedList<Object> retval = new LinkedList<Object>();
+		
+		retval.add(node);
+		
+		// this will only be used when the tree only consists of a variable symbol
+		if(node instanceof Variable) {
+			return retval; // we are finished, the tree consists only of a variable
+		}
+		else {
+			try {
+				// look at children
+				Iterator<ASTNode> childIt = node.getChildIterator();
+				
+				while(childIt.hasNext()) {
+					ASTNode child = childIt.next();
+					if(child instanceof Variable) {
+						retval.add(child);
+					}
+					else {
+						retval.add(genFlatTree(child));
+					}
+				}
+			}
+			catch(NoChildrenException e) {
+				// do nothing we simply reached a leaf node
+			}
 		}
 		
-		return cons;
+		return retval;
 	}
 	
 	/**
@@ -164,8 +211,8 @@ public class Codification {
 			firstCons = new Function("cons");
 			secondCons = new Function("cons");
 			
-			secondCons.add(codifyTree(rule.getLeft(), true));
-			secondCons.add(codifyTree(rule.getRight(), true));
+			secondCons.add(codifyTree(genFlatTree(rule.getLeft())));
+			secondCons.add(codifyTree(genFlatTree(rule.getRight())));
 			firstCons.add(secondCons);
 
 			if(retval == null) {
@@ -178,6 +225,8 @@ public class Codification {
 			}
 			
 		}
+		
+		toAdd.add(new Constant("empty"));
 		return retval;
 	}
 

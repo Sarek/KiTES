@@ -85,7 +85,6 @@ public class StepRewrite {
 		NodeContainer nodelabel;
 		if(!firstStep) {
 			if(mode == Decomposition.M_PROGRAM) {
-				System.out.println("Running in program mode");
 				LinkedHashMap<ASTNode, LinkedList<Rule>> rewriteOption = decomp.getDecomp(mode, strategy, instanceTree);
 				Iterator<ASTNode> keyIt = rewriteOption.keySet().iterator();
 				if(keyIt.hasNext()) {
@@ -99,27 +98,29 @@ public class StepRewrite {
 				}
 			}
 			else {
-				System.out.println("Running in other mode");
 				instanceTree = ProgramRewrite.rewrite(instanceTree, wnd.getNode(), wnd.getRule());
 				nodelabel = instanceTree.toLabelWithRule(decomp.getDecomp(mode, strategy, instanceTree), true);
+			}
+			
+			wnd.getStepsField().setText(String.valueOf(Integer.valueOf(wnd.getStepsField().getText()) + 1));
+			if(Integer.valueOf(wnd.getSizeField().getText()) < instanceTree.getSize()) {
+				wnd.getSizeField().setText(String.valueOf(instanceTree.getSize()));
 			}
 		}
 		else {
 			if(mode == Decomposition.M_PROGRAM) {
-				System.out.println("Running in program mode first step");
 				nodelabel = instanceTree.toLabelWithRule(decomp.getDecomp(mode, strategy, instanceTree), false);
 			}
 			else {
-				System.out.println("Running in other mode first step");
 				nodelabel = instanceTree.toLabelWithRule(decomp.getDecomp(mode, strategy, instanceTree), true);
 			}
 			firstStep = false;
+			
+			wnd.getStepsField().setText("1");
+			wnd.getSizeField().setText(String.valueOf(instanceTree.getSize()));
 		}
 
 		wnd.addToResults(nodelabel);
-		wnd.getStepsField().setText("1");
-		wnd.getSizeField().setText(String.valueOf(instanceTree.getSize()));
-		firstStep = false;
 	}
 	
 	public void parseInstance() throws RecognitionException, SyntaxErrorException, NodeException {
