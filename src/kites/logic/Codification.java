@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import kites.TRSModel.ASTNode;
-import kites.TRSModel.CodificationContainer;
 import kites.TRSModel.Constant;
 import kites.TRSModel.Function;
 import kites.TRSModel.Rule;
@@ -32,7 +31,7 @@ import kites.exceptions.NoChildrenException;
  * @author sarek
  */
 public class Codification {
-	private HashMap<String,CodificationContainer> codes;
+	private HashMap<String,Integer> codes;
 	private int curNumFunction;
 	private int curNumVariable;
 	private TRSFile rulelist;
@@ -46,7 +45,7 @@ public class Codification {
 	 * @param instance The instance to be codified
 	 */
 	public Codification(TRSFile rulelist) {
-		this.codes = new HashMap<String,CodificationContainer>();
+		this.codes = new HashMap<String,Integer>();
 		this.curNumFunction = 0;
 		this.curNumVariable = 0;
 		this.rulelist = rulelist;
@@ -175,7 +174,7 @@ public class Codification {
 			retval = new Function("fun");
 		}
 		
-		retval.add(genNumber(codes.get(node.getName()).number));
+		retval.add(genNumber(codes.get(node.getName())));
 		
 		return retval;
 	}
@@ -239,14 +238,12 @@ public class Codification {
 	private void createMap(ASTNode node) {
 		if(!codes.containsKey(node.getName())) {
 			if(node instanceof Variable) {
-				CodificationContainer data = new CodificationContainer(node.getParamCount(), curNumVariable);
+				codes.put(node.getName(), curNumVariable);
 				curNumVariable++;
-				codes.put(node.getName(), data);
 			}
 			else {
-				CodificationContainer data = new CodificationContainer(node.getParamCount(), curNumFunction);
+				codes.put(node.getName(), curNumFunction);
 				curNumFunction++;
-				codes.put(node.getName(), data);
 			}
 		}
 		
