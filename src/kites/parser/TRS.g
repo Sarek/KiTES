@@ -102,7 +102,6 @@ INCLUDE:
           // replace path delimiters by the correct, platform-dependent ones
           name = name.replace("/", File.separator);
           name = name.replace("\\", File.separator);
-          System.out.println(name);
 
           // switch on new input stream
           setCharStream(new ANTLRFileStream(name));

@@ -86,9 +86,7 @@ public class NodeLabel extends JLabel implements NodeContainer {
 	}
 	
 	public void colorize() {
-		System.out.println("NodeLabel " + node.toString() + " trying to colorize");
 		if(canHighlight) {
-			System.out.println("It's actually colorizing");
 			this.setBackground(Color.YELLOW);
 			this.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
 		}
@@ -159,9 +157,6 @@ public class NodeLabel extends JLabel implements NodeContainer {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			System.out.println("Node: " + node);
-			System.out.println("Rule: " + rule);
-			System.out.println("Window: " + wnd);
 			getThis().setBackground(Color.GREEN);
 			getThis().setBorder(BorderFactory.createLineBorder(Color.GREEN));
 			getInterpreterWindow().nextStep(node, rule);

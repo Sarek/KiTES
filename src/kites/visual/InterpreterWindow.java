@@ -87,7 +87,7 @@ public class InterpreterWindow extends JFrame {
 		try {
 			javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 		} catch(Exception e) {
-			e.printStackTrace();
+			MsgBox.error(e);
 		}
 		
         setSize(1000, 500);
@@ -517,7 +517,6 @@ public class InterpreterWindow extends JFrame {
 						wnd.getStepRewrite().run();
 						
 						if(Integer.valueOf(txtSteps.getText()) % 250 == 0) {
-							System.out.println("Gotta break!");
 							if(MsgBox.question("Es wurden " + txtSteps.getText() + " Reduktionen durchgeführt.\nSoll die Berechnung abgebrochen werden?")) {
 								break;
 							}

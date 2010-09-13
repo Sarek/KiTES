@@ -114,13 +114,11 @@ public class CodificationWindow extends JFrame {
 			
 			Object[] objects = source.getComponents();
 			for(int i = 0; i < source.getComponentCount(); i++) {
-				System.out.println("Found component: " + objects[i]);
 				if(objects[i] instanceof NodeContainer) {
 					results += objects[i].toString() + System.getProperty("line.separator");
 				}
 			}
 			
-			System.out.println("Writing:\n" + results + "to the clipboard");
 			MainWindow.writeToClipboard(results, null);
 		}
     }

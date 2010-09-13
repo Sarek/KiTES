@@ -136,7 +136,6 @@ public class StepRewrite {
 		
 		List<String> lexerErrors = lexer.getErrors();
 		if(!lexerErrors.isEmpty()) {
-			System.out.println("Displaying lexer errors");
 			String errors = "Detected errors during lexing:\n\n";
 			Iterator<String> errIt = lexerErrors.iterator();
 			while(errIt.hasNext()) {
@@ -146,7 +145,6 @@ public class StepRewrite {
 		}
 		
 		List<String> parseErrors = parser.getErrors();
-		System.out.println(parseErrors);
 		if(!parseErrors.isEmpty()) {
 			String errors = "Detected errors during parsing:\n\n";
 			Iterator<String> errIt = parseErrors.iterator();

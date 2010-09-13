@@ -30,13 +30,11 @@ public class NodeBox extends JPanel implements NodeContainer {
 	public NodeBox(int params) {
 		super();
 		realContainer = new JPanel();
-		//realContainer.setBorder(BorderFactory.createLineBorder(Color.CYAN));
 		realContainer.setBackground(new Color(240, 240, 240));
 		realContainer.setLayout(new GridBagLayout());
 		realContainer.setAlignmentX(JPanel.LEFT_ALIGNMENT);
 		realContainer.setAlignmentY(JPanel.TOP_ALIGNMENT);
 		this.add(realContainer);
-		//this.setBorder(BorderFactory.createLineBorder(Color.BLUE));
 		this.setBackground(new Color(240, 240, 240));
 		this.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		this.setAlignmentX(JPanel.LEFT_ALIGNMENT);
@@ -46,14 +44,7 @@ public class NodeBox extends JPanel implements NodeContainer {
 		openPar.setHorizontalAlignment(JLabel.LEFT);
 		openPar.setAlignmentY(JLabel.TOP_ALIGNMENT);
 		openPar.setVerticalAlignment(JLabel.TOP);
-		//openPar.setBorder(BorderFactory.createLineBorder(Color.GREEN));
 		openPar.invalidate();
-//		closePar = new JLabel(")");
-//		closePar.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-//		closePar.setHorizontalAlignment(JLabel.LEFT);
-//		closePar.setAlignmentY(JLabel.TOP_ALIGNMENT);
-//		closePar.setVerticalAlignment(JLabel.BOTTOM);
-//		//closePar.setBorder(BorderFactory.createLineBorder(Color.GREEN));
 		children = new LinkedList<NodeContainer>();
 		this.params = params;
 
@@ -69,18 +60,7 @@ public class NodeBox extends JPanel implements NodeContainer {
 		realContainer.add(openPar, constraints);
 		
 		constraints.gridx = 3;
-		/*for(int i = 0; i < params - 1; i++) {
-			constraints.gridy = i;
-			JLabel comma = new JLabel(",");
-			comma.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-			comma.setHorizontalAlignment(JLabel.LEFT);
-			comma.setAlignmentY(JLabel.TOP_ALIGNMENT);
-			comma.setVerticalAlignment(JLabel.BOTTOM);
-			//comma.setBorder(BorderFactory.createLineBorder(Color.GREEN));
-			this.add(comma, constraints);
-		}*/
 		constraints.gridy = params - 1;
-		//realContainer.add(closePar, constraints);
 		this.invalidate();
 	}
 	
@@ -177,7 +157,6 @@ public class NodeBox extends JPanel implements NodeContainer {
 	}
 	
 	public void colorize() {
-		System.out.println("NodeBox trying to colorize");
 		getHead().colorize();
 		Iterator<NodeContainer> childIt = getChildIterator();
 		while(childIt.hasNext()) {
