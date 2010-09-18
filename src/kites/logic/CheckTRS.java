@@ -41,7 +41,7 @@ public class CheckTRS {
 	public void isSigmaGammaInstance(ASTNode instance) throws SyntaxErrorException {
 		HashMap<String, Integer> gamma = getGammaSignature();
 		if(!gamma.containsKey(instance.getName())) {
-			throw new SyntaxErrorException("The instance " + instance + " is not a valid Sigma-Gamma program system instance");
+			throw new SyntaxErrorException("Die Instanz " + instance + " ist keine gültige Sigma-Gamma-Programm-Instanz");
 		}
 	}
 	
@@ -66,7 +66,7 @@ public class CheckTRS {
 		while(sigmaIt.hasNext()) {
 			String symbol = sigmaIt.next();
 			if(gamma.containsKey(symbol)) {
-				throw new SyntaxErrorException("Symbol " + symbol + " is in the Sigma as well as the Gamma signature.");
+				throw new SyntaxErrorException("Symbol " + symbol + " ist sowohl in der Sigma-, als auch der Gamma-Signatur.");
 			}
 		}
 	}
@@ -104,12 +104,12 @@ public class CheckTRS {
 	 */
 	private HashMap<String, Integer> gammaSigNode(ASTNode node, HashMap<String, Integer> signature) throws SyntaxErrorException {
 		if(node instanceof Variable) {
-			throw new SyntaxErrorException("Variables are not allowed as root elements in a rule");
+			throw new SyntaxErrorException("Linke Regelseiten dürfen nicht nur aus Variablen bestehen.");
 		}
 		
 		if(signature.containsKey(node.getName())) {
 			if(signature.get(node.getName()) != node.getParamCount()) {
-				throw new SyntaxErrorException("Wrong parameter count for node: " + node);
+				throw new SyntaxErrorException("Falsche Parameter-Anzahl für Knoten: " + node);
 			}
 		}
 		else {
@@ -154,7 +154,7 @@ public class CheckTRS {
 		if(!root) {
 			if(signature.containsKey(node.getName())) {
 				if(signature.get(node.getName()) != node.getParamCount()) {
-					throw new SyntaxErrorException("Wrong parameter count for node: " + node);
+					throw new SyntaxErrorException("Falsche Parameter-Anzahl für Knoten: " + node);
 				}
 			}
 			else if(!(node instanceof Variable)) { // we don't want variables in our signature
@@ -191,10 +191,10 @@ public class CheckTRS {
 	 */
 	public static void instanceCheck(ASTNode node, HashMap<String, Integer> signature) throws SyntaxErrorException {
 		if(node instanceof Variable) {
-			throw new SyntaxErrorException("It is not allowed to use variables in an instance");
+			throw new SyntaxErrorException("Es ist nicht erlaubt, Variablen in einer Instanz zu benutzen.");
 		}
 		if(signature.containsKey(node.getName()) && signature.get(node.getName()) != node.getParamCount()) {
-			throw new SyntaxErrorException("Parameter count for \"" + node.toString() + "\" violates signature. Expecting " + signature.get(node.getName()) + " parameters");
+			throw new SyntaxErrorException("Parameter-Anzahl für \"" + node.toString() + "\" verstößt gegen Signatur. Erwarte " + signature.get(node.getName()) + " Parameter");
 		}
 		else {
 			try {
@@ -228,7 +228,7 @@ public class CheckTRS {
 			while(it.hasNext()) {
 				ASTNode rightNode = it.next().getLeft();
 				if(unifiable(rule1.getLeft(), rightNode)) {
-					throw new SyntaxErrorException("The rules " + rule1.getLeft() + " and " + rightNode + " are unifiable");
+					throw new SyntaxErrorException("Die Regeln " + rule1.getLeft() + " und " + rightNode + " sind unifizierbar");
 				}
 			}
 			pos++;
@@ -288,7 +288,7 @@ public class CheckTRS {
 	private void sigCheckNode(HashMap<String, Integer> signature, ASTNode node) throws SyntaxErrorException {
 		if(signature.containsKey(node.getName())) {
 			if(signature.get(node.getName()) != node.getParamCount())
-				throw new SyntaxErrorException("Wrong parameter count for " + node + " on line " + node.getLine());
+				throw new SyntaxErrorException("Falsche Parameter-Anzahl für " + node + " in Zeile " + node.getLine());
 		}
 		else if(!(node instanceof Variable)) { // we don't want variables in our signature
 			signature.put(node.getName(), node.getParamCount());
@@ -364,7 +364,7 @@ public class CheckTRS {
 		catch(NoChildrenException e) {
 			if(node instanceof Variable) {
 				if(!variables.contains(node.getName())) {
-					throw new SyntaxErrorException("Variable " + node.getName() + "used on right hand side of rule in spite of not being declared on left hand side. Line: " + node.getLine());
+					throw new SyntaxErrorException("Variable " + node.getName() + " wurde auf der rechten Regelseite benutzt, obwohl sie nicht auf der linken Regelseite aufgeführt wurde. Line: " + node.getLine());
 				}
 			}
 		}
@@ -396,5 +396,41 @@ public class CheckTRS {
 		}
 		
 		return variables;
+	}
+
+	public void checkLeftLinear() throws SyntaxErrorException {
+		Iterator<Rule> ruleIt = rulelist.getRules();
+		
+		while(ruleIt.hasNext()) {
+			Rule rule = ruleIt.next();
+			try {
+				isLeftLinear(rule.getLeft(), new HashSet<String>());
+			}
+			catch(SyntaxErrorException e) {
+				throw new SyntaxErrorException("Regel " + rule.toString() + " ist nicht links-linear.");
+			}
+		}
+	}
+	
+	private void isLeftLinear(ASTNode tree, HashSet<String> varSet) throws SyntaxErrorException{
+		if(tree instanceof Variable) {
+			if(varSet.contains(tree.getName())) {
+				throw(new SyntaxErrorException("nicht links-linear"));
+			}
+			else {
+				varSet.add(tree.getName());
+			}
+		}
+		else {
+			try {
+				Iterator<ASTNode> childIt = tree.getChildIterator();
+				while(childIt.hasNext()) {
+					isLeftLinear(childIt.next(), varSet);
+				}
+			}
+			catch(NoChildrenException e) {
+				// do nothing. we simply reached a leaf node
+			}
+		}
 	}
 }

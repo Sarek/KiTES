@@ -26,7 +26,7 @@ public class AboutWindow extends JFrame {
 		
 		setSize(500, 400);
 	    setLocation((screenSize.width - this.getWidth()) / 2, (screenSize.height - this.getHeight()) / 2);
-		setTitle("KiTES v0.1");
+		setTitle("KiTES v1.0");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		JLabel name = new JLabel("KiTES");

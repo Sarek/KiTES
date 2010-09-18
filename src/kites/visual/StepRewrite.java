@@ -94,7 +94,7 @@ public class StepRewrite {
 					nodelabel = instanceTree.toLabelWithRule(decomp.getDecomp(mode, strategy, instanceTree), false);
 				}
 				else {
-					throw(new NoRewritePossibleException("No more rewrites possible"));
+					throw(new NoRewritePossibleException("Keine weiteren Reduktionen möglich."));
 				}
 			}
 			else {
@@ -136,7 +136,7 @@ public class StepRewrite {
 		
 		List<String> lexerErrors = lexer.getErrors();
 		if(!lexerErrors.isEmpty()) {
-			String errors = "Detected errors during lexing:\n\n";
+			String errors = "Fehler während des Lexings festgestellt:\n\n";
 			Iterator<String> errIt = lexerErrors.iterator();
 			while(errIt.hasNext()) {
 				errors += errIt.next() + "\n";
@@ -146,7 +146,7 @@ public class StepRewrite {
 		
 		List<String> parseErrors = parser.getErrors();
 		if(!parseErrors.isEmpty()) {
-			String errors = "Detected errors during parsing:\n\n";
+			String errors = "Fehler während des Parsings festgestellt:\n\n";
 			Iterator<String> errIt = parseErrors.iterator();
 			while(errIt.hasNext()) {
 				errors += errIt.next() + "\n";

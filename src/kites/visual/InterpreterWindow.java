@@ -390,7 +390,7 @@ public class InterpreterWindow extends JFrame {
 					break;
 				
 				default:
-					MsgBox.error("Unknown interpretation mode!");
+					MsgBox.error("Unbekannter Interpretations-Modus!");
 				}
 			}
 			
@@ -598,6 +598,7 @@ public class InterpreterWindow extends JFrame {
             	menuInterpretationNonDet.setSelected(true);
             	
             	try {
+            		checktrs.checkLeftLinear();
             		checktrs.unifiabilityCheck();
             		menuInterpretationProg.setEnabled(true);
             		menuInterpretationProg.setSelected(true);

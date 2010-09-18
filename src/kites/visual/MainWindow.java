@@ -257,43 +257,7 @@ public class MainWindow extends JFrame {
         menuEditCopy.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { editor.copy(); }});
         menuEditCut.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { editor.cut(); }});
         menuEditPaste.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { editor.paste(); }});
-        
-        class OpenAction implements ActionListener {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if(hasChanged()) {
-					boolean answer = MsgBox.question("Die derzeitig geöffnete Datei wurde verändert.\n\nMöchte Sie die Änderungen sichern?");
-					if(answer) {
-						MsgBox.error("Bähähä, doing nothing");
-					}
-				}
-
-				JFileChooser fc = new JFileChooser();
-				int fcRetval = fc.showOpenDialog(MainWindow.this);
-				if(fcRetval == JFileChooser.APPROVE_OPTION) {
-					setCurFile(fc.getSelectedFile());
-					
-					try {
-						String nl = System.getProperty("line.separator");
-						String editorText = new String();
-						Scanner reader = new Scanner(getCurFile());
-						while(reader.hasNextLine()) {
-							editorText += reader.nextLine() + nl;
-						}
-						editor.setText(editorText);
-					}
-					catch(Exception e) {
-						MsgBox.error(e);
-					}
-					setChanged(false);
-				}
-			}    	
-        }
-        
-        menuFileOpen.addActionListener(new OpenAction());
-        tbOpen.addActionListener(new OpenAction());
-        
+                
         class SaveAction implements ActionListener {
         	private boolean saveAs;
         	
@@ -341,6 +305,43 @@ public class MainWindow extends JFrame {
         menuFileSave.addActionListener(new SaveAction(false));
         menuFileSaveAs.addActionListener(new SaveAction(true));
         
+        class OpenAction implements ActionListener {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if(hasChanged()) {
+					boolean answer = MsgBox.question("Die derzeitig geöffnete Datei wurde verändert.\n\nMöchten Sie die Änderungen sichern?");
+					if(answer) {
+						SaveAction savac = new SaveAction(false);
+						savac.actionPerformed(null);
+					}
+				}
+
+				JFileChooser fc = new JFileChooser();
+				int fcRetval = fc.showOpenDialog(MainWindow.this);
+				if(fcRetval == JFileChooser.APPROVE_OPTION) {
+					setCurFile(fc.getSelectedFile());
+					
+					try {
+						String nl = System.getProperty("line.separator");
+						String editorText = new String();
+						Scanner reader = new Scanner(getCurFile());
+						while(reader.hasNextLine()) {
+							editorText += reader.nextLine() + nl;
+						}
+						editor.setText(editorText);
+					}
+					catch(Exception e) {
+						MsgBox.error(e);
+					}
+					setChanged(false);
+				}
+			}    	
+        }
+        
+        menuFileOpen.addActionListener(new OpenAction());
+        tbOpen.addActionListener(new OpenAction());
+        
         class ChangeListener implements KeyListener {
 
 			@Override
@@ -386,7 +387,7 @@ public class MainWindow extends JFrame {
 					
 					List<String> lexerErrors = lexer.getErrors();
 	        		if(!lexerErrors.isEmpty()) {
-	        			String errors = "Detected errors during lexing:\n\n";
+	        			String errors = "Es wurden Fehler während des Lexings festgestellt:\n\n";
 	        			Iterator<String> errIt = lexerErrors.iterator();
 	        			while(errIt.hasNext()) {
 	        				errors += errIt.next() + "\n";
@@ -396,7 +397,7 @@ public class MainWindow extends JFrame {
 	        		}
 	        		List<String> parseErrors = parser.getErrors();
 	        		if(!parseErrors.isEmpty()) {
-	        			String errors = "Detected errors during parsing:\n\n";
+	        			String errors = "Es wurden Fehler während des Parsings festgestellt:\n\n";
 	        			Iterator<String> errIt = parseErrors.iterator();
 	        			while(errIt.hasNext()) {
 	        				errors += errIt.next() + "\n";
@@ -412,7 +413,7 @@ public class MainWindow extends JFrame {
 					MsgBox.error(e);
 				}
 				catch (Error e) {
-					MsgBox.error("Error during include:\n\n" + e.getMessage());
+					MsgBox.error("Fehler während der Einbindung von Includes:\n\n" + e.getMessage());
 				}
         	}
         }

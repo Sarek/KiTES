@@ -99,10 +99,10 @@ public class Decomposition {
 				return riDecomp(instance);
 				
 			default:
-				throw new DecompositionException("No such decomposition is available");
+				throw new DecompositionException("Keine solche Zerlegung ist bekannt.");
 			}
 		default:
-			throw new DecompositionException("No such decomposition is available");
+			throw new DecompositionException("Keine solche Zerlegung ist bekannt.");
 		}
 	}
 
