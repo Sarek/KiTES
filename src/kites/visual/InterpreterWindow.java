@@ -16,7 +16,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.io.FileWriter;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
@@ -79,10 +81,21 @@ public class InterpreterWindow extends JFrame {
     
     private Rule rule;
 	private ASTNode node;
+	private String programDirectory;
 
 
 	public InterpreterWindow(final TRSFile rulelist, final int mode) {
 		super();
+		
+		try {
+			File jarFile = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
+			programDirectory = jarFile.getParent();
+		}
+		catch(URISyntaxException e) {
+			MsgBox.error("Cannot find program path. As now everything will go horribly wrong, I quit!");
+			System.exit(-1);
+		}
+
 		setRuleList(rulelist);
 		try {
 			javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -175,16 +188,16 @@ public class InterpreterWindow extends JFrame {
         	instance.setText(rulelist.getInstance().toString());
         }
         source.setText(rulelist.toString());
-        
-        ImageIcon icoStep = new ImageIcon("icons/step-big.png");
+
+        ImageIcon icoStep = new ImageIcon(programDirectory + File.separator + "icons" + File.separator + "step-big.png");
         final JButton btnStep = new JButton("Schritt", icoStep);
         btnStep.setToolTipText("Eine Reduktion durchführen");
         
-        ImageIcon icoGo = new ImageIcon("icons/run-big.png");
+        ImageIcon icoGo = new ImageIcon(programDirectory + File.separator + "icons" + File.separator + "run-big.png");
         final JButton btnGo = new JButton("Ausführen", icoGo);
         btnGo.setToolTipText("Alle möglichen Reduktionen durchführen");
         
-        ImageIcon icoCodify = new ImageIcon("icons/codify-big.png");
+        ImageIcon icoCodify = new ImageIcon(programDirectory + File.separator + "icons" + File.separator + "codify-big.png");
         JButton btnCodify = new JButton("Kodifizieren", icoCodify);
         btnCodify.setToolTipText("Regelsystem und Instanz in Normalform überführen");
         

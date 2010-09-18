@@ -14,6 +14,7 @@ import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,9 +60,19 @@ public class MainWindow extends JFrame {
 	private static final long serialVersionUID = -5132318887749930073L;
 	private File curFile;
 	private boolean hasChanged;
+	private String programDirectory;
 
-	public MainWindow() {
+	public MainWindow() {		
 		super();
+		
+		try {
+			File jarFile = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
+			programDirectory = jarFile.getParent();
+		}
+		catch(URISyntaxException e) {
+			MsgBox.error("Cannot find program path. As now everything will go horribly wrong, I quit!");
+			System.exit(-1);
+		}
 		
 		try {
 			javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -97,15 +108,14 @@ public class MainWindow extends JFrame {
         
         // Create menu items
         JSeparator menuSeparator = new JSeparator();
-        JSeparator menuSeparator2 = new JSeparator();
         
-        ImageIcon icoOpenSmall = new ImageIcon("icons/open-small.png");
+        ImageIcon icoOpenSmall = new ImageIcon(programDirectory + File.pathSeparator + "icons" + File.pathSeparator + "open-small.png");
         JMenuItem menuFileOpen = new JMenuItem("Öffnen...", icoOpenSmall);
         
-        ImageIcon icoSaveSmall = new ImageIcon("icons/save-small.png");
+        ImageIcon icoSaveSmall = new ImageIcon(programDirectory + File.pathSeparator + "icons" + File.pathSeparator + "save-small.png");
         JMenuItem menuFileSave = new JMenuItem("Speichern", icoSaveSmall);
         
-        ImageIcon icoSaveAsSmall = new ImageIcon("icons/saveas-small.png");
+        ImageIcon icoSaveAsSmall = new ImageIcon(programDirectory + File.pathSeparator + "icons" + File.pathSeparator + "saveas-small.png");
         JMenuItem menuFileSaveAs = new JMenuItem("Speichern unter...", icoSaveAsSmall);
         JMenuItem menuFileQuit = new JMenuItem("Beenden");
         
@@ -116,6 +126,12 @@ public class MainWindow extends JFrame {
         final JMenuItem menuEditHeadersLists = new JMenuItem("Listenregeln");
         final JMenuItem menuEditHeadersIf = new JMenuItem("If-then-else");
         final JMenuItem menuEditHeadersInterpreter = new JMenuItem("Interpreter");
+        final JMenuItem menuEditHeadersBoolean = new JMenuItem("Boolesche Operationen");
+        final JMenuItem menuEditHeadersComparison = new JMenuItem("Vergleichsoperationen");
+        final JMenuItem menuEditHeadersFormula = new JMenuItem("Aussagenlogische Formeln");
+        final JMenuItem menuEditHeadersMaximum = new JMenuItem("Maximum");
+        final JMenuItem menuEditHeadersNdetInt = new JMenuItem("Nicht-deterministischer Interpreter");
+        final JMenuItem menuEditHeadersPCP = new JMenuItem("PCP-Problem");
         
         ButtonGroup grpInterpretation = new ButtonGroup();
         //JMenuItem menuInterpretationStart = new JMenuItem("Interpreter starten");
@@ -136,14 +152,20 @@ public class MainWindow extends JFrame {
         menuFile.add(menuSeparator);
         menuFile.add(menuFileQuit);
         
-        //menuEdit.add(menuEditCut);
-        //menuEdit.add(menuEditCopy);
-        //menuEdit.add(menuEditPaste);
-        //menuEdit.add(menuSeparator2);
+        menuEdit.add(menuEditCut);
+        menuEdit.add(menuEditCopy);
+        menuEdit.add(menuEditPaste);
+        menuEdit.add(new JSeparator());
         menuEdit.add(menuEditHeaders);
         menuEditHeaders.add(menuEditHeadersLists);
         menuEditHeaders.add(menuEditHeadersIf);
         menuEditHeaders.add(menuEditHeadersInterpreter);
+        menuEditHeaders.add(menuEditHeadersBoolean);
+        menuEditHeaders.add(menuEditHeadersComparison);
+        menuEditHeaders.add(menuEditHeadersFormula);
+        menuEditHeaders.add(menuEditHeadersMaximum);
+        menuEditHeaders.add(menuEditHeadersNdetInt);
+        menuEditHeaders.add(menuEditHeadersPCP);
         
         menuHelp.add(menuHelpAbout);
         
@@ -152,17 +174,17 @@ public class MainWindow extends JFrame {
          */
         JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
         
-        ImageIcon icoSaveBig = new ImageIcon("icons/save-big.png");
+        ImageIcon icoSaveBig = new ImageIcon(programDirectory + File.separator + "icons" + File.separator + "save-big.png");
         JButton tbSave = new JButton("Speichern", icoSaveBig);
         tbSave.setVerticalTextPosition(AbstractButton.BOTTOM);
         tbSave.setHorizontalTextPosition(AbstractButton.CENTER);
         
-        ImageIcon icoOpenBig = new ImageIcon("icons/open-big.png");
+        ImageIcon icoOpenBig = new ImageIcon(programDirectory + File.separator + "icons" + File.separator + "open-big.png");
         JButton tbOpen = new JButton("Öffnen", icoOpenBig);
         tbOpen.setVerticalTextPosition(AbstractButton.BOTTOM);
         tbOpen.setHorizontalTextPosition(AbstractButton.CENTER);
         
-        ImageIcon icoRun = new ImageIcon("icons/startint-big.png");
+        ImageIcon icoRun = new ImageIcon(programDirectory + File.separator + "icons" + File.separator + "startint-big.png");
         JButton tbRun = new JButton("Interpreter starten", icoRun);
         tbRun.setVerticalTextPosition(AbstractButton.BOTTOM);
         tbRun.setHorizontalTextPosition(AbstractButton.CENTER);
@@ -200,14 +222,41 @@ public class MainWindow extends JFrame {
 				else if(arg0.getSource() == menuEditHeadersInterpreter) {
 					addString = "#include lib/interpreter.trs" + System.getProperty("line.separator");
 				}
+				else if(arg0.getSource() == menuEditHeadersBoolean) {
+					addString = "#include lib/boolean.trs" + System.getProperty("line.separator");
+				}
+				else if(arg0.getSource() == menuEditHeadersComparison) {
+					addString = "#include lib/comparison.trs" + System.getProperty("line.separator");
+				}
+				else if(arg0.getSource() == menuEditHeadersFormula) {
+					addString = "#include lib/formula.trs" + System.getProperty("line.separator");
+				}
+				else if(arg0.getSource() == menuEditHeadersMaximum) {
+					addString = "#include lib/maximum.trs" + System.getProperty("line.separator");
+				}
+				else if(arg0.getSource() == menuEditHeadersNdetInt) {
+					addString = "#include lib/ndet-int.trs" + System.getProperty("line.separator");
+				}
+				else if(arg0.getSource() == menuEditHeadersPCP) {
+					addString = "#include lib/pcp.trs" + System.getProperty("line.separator");
+				}
 				
 				editor.setText(addString + editor.getText());
 			}
         }
-        
         menuEditHeadersLists.addActionListener(new IncludeAction());
         menuEditHeadersIf.addActionListener(new IncludeAction());
         menuEditHeadersInterpreter.addActionListener(new IncludeAction());
+        menuEditHeadersBoolean.addActionListener(new IncludeAction());
+        menuEditHeadersComparison.addActionListener(new IncludeAction());
+        menuEditHeadersFormula.addActionListener(new IncludeAction());
+        menuEditHeadersMaximum.addActionListener(new IncludeAction());
+        menuEditHeadersNdetInt.addActionListener(new IncludeAction());
+        menuEditHeadersPCP.addActionListener(new IncludeAction());
+        
+        menuEditCopy.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { editor.copy(); }});
+        menuEditCut.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { editor.cut(); }});
+        menuEditPaste.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { editor.paste(); }});
         
         class OpenAction implements ActionListener {
 
@@ -374,7 +423,7 @@ public class MainWindow extends JFrame {
 	/**
 	 * @param args will be ignored
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) {		
 		MainWindow main = new MainWindow();
         main.setVisible(true);
 	}

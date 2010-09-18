@@ -28,6 +28,8 @@ options {
   
   import java.util.LinkedList;
   import java.io.File;
+  import java.net.URISyntaxException;
+  import kites.visual.MsgBox;
 }
 
 @lexer::members {
@@ -95,6 +97,16 @@ INCLUDE:
 	{
        String name = f.getText();
        try {
+          String programDirectory = new String();
+          try {
+             File jarFile = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
+             programDirectory = jarFile.getParent();
+          }
+          catch(URISyntaxException e) {
+            MsgBox.error("Cannot find program path. As now everything will go horribly wrong, I quit!");
+            System.exit(-1);
+          }
+          
           // save current lexer's state
           SaveStruct ss = new SaveStruct(input);
           includes.push(ss);
@@ -102,7 +114,9 @@ INCLUDE:
           // replace path delimiters by the correct, platform-dependent ones
           name = name.replace("/", File.separator);
           name = name.replace("\\", File.separator);
-
+          if(name.charAt(0) != File.separatorChar)
+            name = programDirectory + File.separator + name;
+             
           // switch on new input stream
           setCharStream(new ANTLRFileStream(name));
           reset();
