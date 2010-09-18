@@ -13,6 +13,7 @@ import kites.TRSModel.Rule;
 import kites.TRSModel.TRSFile;
 import kites.TRSModel.Variable;
 import kites.exceptions.NoChildrenException;
+import kites.exceptions.NoRewritePossibleException;
 import kites.exceptions.SyntaxErrorException;
 
 /**
@@ -226,7 +227,7 @@ public class CheckTRS {
 			
 			while(it.hasNext()) {
 				ASTNode rightNode = it.next().getLeft();
-				if(unifiable(rule1.getLeft(), rightNode, true)) {
+				if(unifiable(rule1.getLeft(), rightNode)) {
 					throw new SyntaxErrorException("The rules " + rule1.getLeft() + " and " + rightNode + " are unifiable");
 				}
 			}
@@ -239,12 +240,17 @@ public class CheckTRS {
 	 * 
 	 * @param left The one tree
 	 * @param right The other tree
-	 * @param match Initialize as true, unless you know what you are doing.
 	 * @return <code>true</code> when trees are unifiable, <code>false</code> otherwise.
 	 * @throws SyntaxErrorException 
 	 */
-	private boolean unifiable(ASTNode left, ASTNode right, boolean match) throws SyntaxErrorException {
-		return (Decomposition.match(left, right) || Decomposition.match(right, left));
+	private boolean unifiable(ASTNode left, ASTNode right) throws SyntaxErrorException {
+		try {
+			Decomposition.match(left, right);
+			return true;
+		}
+		catch(NoRewritePossibleException e) {
+			return false;
+		}
 	}
 
 	/**
@@ -385,12 +391,7 @@ public class CheckTRS {
 		}
 		catch(NoChildrenException e) {
 			if(node instanceof Variable) {
-				if(variables.contains(node.getName())) {
-					throw new SyntaxErrorException("Rule on line " + node.getLine() + " is not left-linear.");
-				}
-				else {
-					variables.add(node.getName());
-				}
+				variables.add(node.getName());
 			}
 		}
 		

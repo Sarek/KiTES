@@ -17,6 +17,7 @@ import kites.TRSModel.TRSFile;
 import kites.TRSModel.Variable;
 import kites.exceptions.DecompositionException;
 import kites.exceptions.NoChildrenException;
+import kites.exceptions.NoRewritePossibleException;
 import kites.exceptions.SyntaxErrorException;
 
 /**
@@ -121,12 +122,16 @@ public class Decomposition {
 		
 		Iterator<Rule> ruleIterator = rulelist.getRules();
 		while(ruleIterator.hasNext()) {
-			Rule rule = ruleIterator.next();
-			if(match(rule.getLeft(), node)) {
+			try {
+				Rule rule = ruleIterator.next();
+				match(rule.getLeft(), node);
 				if(!matches.containsKey(node)) {
 					matches.put(node, new LinkedList<Rule>());
 				}
 				matches.get(node).add(rule);
+			}
+			catch(NoRewritePossibleException e) {
+				// do nothing, there simply is no match
 			}
 		}
 		
@@ -162,12 +167,16 @@ public class Decomposition {
 		
 		while(ruleChildren.hasNext()) {
 			Rule rule = ruleChildren.next();
-			if(match(rule.getLeft(), node)) {
+			try {
+				match(rule.getLeft(), node);
 				if(!matches.containsKey(node)) {
 					matches.put(node, new LinkedList<Rule>());
 				}
 				matches.get(node).add(rule);
 				match = true;
+			}
+			catch(NoRewritePossibleException e) {
+				// do nothing. there simply is no match
 			}
 		}
 		
@@ -215,12 +224,16 @@ public class Decomposition {
 		
 		while(ruleChildren.hasNext()) {
 			Rule rule = ruleChildren.next();
-			if(match(rule.getLeft(), node)) {
+			try {
+				match(rule.getLeft(), node);
 				if(!matches.containsKey(node)) {
 					matches.put(node, new LinkedList<Rule>());
 				}
 				matches.get(node).add(rule);
 				match = true;
+			}
+			catch(NoRewritePossibleException e) {
+				// do nothing. there simply is no match
 			}
 		}
 		
@@ -255,12 +268,16 @@ public class Decomposition {
 		
 		while(ruleChildren.hasNext()) {
 			Rule rule = ruleChildren.next();
-			if(match(rule.getLeft(), node)) {
+			try {
+				match(rule.getLeft(), node);
 				if(!matches.containsKey(node)) {
 					matches.put(node, new LinkedList<Rule>());
 				}
 				matches.get(node).add(rule);
 				match = true;
+			}
+			catch(NoRewritePossibleException e) {
+				// do nothing. there simply is no match
 			}
 		}
 		
@@ -278,54 +295,78 @@ public class Decomposition {
 		return matches;
 	}
 
+	public static HashMap<String, ASTNode> match(ASTNode rule, ASTNode node) throws SyntaxErrorException, NoRewritePossibleException {
+		return realmatch(rule, node, new HashMap<String, ASTNode>(), new HashMap<String, ASTNode>());
+	}
 	/**
 	 * Checks whether two trees match.
 	 * A match is achieved if they are structurally equal and the symbols used
 	 * match each other. The only exception are <code>Variable</code>s which match
-	 * everything including subtrees.
+	 * everything including subtrees. Nevertheless, we carry a list of variable
+	 * assignments around to check that we only assign them once and only one value
+	 * (i. e. tree).
+	 * It is perfectly possible to check for unifiability with this, as we also check
+	 * the variables in the node tree as well.
+	 * <b>BUT: If you need a correct assignment of variables, the node tree HAS TO BE
+	 * A GROUND TERM! This is not checked by this routine, so make sure of it yourself
+	 * or variables WILL be assigned other variables as values!</b>
 	 * 
 	 * @param rule The rule (or tree 1)
 	 * @param node The tree (or tree 2)
+	 * @param map A pre-existing mapping of variables to trees (initialize with empty map)
 	 * @return true if both trees match, false otherwise
 	 * @throws SyntaxErrorException
 	 */
-	public static boolean match(ASTNode rule, ASTNode node) throws SyntaxErrorException {
-		boolean retval = false;
-		
-		if(rule instanceof Variable || node instanceof Variable) {
-			return true;
+	private static HashMap<String, ASTNode> realmatch(ASTNode rule, ASTNode node, HashMap<String, ASTNode> map, HashMap<String, ASTNode> nodeMap) throws SyntaxErrorException, NoRewritePossibleException {
+		if(rule instanceof Variable) {
+			// check if the variable has already been assigned a value
+			if(map.containsKey(rule.getName())) {
+				realmatch(map.get(rule.getName()), node, map, nodeMap);
+			}
+			else {
+				map.put(rule.getName(), node);
+			}
 		}
-		if(rule.getName().equals(node.getName())) {
-			retval = true;
-			
+		else if(node instanceof Variable) {
+			// check if the variable has already been assigned a value
+			if(nodeMap.containsKey(node.getName())) {
+				realmatch(nodeMap.get(node.getName()), rule, nodeMap, map);
+			}
+			else {
+				nodeMap.put(node.getName(), rule);
+			}
+		}
+		else if(rule.getName().equals(node.getName())) {
 			try {
 				Iterator<ASTNode> ruleChildren = rule.getChildIterator();
 				Iterator<ASTNode> nodeChildren = node.getChildIterator();
 
 				while(ruleChildren.hasNext()) {
-					if(!match(ruleChildren.next(), nodeChildren.next())) {
-						retval = false;
-					}
+					realmatch(ruleChildren.next(), nodeChildren.next(), map, nodeMap);
 				}
 			}
 			catch(NoChildrenException e) {
-				if(rule instanceof Constant && node instanceof Constant) {
-					retval = true; // we are still inside the if, so the names match
-				}
-				else {
+				if(!(rule instanceof Constant && node instanceof Constant)) {
 					// Something very weird happened:
 					// The elements have the same names, but are not of the same type
-					// We should really do better syntax checking to prevent this!
+					// If this ever happens, there is a big, big error in the syntax checking algorithm!
 					throw new SyntaxErrorException("Mismatch between equally named nodes: One is a constant, the other a function! Rule: " + rule + ", Node: " + node);
 				}
 			}
 			catch(NoSuchElementException e) {
 				// Now something equally weird happened:
 				// The elements number of parameters is not same, although their names are equal.
+				// Again: If this happens --> syntax checking broken
 				throw new SyntaxErrorException("The number of parameters of " + rule + " and " + node + "is not equal, although they have the same names");
 			}
 		}
-		return retval;
+		else {
+			System.out.println(rule.toString());
+			System.out.println(node.toString());
+			throw(new NoRewritePossibleException());
+		}
+		
+		return map;
 	}
 	
 	/**
@@ -354,12 +395,16 @@ public class Decomposition {
 		Iterator<Rule> ruleIt = rulelist.getRules();
 		while(ruleIt.hasNext()) {
 			Rule rule = ruleIt.next();
-			if(match(rule.getLeft(), node)) {
+			try {
+				match(rule.getLeft(), node);
 				LinkedHashMap<ASTNode, LinkedList<Rule>> retval = new LinkedHashMap<ASTNode, LinkedList<Rule>>();
 				LinkedList<Rule> rules = new LinkedList<Rule>();
 				rules.add(rule);
 				retval.put(node, rules);
 				return retval;
+			}
+			catch(NoRewritePossibleException e) {
+				// do nothing. there simply is no match.
 			}
 		}
 		
@@ -379,12 +424,16 @@ public class Decomposition {
 		Iterator<Rule> ruleIt = rulelist.getRules();
 		while(ruleIt.hasNext()) {
 			Rule rule = ruleIt.next();
-			if(match(rule.getLeft(), node)) {
+			try {
+				match(rule.getLeft(), node);
 				LinkedHashMap<ASTNode, LinkedList<Rule>> retval = new LinkedHashMap<ASTNode, LinkedList<Rule>>();
 				LinkedList<Rule> rules = new LinkedList<Rule>();
 				rules.add(rule);
 				retval.put(node, rules);
 				return retval;
+			}
+			catch(NoRewritePossibleException e) {
+				// do nothing. there simply is no match
 			}
 		}
 		
@@ -418,12 +467,16 @@ public class Decomposition {
 		Iterator<Rule> ruleIt = rulelist.getRules();
 		while(ruleIt.hasNext()) {
 			Rule rule = ruleIt.next();
-			if(match(rule.getLeft(), node)) {
+			try {
+				match(rule.getLeft(), node);
 				LinkedHashMap<ASTNode, LinkedList<Rule>> retval = new LinkedHashMap<ASTNode, LinkedList<Rule>>();
 				LinkedList<Rule> rules = new LinkedList<Rule>();
 				rules.add(rule);
 				retval.put(node, rules);
 				return retval;
+			}
+			catch(NoRewritePossibleException e) {
+				// do nothing. there simply is no match.
 			}
 		}
 		
@@ -470,12 +523,16 @@ public class Decomposition {
 		Iterator<Rule> ruleIt = rulelist.getRules();
 		while(ruleIt.hasNext()) {
 			Rule rule = ruleIt.next();
-			if(match(rule.getLeft(), node)) {
+			try {
+				match(rule.getLeft(), node);
 				LinkedHashMap<ASTNode, LinkedList<Rule>> retval = new LinkedHashMap<ASTNode, LinkedList<Rule>>();
 				LinkedList<Rule> rules = new LinkedList<Rule>();
 				rules.add(rule);
 				retval.put(node, rules);
 				return retval;
+			}
+			catch(NoRewritePossibleException e) {
+				// do nothing. there simply is no match.
 			}
 		}
 		

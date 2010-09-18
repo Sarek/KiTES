@@ -15,6 +15,7 @@ import kites.TRSModel.Variable;
 import kites.exceptions.NoChildrenException;
 import kites.exceptions.NoRewritePossibleException;
 import kites.exceptions.SyntaxErrorException;
+import kites.visual.MsgBox;
 
 /**
  * @author sarek
@@ -376,8 +377,15 @@ public class ProgramRewrite {
 		
 		// check if we shall rewrite this node
 		if(tree == node) {
-			HashMap<String, ASTNode> assignments = getVarAssignments(tree, rule.getLeft(), new HashMap<String, ASTNode>());
-			retval = buildTree(rule.getRight(), assignments);
+			try {
+				HashMap<String, ASTNode> assignments = Decomposition.match(rule.getLeft(), tree);
+				retval = buildTree(rule.getRight(), assignments);
+			}
+			catch(NoRewritePossibleException e) {
+				// this should never happen
+				MsgBox.error("The rule " + rule.toString() + " and the tree " + tree.toString() + "did not match, although they were chosen to be rewritten");
+				return null;
+			}
 		}
 		else if(tree instanceof Function) {
 			// create new node and add new children

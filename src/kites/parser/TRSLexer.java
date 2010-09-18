@@ -1,4 +1,4 @@
-// $ANTLR 3.0.1 /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g 2010-09-13 16:48:42
+// $ANTLR 3.0.1 /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g 2010-09-18 03:37:52
 
   package kites.parser;
   
@@ -157,17 +157,17 @@ public class TRSLexer extends Lexer {
     public final void mIDENT() throws RecognitionException {
         try {
             int _type = IDENT;
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:153:6: ( 'a' .. 'z' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )* )
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:154:2: 'a' .. 'z' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:153:6: ( 'a' .. 'z' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | '+' | '*' | 'ä' | 'ö' | 'ü' | 'Ä' | 'Ö' | 'Ü' | '~' | 'ß' )* )
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:154:2: 'a' .. 'z' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | '+' | '*' | 'ä' | 'ö' | 'ü' | 'Ä' | 'Ö' | 'Ü' | '~' | 'ß' )*
             {
             matchRange('a','z'); 
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:155:2: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:155:2: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | '+' | '*' | 'ä' | 'ö' | 'ü' | 'Ä' | 'Ö' | 'Ü' | '~' | 'ß' )*
             loop2:
             do {
                 int alt2=2;
                 int LA2_0 = input.LA(1);
 
-                if ( ((LA2_0>='0' && LA2_0<='9')||(LA2_0>='A' && LA2_0<='Z')||(LA2_0>='a' && LA2_0<='z')) ) {
+                if ( ((LA2_0>='*' && LA2_0<='+')||LA2_0=='-'||(LA2_0>='0' && LA2_0<='9')||(LA2_0>='A' && LA2_0<='Z')||LA2_0=='_'||(LA2_0>='a' && LA2_0<='z')||LA2_0=='~'||LA2_0=='\u00C4'||LA2_0=='\u00D6'||LA2_0=='\u00DC'||LA2_0=='\u00DF'||LA2_0=='\u00E4'||LA2_0=='\u00F6'||LA2_0=='\u00FC') ) {
                     alt2=1;
                 }
 
@@ -176,7 +176,7 @@ public class TRSLexer extends Lexer {
             	case 1 :
             	    // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:
             	    {
-            	    if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||(input.LA(1)>='a' && input.LA(1)<='z') ) {
+            	    if ( (input.LA(1)>='*' && input.LA(1)<='+')||input.LA(1)=='-'||(input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||input.LA(1)=='~'||input.LA(1)=='\u00C4'||input.LA(1)=='\u00D6'||input.LA(1)=='\u00DC'||input.LA(1)=='\u00DF'||input.LA(1)=='\u00E4'||input.LA(1)=='\u00F6'||input.LA(1)=='\u00FC' ) {
             	        input.consume();
 
             	    }
@@ -293,17 +293,17 @@ public class TRSLexer extends Lexer {
     public final void mVAR() throws RecognitionException {
         try {
             int _type = VAR;
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:162:4: ( 'A' .. 'Z' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )* )
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:163:2: 'A' .. 'Z' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:162:4: ( 'A' .. 'Z' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | '+' | '*' | 'ä' | 'ö' | 'ü' | 'Ä' | 'Ö' | 'Ü' | '~' | 'ß' )* )
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:163:2: 'A' .. 'Z' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | '+' | '*' | 'ä' | 'ö' | 'ü' | 'Ä' | 'Ö' | 'Ü' | '~' | 'ß' )*
             {
             matchRange('A','Z'); 
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:164:2: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:164:3: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | '+' | '*' | 'ä' | 'ö' | 'ü' | 'Ä' | 'Ö' | 'Ü' | '~' | 'ß' )*
             loop4:
             do {
                 int alt4=2;
                 int LA4_0 = input.LA(1);
 
-                if ( ((LA4_0>='0' && LA4_0<='9')||(LA4_0>='A' && LA4_0<='Z')||(LA4_0>='a' && LA4_0<='z')) ) {
+                if ( ((LA4_0>='*' && LA4_0<='+')||LA4_0=='-'||(LA4_0>='0' && LA4_0<='9')||(LA4_0>='A' && LA4_0<='Z')||LA4_0=='_'||(LA4_0>='a' && LA4_0<='z')||LA4_0=='~'||LA4_0=='\u00C4'||LA4_0=='\u00D6'||LA4_0=='\u00DC'||LA4_0=='\u00DF'||LA4_0=='\u00E4'||LA4_0=='\u00F6'||LA4_0=='\u00FC') ) {
                     alt4=1;
                 }
 
@@ -312,7 +312,7 @@ public class TRSLexer extends Lexer {
             	case 1 :
             	    // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:
             	    {
-            	    if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||(input.LA(1)>='a' && input.LA(1)<='z') ) {
+            	    if ( (input.LA(1)>='*' && input.LA(1)<='+')||input.LA(1)=='-'||(input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||input.LA(1)=='~'||input.LA(1)=='\u00C4'||input.LA(1)=='\u00D6'||input.LA(1)=='\u00DC'||input.LA(1)=='\u00DF'||input.LA(1)=='\u00E4'||input.LA(1)=='\u00F6'||input.LA(1)=='\u00FC' ) {
             	        input.consume();
 
             	    }
@@ -776,14 +776,14 @@ public class TRSLexer extends Lexer {
             "\5\uffff\1\11\2\uffff\1\11\4\uffff\1\11\21\uffff\1\11\5\uffff"+
             "\1\11",
             "\1\13\37\uffff\1\12",
-            "\2\11\1\uffff\3\11\12\14\7\uffff\32\14\1\uffff\1\11\2\uffff"+
-            "\1\11\1\uffff\32\14\3\uffff\1\11\105\uffff\1\11\21\uffff\1\11"+
-            "\5\uffff\1\11\2\uffff\1\11\4\uffff\1\11\21\uffff\1\11\5\uffff"+
-            "\1\11",
-            "\2\11\1\uffff\3\11\12\17\7\uffff\32\17\1\uffff\1\11\2\uffff"+
-            "\1\11\1\uffff\32\17\3\uffff\1\11\105\uffff\1\11\21\uffff\1\11"+
-            "\5\uffff\1\11\2\uffff\1\11\4\uffff\1\11\21\uffff\1\11\5\uffff"+
-            "\1\11",
+            "\2\14\1\uffff\1\14\2\11\12\14\7\uffff\32\14\1\uffff\1\11\2\uffff"+
+            "\1\14\1\uffff\32\14\3\uffff\1\14\105\uffff\1\14\21\uffff\1\14"+
+            "\5\uffff\1\14\2\uffff\1\14\4\uffff\1\14\21\uffff\1\14\5\uffff"+
+            "\1\14",
+            "\2\17\1\uffff\1\17\2\11\12\17\7\uffff\32\17\1\uffff\1\11\2\uffff"+
+            "\1\17\1\uffff\32\17\3\uffff\1\17\105\uffff\1\17\21\uffff\1\17"+
+            "\5\uffff\1\17\2\uffff\1\17\4\uffff\1\17\21\uffff\1\17\5\uffff"+
+            "\1\17",
             "\1\20\4\uffff\1\21",
             "",
             "\1\22",
@@ -792,16 +792,16 @@ public class TRSLexer extends Lexer {
             "",
             "\1\23",
             "",
-            "\2\11\1\uffff\3\11\12\14\7\uffff\32\14\1\uffff\1\11\2\uffff"+
-            "\1\11\1\uffff\32\14\3\uffff\1\11\105\uffff\1\11\21\uffff\1\11"+
-            "\5\uffff\1\11\2\uffff\1\11\4\uffff\1\11\21\uffff\1\11\5\uffff"+
-            "\1\11",
+            "\2\14\1\uffff\1\14\2\11\12\14\7\uffff\32\14\1\uffff\1\11\2\uffff"+
+            "\1\14\1\uffff\32\14\3\uffff\1\14\105\uffff\1\14\21\uffff\1\14"+
+            "\5\uffff\1\14\2\uffff\1\14\4\uffff\1\14\21\uffff\1\14\5\uffff"+
+            "\1\14",
             "",
             "",
-            "\2\11\1\uffff\3\11\12\17\7\uffff\32\17\1\uffff\1\11\2\uffff"+
-            "\1\11\1\uffff\32\17\3\uffff\1\11\105\uffff\1\11\21\uffff\1\11"+
-            "\5\uffff\1\11\2\uffff\1\11\4\uffff\1\11\21\uffff\1\11\5\uffff"+
-            "\1\11",
+            "\2\17\1\uffff\1\17\2\11\12\17\7\uffff\32\17\1\uffff\1\11\2\uffff"+
+            "\1\17\1\uffff\32\17\3\uffff\1\17\105\uffff\1\17\21\uffff\1\17"+
+            "\5\uffff\1\17\2\uffff\1\17\4\uffff\1\17\21\uffff\1\17\5\uffff"+
+            "\1\17",
             "\52\25\1\24\1\26\1\25\15\26\7\25\32\26\1\25\1\26\2\25\1\26\1"+
             "\25\32\26\3\25\1\26\105\25\1\26\21\25\1\26\5\25\1\26\2\25\1"+
             "\26\4\25\1\26\21\25\1\26\5\25\1\26\uff02\25",
