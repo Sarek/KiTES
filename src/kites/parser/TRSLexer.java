@@ -1,4 +1,4 @@
-// $ANTLR 3.0.1 /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g 2010-09-18 22:24:23
+// $ANTLR 3.0.1 /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g 2010-09-19 16:54:46
 
   package kites.parser;
   
@@ -103,12 +103,12 @@ public class TRSLexer extends Lexer {
             int _type = INCLUDE;
             Token f=null;
 
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:95:8: ( '#include' ( WS )? f= FILENAME )
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:96:2: '#include' ( WS )? f= FILENAME
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:132:8: ( '#include' ( WS )? f= FILENAME )
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:133:2: '#include' ( WS )? f= FILENAME
             {
             match("#include"); 
 
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:96:13: ( WS )?
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:133:13: ( WS )?
             int alt1=2;
             int LA1_0 = input.LA(1);
 
@@ -117,7 +117,7 @@ public class TRSLexer extends Lexer {
             }
             switch (alt1) {
                 case 1 :
-                    // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:96:14: WS
+                    // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:133:14: WS
                     {
                     mWS(); 
 
@@ -171,11 +171,11 @@ public class TRSLexer extends Lexer {
     public final void mIDENT() throws RecognitionException {
         try {
             int _type = IDENT;
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:167:6: ( 'a' .. 'z' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | '+' | '*' | 'ä' | 'ö' | 'ü' | 'Ä' | 'Ö' | 'Ü' | '~' | 'ß' )* )
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:168:2: 'a' .. 'z' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | '+' | '*' | 'ä' | 'ö' | 'ü' | 'Ä' | 'Ö' | 'Ü' | '~' | 'ß' )*
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:204:6: ( 'a' .. 'z' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | '+' | '*' | 'ä' | 'ö' | 'ü' | 'Ä' | 'Ö' | 'Ü' | '~' | 'ß' )* )
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:205:2: 'a' .. 'z' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | '+' | '*' | 'ä' | 'ö' | 'ü' | 'Ä' | 'Ö' | 'Ü' | '~' | 'ß' )*
             {
             matchRange('a','z'); 
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:169:2: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | '+' | '*' | 'ä' | 'ö' | 'ü' | 'Ä' | 'Ö' | 'Ü' | '~' | 'ß' )*
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:206:2: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | '+' | '*' | 'ä' | 'ö' | 'ü' | 'Ä' | 'Ö' | 'Ü' | '~' | 'ß' )*
             loop2:
             do {
                 int alt2=2;
@@ -223,10 +223,10 @@ public class TRSLexer extends Lexer {
     public final void mINC() throws RecognitionException {
         try {
             int _type = INC;
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:172:4: ( ( '#include' | '#INCLUDE' | '#Include' ) )
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:173:2: ( '#include' | '#INCLUDE' | '#Include' )
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:209:4: ( ( '#include' | '#INCLUDE' | '#Include' ) )
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:210:2: ( '#include' | '#INCLUDE' | '#Include' )
             {
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:173:2: ( '#include' | '#INCLUDE' | '#Include' )
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:210:2: ( '#include' | '#INCLUDE' | '#Include' )
             int alt3=3;
             int LA3_0 = input.LA(1);
 
@@ -244,7 +244,7 @@ public class TRSLexer extends Lexer {
                     }
                     else {
                         NoViableAltException nvae =
-                            new NoViableAltException("173:2: ( '#include' | '#INCLUDE' | '#Include' )", 3, 2, input);
+                            new NoViableAltException("210:2: ( '#include' | '#INCLUDE' | '#Include' )", 3, 2, input);
 
                         throw nvae;
                     }
@@ -254,20 +254,20 @@ public class TRSLexer extends Lexer {
                 }
                 else {
                     NoViableAltException nvae =
-                        new NoViableAltException("173:2: ( '#include' | '#INCLUDE' | '#Include' )", 3, 1, input);
+                        new NoViableAltException("210:2: ( '#include' | '#INCLUDE' | '#Include' )", 3, 1, input);
 
                     throw nvae;
                 }
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("173:2: ( '#include' | '#INCLUDE' | '#Include' )", 3, 0, input);
+                    new NoViableAltException("210:2: ( '#include' | '#INCLUDE' | '#Include' )", 3, 0, input);
 
                 throw nvae;
             }
             switch (alt3) {
                 case 1 :
-                    // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:173:3: '#include'
+                    // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:210:3: '#include'
                     {
                     match("#include"); 
 
@@ -275,7 +275,7 @@ public class TRSLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:173:16: '#INCLUDE'
+                    // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:210:16: '#INCLUDE'
                     {
                     match("#INCLUDE"); 
 
@@ -283,7 +283,7 @@ public class TRSLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:173:29: '#Include'
+                    // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:210:29: '#Include'
                     {
                     match("#Include"); 
 
@@ -307,11 +307,11 @@ public class TRSLexer extends Lexer {
     public final void mVAR() throws RecognitionException {
         try {
             int _type = VAR;
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:176:4: ( 'A' .. 'Z' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | '+' | '*' | 'ä' | 'ö' | 'ü' | 'Ä' | 'Ö' | 'Ü' | '~' | 'ß' )* )
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:177:2: 'A' .. 'Z' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | '+' | '*' | 'ä' | 'ö' | 'ü' | 'Ä' | 'Ö' | 'Ü' | '~' | 'ß' )*
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:213:4: ( 'A' .. 'Z' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | '+' | '*' | 'ä' | 'ö' | 'ü' | 'Ä' | 'Ö' | 'Ü' | '~' | 'ß' )* )
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:214:2: 'A' .. 'Z' ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | '+' | '*' | 'ä' | 'ö' | 'ü' | 'Ä' | 'Ö' | 'Ü' | '~' | 'ß' )*
             {
             matchRange('A','Z'); 
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:178:3: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | '+' | '*' | 'ä' | 'ö' | 'ü' | 'Ä' | 'Ö' | 'Ü' | '~' | 'ß' )*
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:215:3: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' | '_' | '+' | '*' | 'ä' | 'ö' | 'ü' | 'Ä' | 'Ö' | 'Ü' | '~' | 'ß' )*
             loop4:
             do {
                 int alt4=2;
@@ -359,10 +359,10 @@ public class TRSLexer extends Lexer {
     public final void mFILENAME() throws RecognitionException {
         try {
             int _type = FILENAME;
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:181:9: ( ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | 'Ä' | 'ä' | 'Ö' | 'ö' | 'Ü' | 'ü' | 'ß' | '.' | '-' | '_' | '/' | '\\\\' | '~' | '+' | '*' )+ )
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:182:3: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | 'Ä' | 'ä' | 'Ö' | 'ö' | 'Ü' | 'ü' | 'ß' | '.' | '-' | '_' | '/' | '\\\\' | '~' | '+' | '*' )+
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:218:9: ( ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | 'Ä' | 'ä' | 'Ö' | 'ö' | 'Ü' | 'ü' | 'ß' | '.' | '-' | '_' | '/' | '\\\\' | '~' | '+' | '*' )+ )
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:219:3: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | 'Ä' | 'ä' | 'Ö' | 'ö' | 'Ü' | 'ü' | 'ß' | '.' | '-' | '_' | '/' | '\\\\' | '~' | '+' | '*' )+
             {
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:182:3: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | 'Ä' | 'ä' | 'Ö' | 'ö' | 'Ü' | 'ü' | 'ß' | '.' | '-' | '_' | '/' | '\\\\' | '~' | '+' | '*' )+
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:219:3: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | 'Ä' | 'ä' | 'Ö' | 'ö' | 'Ü' | 'ü' | 'ß' | '.' | '-' | '_' | '/' | '\\\\' | '~' | '+' | '*' )+
             int cnt5=0;
             loop5:
             do {
@@ -415,10 +415,10 @@ public class TRSLexer extends Lexer {
     public final void mWS() throws RecognitionException {
         try {
             int _type = WS;
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:200:3: ( ( ' ' | ',' | '\\n' | '\\r' | '\\t' | '\\f' )+ )
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:201:2: ( ' ' | ',' | '\\n' | '\\r' | '\\t' | '\\f' )+
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:237:3: ( ( ' ' | ',' | '\\n' | '\\r' | '\\t' | '\\f' )+ )
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:238:2: ( ' ' | ',' | '\\n' | '\\r' | '\\t' | '\\f' )+
             {
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:201:2: ( ' ' | ',' | '\\n' | '\\r' | '\\t' | '\\f' )+
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:238:2: ( ' ' | ',' | '\\n' | '\\r' | '\\t' | '\\f' )+
             int cnt6=0;
             loop6:
             do {
@@ -472,12 +472,12 @@ public class TRSLexer extends Lexer {
     public final void mCOMMENT() throws RecognitionException {
         try {
             int _type = COMMENT;
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:206:8: ( '//' ( . )* ( '\\n' | '\\r' )+ )
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:207:3: '//' ( . )* ( '\\n' | '\\r' )+
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:243:8: ( '//' ( . )* ( '\\n' | '\\r' )+ )
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:244:3: '//' ( . )* ( '\\n' | '\\r' )+
             {
             match("//"); 
 
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:208:3: ( . )*
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:245:3: ( . )*
             loop7:
             do {
                 int alt7=2;
@@ -493,7 +493,7 @@ public class TRSLexer extends Lexer {
 
                 switch (alt7) {
             	case 1 :
-            	    // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:208:3: .
+            	    // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:245:3: .
             	    {
             	    matchAny(); 
 
@@ -505,7 +505,7 @@ public class TRSLexer extends Lexer {
                 }
             } while (true);
 
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:209:3: ( '\\n' | '\\r' )+
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:246:3: ( '\\n' | '\\r' )+
             int cnt8=0;
             loop8:
             do {
@@ -559,12 +559,12 @@ public class TRSLexer extends Lexer {
     public final void mMULTI_COMMENT() throws RecognitionException {
         try {
             int _type = MULTI_COMMENT;
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:212:14: ( '/*' ( . )* '*/' )
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:213:2: '/*' ( . )* '*/'
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:249:14: ( '/*' ( . )* '*/' )
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:250:2: '/*' ( . )* '*/'
             {
             match("/*"); 
 
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:214:2: ( . )*
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:251:2: ( . )*
             loop9:
             do {
                 int alt9=2;
@@ -589,7 +589,7 @@ public class TRSLexer extends Lexer {
 
                 switch (alt9) {
             	case 1 :
-            	    // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:214:2: .
+            	    // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:251:2: .
             	    {
             	    matchAny(); 
 
@@ -618,8 +618,8 @@ public class TRSLexer extends Lexer {
     public final void mLPAR() throws RecognitionException {
         try {
             int _type = LPAR;
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:218:5: ( '(' )
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:219:2: '('
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:255:5: ( '(' )
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:256:2: '('
             {
             match('('); 
 
@@ -636,8 +636,8 @@ public class TRSLexer extends Lexer {
     public final void mRPAR() throws RecognitionException {
         try {
             int _type = RPAR;
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:222:5: ( ')' )
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:223:2: ')'
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:259:5: ( ')' )
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:260:2: ')'
             {
             match(')'); 
 
@@ -654,8 +654,8 @@ public class TRSLexer extends Lexer {
     public final void mRARROW() throws RecognitionException {
         try {
             int _type = RARROW;
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:226:7: ( '-->' )
-            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:227:2: '-->'
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:263:7: ( '-->' )
+            // /home/sarek/Documents/Eclipse Workspace/KiTES/src/kites/parser/TRS.g:264:2: '-->'
             {
             match("-->"); 
 
