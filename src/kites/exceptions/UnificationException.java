@@ -12,6 +12,11 @@ package kites.exceptions;
 public class UnificationException extends Exception {
 
 	/**
+	 * Eclipse wants this class to have this
+	 */
+	private static final long serialVersionUID = 4643895786901315520L;
+
+	/**
 	 * @param message
 	 */
 	public UnificationException(String message) {

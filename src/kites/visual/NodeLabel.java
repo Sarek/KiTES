@@ -1,7 +1,6 @@
 package kites.visual;
 
 import java.awt.Color;
-import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -201,7 +200,6 @@ public class NodeLabel extends JLabel implements NodeContainer {
 	 */
 	private class MenuAction implements ActionListener {
 		private ASTNode node;
-		private InterpreterWindow wnd;
 		private Rule rule;
 		
 		public MenuAction(ASTNode node, Rule rule) {

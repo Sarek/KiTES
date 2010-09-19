@@ -12,7 +12,6 @@ import kites.TRSModel.Function;
 import kites.TRSModel.Rule;
 import kites.TRSModel.TRSFile;
 import kites.TRSModel.Variable;
-import kites.exceptions.NoChildrenException;
 import kites.exceptions.NoRewritePossibleException;
 import kites.exceptions.SyntaxErrorException;
 import kites.visual.MsgBox;
@@ -82,35 +81,6 @@ public class ProgramRewrite {
 			// and error message and die with dignity.
 			throw new SyntaxErrorException("Found an unknown node type while rewriting. Node content: " + right + ". Node type: " + right.getClass());
 		}
-	}
-
-	/**
-	 * Find the variable assignments needed to apply a rule.
-	 * 
-	 * @param node The node to be rewritten
-	 * @param rule The rule to be applied
-	 * @param assignments Temporary map of known assignments - Initialize as empty
-	 * @return Map of Variable-->Tree assignments
-	 */
-	private static HashMap<String, ASTNode> getVarAssignments(ASTNode node, ASTNode rule, HashMap<String, ASTNode> assignments) {
-		if(rule instanceof Variable) {
-			assignments.put(rule.getName(), node);
-		}
-		else {
-			try {
-				Iterator<ASTNode> ruleIt = rule.getChildIterator();
-				Iterator<ASTNode> instanceIt = node.getChildIterator();
-				
-				while(ruleIt.hasNext()) {
-					assignments = getVarAssignments(instanceIt.next(), ruleIt.next(), assignments);
-				}
-			}
-			catch(NoChildrenException e) {
-				// do nothing. We simply reached a leaf node.
-			}
-		}
-		
-		return assignments;
 	}
 	
 	/**

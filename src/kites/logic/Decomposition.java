@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
 import kites.TRSModel.Constant;
-import kites.TRSModel.Function;
 import kites.TRSModel.Rule;
 import kites.TRSModel.ASTNode;
 import kites.TRSModel.TRSFile;

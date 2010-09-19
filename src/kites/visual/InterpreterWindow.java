@@ -2,14 +2,11 @@ package kites.visual;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -42,19 +39,24 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
-import org.antlr.runtime.RecognitionException;
-
 import kites.TRSModel.ASTNode;
-import kites.TRSModel.Constant;
 import kites.TRSModel.Rule;
 import kites.TRSModel.TRSFile;
-import kites.exceptions.DecompositionException;
 import kites.exceptions.NoRewritePossibleException;
 import kites.exceptions.SyntaxErrorException;
-import kites.exceptions.UnificationException;
 import kites.logic.CheckTRS;
-import kites.logic.Codification;
 import kites.logic.Decomposition;
+
+/*
+ * I hate GUI programming. That is the reason why some objects in the
+ * window are declared final (to be used in embedded Listener classes)
+ * and others have a getter.
+ * Unfortunately I do not have enough time until I have to hand in this
+ * code to tidy up the mess, so this has to wait till version 1.1.
+ * 
+ * Just pretend that every final object in here has a getter method and
+ * everything will be alright ;-)
+ */
 
 /**
  * This is the interpreter window. It is opened by the <code>MainWindow</code>.
@@ -65,7 +67,7 @@ import kites.logic.Decomposition;
  */
 public class InterpreterWindow extends JFrame {
 	/**
-	 * 
+	 * Eclipse wants this class to have a serial version id
 	 */
 	private static final long serialVersionUID = -8983460115872591238L;
 
@@ -611,6 +613,7 @@ public class InterpreterWindow extends JFrame {
 		 */
 		class CodifyAction implements ActionListener {
 			@Override
+			@SuppressWarnings("unused") // codeWin is never read
 			public void actionPerformed(ActionEvent arg0) {
 				StepRewrite steprwrt = getStepRewrite();
 				try {

@@ -12,11 +12,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.net.URISyntaxException;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -37,12 +35,22 @@ import javax.swing.JToolBar;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 
 import kites.TRSModel.TRSFile;
 import kites.parser.TRSLexer;
 import kites.parser.TRSParser;
+
+/*
+ * I hate GUI programming. That is the reason why some objects in the
+ * window are declared final (to be used in embedded Listener classes)
+ * and others have a getter.
+ * Unfortunately I do not have enough time until I have to hand in this
+ * code to tidy up the mess, so this has to wait till version 1.1.
+ * 
+ * Just pretend that every final object in here has a getter method and
+ * everything will be alright ;-)
+ */
 
 /**
  * Main window class for KiTES.

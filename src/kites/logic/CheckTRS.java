@@ -290,7 +290,7 @@ public class CheckTRS {
 	private void sigCheckNode(HashMap<String, Integer> signature, ASTNode node) throws SyntaxErrorException {
 		if(signature.containsKey(node.getName())) {
 			if(signature.get(node.getName()) != node.getParamCount())
-				throw new SyntaxErrorException("Falsche Parameter-Anzahl für " + node + " in Zeile " + node.getLine());
+				throw new SyntaxErrorException("Falsche Parameter-Anzahl für " + node);
 		}
 		else if(!(node instanceof Variable)) { // we don't want variables in our signature
 			signature.put(node.getName(), node.getParamCount());
@@ -366,7 +366,7 @@ public class CheckTRS {
 		catch(NoChildrenException e) {
 			if(node instanceof Variable) {
 				if(!variables.contains(node.getName())) {
-					throw new SyntaxErrorException("Variable " + node.getName() + " wurde auf der rechten Regelseite benutzt, obwohl sie nicht auf der linken Regelseite aufgeführt wurde. Line: " + node.getLine());
+					throw new SyntaxErrorException("Variable " + node.getName() + " wurde auf der rechten Regelseite benutzt, obwohl sie nicht auf der linken Regelseite aufgeführt wurde.");
 				}
 			}
 		}

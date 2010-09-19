@@ -1,13 +1,11 @@
 package kites.TRSModel;
 
-import java.awt.Component;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 import kites.exceptions.NoChildrenException;
 import kites.visual.NodeContainer;
-import kites.visual.NodeLabel;
 
 /**
  * Abstract class representing a node in a syntax tree.

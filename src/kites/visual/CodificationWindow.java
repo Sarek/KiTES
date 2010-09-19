@@ -20,6 +20,17 @@ import javax.swing.JScrollPane;
 import kites.TRSModel.TRSFile;
 import kites.logic.Codification;
 
+/*
+ * I hate GUI programming. That is the reason why some objects in the
+ * window are declared final (to be used in embedded Listener classes)
+ * and others have a getter.
+ * Unfortunately I do not have enough time until I have to hand in this
+ * code to tidy up the mess, so this has to wait till version 1.1.
+ * 
+ * Just pretend that every final object in here has a getter method and
+ * everything will be alright ;-)
+ */
+
 /**
  * In this class's window the codified standard form of a term is
  * displayed.
