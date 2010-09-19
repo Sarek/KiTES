@@ -96,7 +96,8 @@ public class CheckTRS {
 	 * In a program system the root node in the tree representing
 	 * a left-hand side of a rule needs to belong to the Gamma-
 	 * signature, which is created by this method
-	 * @return
+	 * 
+	 * @return the signature as a map: name --> arity
 	 * @throws SyntaxErrorException
 	 */
 	private HashMap<String, Integer> getGammaSignature() throws SyntaxErrorException {

@@ -26,40 +26,19 @@ import kites.TRSModel.ASTNode;
 import kites.TRSModel.Constant;
 import kites.TRSModel.Function;
 import kites.TRSModel.Rule;
-import kites.TRSModel.TRSFile;
 import kites.TRSModel.Variable;
 import kites.exceptions.NoRewritePossibleException;
 import kites.exceptions.SyntaxErrorException;
 import kites.visual.MsgBox;
 
 /**
- * @author sarek
- * Rewrite a (sub-) tree using a rule.
- * This transforms the subtree following the rule, i. e. symbols are replaced
- * and variables are assigned their values.
- * 
- * @return The transformed (reduced) (sub-) tree.
+ * This class performs the actual rewriting.
+ * The method <code>rewrite</code> is given a node to rewrite and
+ * a rule to rewrite it with. It then builds a mapping between variables
+ * and their assignments and build a new tree according to the rule
+ * and the variable assignments.
  */
 public class ProgramRewrite {
-	boolean rewriteDone;
-	int strategy;
-	ASTNode instance;
-	TRSFile rulelist;
-	
-	/**
-	 * Initialize class for use.
-	 * 
-	 * @param strategy The strategy (LO, RO, LI, RO) to be used
-	 * @param instance The instance to be rewritten
-	 * @param rulelist The <code>RuleList</code> used for finding possible rewrites
-	 */
-	public ProgramRewrite(int strategy, ASTNode instance, TRSFile rulelist) {
-		this.strategy = strategy;
-		this.instance = instance;
-		this.rewriteDone = false;
-		this.rulelist = rulelist;
-	}
-
 	/**
 	 * Build a new tree from the right-hand side of a rule and a map of variable
 	 * assignments.
@@ -102,6 +81,10 @@ public class ProgramRewrite {
 	/**
 	 * Rewrite a node using a specific rule.
 	 * This is also used when not in program execution mode.
+	 * The method builds a mapping between the variables used on the left-hand side
+	 * of the rule and the respective content in the tree. It then goes on
+	 * and builds a new tree out of the right-hand side of the rule and replaces the
+	 * variables there using the previously built mapping.
 	 * 
 	 * @param tree The tree to rewrite
 	 * @param node The node to rewrite

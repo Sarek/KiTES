@@ -42,7 +42,7 @@ public class Constant extends ASTNode {
 	}
 
 	/**
-	 * @see ASTNode.toLabel()
+	 * @see ASTNode#toLabel()
 	 * @return The constant's graphical representation 
 	 */
 	@Override
@@ -51,7 +51,7 @@ public class Constant extends ASTNode {
 	}
 
 	/**
-	 * @see ASTNode.toLabelWithRule()
+	 * @see ASTNode#toLabelWithRule(LinkedHashMap, boolean)
 	 * @param decomp list of rules that can be applied to this node
 	 * @param highlight shall the node be initially highlighted
 	 * @return The constant's graphical representation

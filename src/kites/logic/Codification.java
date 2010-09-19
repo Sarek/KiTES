@@ -61,7 +61,6 @@ public class Codification {
 	 * Initialize the class to perform the codification
 	 * 
 	 * @param rulelist The <code>RuleList</code> to be codified
-	 * @param instance The instance to be codified
 	 */
 	public Codification(TRSFile rulelist) {
 		this.codes = new HashMap<String,Integer>();
@@ -104,10 +103,15 @@ public class Codification {
 	}
 
 	/**
-	 * This method transforms a given tree to its normal form.
+	 * This method transforms a given tree to its encoded standard form.
 	 * It is supposed the mapping has already been created.
 	 * 
-	 * @param node The tree to be transformed
+	 * It takes a flattened list structure and then transforms
+	 * that structure into a new "tree-list" with cons.
+	 * See my bachelor thesis for details.
+	 * 
+	 * @see #genFlatTree(ASTNode) This method flattens the tree
+	 * @param flatTree A flattened tree
 	 * @return The normal form of the tree
 	 */
 	@SuppressWarnings("unchecked")
@@ -141,6 +145,8 @@ public class Codification {
 	
 	/**
 	 * This method creates a flat list from a node tree
+	 * 
+	 * See my bachelor thesis for details.
 	 * 
 	 * @param node The tree to be flattened
 	 * @return The flattened tree
@@ -216,9 +222,24 @@ public class Codification {
 	}
 
 	/**
-	 * Create the normal form of a <code>RuleList</code>.
+	 * Create the encoded standard form of a <code>RuleList</code>.
 	 * The existence of a mapping is pre-supposed.
-	 * @return 
+	 * 
+	 * This builds a list of all the rules in the form:
+	 * <pre>
+	 * cons( cons( rule1.left,
+	 *             rule1.right),
+	 *       cons( cons( rule2.left,
+	 *                   rule2.right),
+	 *             ...
+	 *                   cons( cons( ruleN.left,
+	 *                               ruleN.right),
+	 *                         empty) ... ))
+	 * </pre>
+	 * 
+	 * @see #codifyTree(LinkedList)
+	 * 
+	 * @return The encoded rulelist
 	 */
 	private ASTNode codifyRuleList() {
 		ASTNode firstCons, secondCons, retval = null, toAdd = null;

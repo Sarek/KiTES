@@ -88,7 +88,6 @@ public class Decomposition {
 	 * along with the rule that has to be used for performing the rewrite.
 	 * 
 	 * @param type The execution mode
-	 * @param rulelist The <code>RuleList</code> to be applied
 	 * @param instance The instance to be rewritten
 	 * @return Map of nodes and the rules which can be applied unto them
 	 * @throws DecompositionException If a non-existing decomposition is to be used
@@ -129,7 +128,6 @@ public class Decomposition {
 	/**
 	 * Return possible rewrites in TRS mode - which is all possible rewrites.
 	 * 
-	 * @param rulelist The <code>RuleList</code> to be applied
 	 * @param node The node to be checked. Initialize with root of tree.
 	 * @param matches Map of possible rewrites that were already found. Initialize as empty.
 	 * @return Map of nodes and the rules which can be applied unto them.
@@ -174,9 +172,8 @@ public class Decomposition {
 	 * decomposition rules.
 	 * Such a decomposition consists of all outermost rewrite possibilities.
 	 * 
-	 * @param rulelist The rule set specifying the rewrites
 	 * @param node The tree to be checked
-	 * @return
+	 * @return the mapping of nodes to rules that can be applied to them
 	 * @throws SyntaxErrorException 
 	 */
 	private LinkedHashMap<ASTNode, LinkedList<Rule>> ndetDecomp(ASTNode node) throws SyntaxErrorException {
@@ -231,10 +228,9 @@ public class Decomposition {
 	/**
 	 * Calculate a leftmost-outermost decomposition for use with non-deterministic interpretation.
 	 * 
-	 * @param rulelist The rule set specifying the rewrites
 	 * @param node The tree to be checked
 	 * @param matches A set of pre-existing matches
-	 * @return
+	 * @return the mapping of nodes to rules that can be applied to them
 	 * @throws SyntaxErrorException 
 	 */
 	private LinkedHashMap<ASTNode, LinkedList<Rule>> ndetLODecomp(ASTNode node, LinkedHashMap<ASTNode, LinkedList<Rule>> matches) throws SyntaxErrorException {
@@ -274,10 +270,9 @@ public class Decomposition {
 	/**
 	 * Calculate a rightmost-outermost decomposition for use with non-deterministic interpretation.
 	 * 
-	 * @param rulelist The rule set specifying the rewrites
 	 * @param node The tree to be checked
 	 * @param matches A set of pre-existing matches
-	 * @return
+	 * @return the mapping of nodes to rules that can be applied to them
 	 * @throws SyntaxErrorException 
 	 */
 
@@ -330,7 +325,6 @@ public class Decomposition {
 	 * 
 	 * @param rule The rule (or tree 1)
 	 * @param node The tree (or tree 2)
-	 * @param map A pre-existing mapping of variables to trees (initialize with empty map)
 	 * @return true if both trees match, false otherwise
 	 * @throws SyntaxErrorException on encountering an error in the tree
 	 * @throws NoRewritePossibleException when the trees do not match
@@ -351,7 +345,7 @@ public class Decomposition {
 	 * @return	The mapping of variables of the <code>rule</code> parameter to values
 	 * @throws SyntaxErrorException when an error in the tree was encountered
 	 * @throws NoRewritePossibleException when the trees do not match
-	 * @see kites.Decomposition.match()
+	 * @see kites.logic.Decomposition#match(ASTNode, ASTNode)
 	 */
 	private static HashMap<String, ASTNode> realmatch(ASTNode rule, ASTNode node, HashMap<String, ASTNode> map, HashMap<String, ASTNode> nodeMap) throws SyntaxErrorException, NoRewritePossibleException {
 		if(rule instanceof Variable) {

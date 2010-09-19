@@ -102,7 +102,7 @@ public class NodeLabel extends JLabel implements NodeContainer {
 	
 	/**
 	 * Activate this node.
-	 * @see kites.visual.NodeContainer.activate()
+	 * @see kites.visual.NodeContainer#activate()
 	 */
 	public void activate() {
 		if(canHighlight) {
@@ -124,7 +124,7 @@ public class NodeLabel extends JLabel implements NodeContainer {
 	
 	/**
 	 * Colorize this node.
-	 * @see kites.visual.NodeContainer.colorize()
+	 * @see kites.visual.NodeContainer#colorize()
 	 */
 	public void colorize() {
 		if(canHighlight) {
@@ -246,8 +246,8 @@ public class NodeLabel extends JLabel implements NodeContainer {
 	/**
 	 * Deactivate this label
 	 * 
-	 * @see kites.visual.NodeContainer.deactivate()
-	 * @see kites.visual.NodeContainer.activate()
+	 * @see kites.visual.NodeContainer#deactivate()
+	 * @see kites.visual.NodeContainer#activate()
 	 */
 	public void deactivate() {
 		this.removeMouseListener(this.popupListener);
@@ -257,7 +257,7 @@ public class NodeLabel extends JLabel implements NodeContainer {
 	 * Add a closing parenthesis to this label.
 	 * Needed when it is the last child element of a <code>NodeBox</code>
 	 * 
-	 * @see kites.visual.NodeContainer.addClosePar()
+	 * @see kites.visual.NodeContainer#addClosePar()
 	 */
 	public void addClosePar() {
 		this.setText(this.getText() + ")");
