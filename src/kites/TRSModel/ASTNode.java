@@ -44,7 +44,7 @@ public abstract class ASTNode {
 	}
 	
 	/**
-	 * return a string representation of the node (the name)
+	 * @return a string representation of the node (the name)
 	 */
 	public String toString() {
 		return name;
@@ -53,7 +53,7 @@ public abstract class ASTNode {
 	/**
 	 * return an indented string representation of the node (the name)
 	 * @param indent The number of spaces to indent
-	 * @return
+	 * @return the indented string representations
 	 */
 	public String toString(String indent) {
 		return indent + name;
@@ -62,7 +62,7 @@ public abstract class ASTNode {
 	/**
 	 * Placeholder. Only used for <code>Function</code>s.
 	 * 
-	 * @param a
+	 * @param a no function
 	 */
 	public void add(ASTNode a) {
 		// Do nothing
@@ -100,7 +100,8 @@ public abstract class ASTNode {
 	}
 	
 	/**
-	 * Unfortunately I have no idea why this is needed...
+	 * Used to compute the size of a term.
+	 * An ASTNode has a size of 1.
 	 * 
 	 * @return always 1
 	 */

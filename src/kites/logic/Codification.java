@@ -258,10 +258,18 @@ public class Codification {
 		}
 	}
 
+	/**
+	 * Returns the previously computed codified rulelist.
+	 * @return null if the list was not computed previously, else the list
+	 */
 	public ASTNode getCodifiedRuleList() {
 		return codifiedRuleList;
 	}
 
+	/**
+	 * Returns the previously computed codified instance.
+	 * @return null if the list was not computed previously, else the instance
+	 */
 	public ASTNode getCodifiedInstance() {
 		return codifiedInstance;
 	}

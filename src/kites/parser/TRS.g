@@ -83,7 +83,7 @@ rulelist returns [TRSFile e]:
 	| INCLUDE
 	)*
 	(WS)?
-	('#instance' instance { $e.addInstance($instance.e); })?
+	('#instance' instance { $e.setInstance($instance.e); })?
 	;
 	
 instance returns [ASTNode e]:

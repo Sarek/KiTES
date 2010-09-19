@@ -57,8 +57,13 @@ public class Decomposition {
 	/** Execution in term rewrite system mode */
 	public static final int M_TRS = 2;
 	
+	/** The rulelist all decompositions are performed upon */
 	private TRSFile rulelist;
 	
+	/**
+	 *  Initialize the object with a rulelist
+	 * @param rulelist The rulelist the decompositions shall be performed upon. 
+	 */
 	public Decomposition(TRSFile rulelist) {
 		this.rulelist = rulelist;
 	}
@@ -295,9 +300,6 @@ public class Decomposition {
 		return matches;
 	}
 
-	public static HashMap<String, ASTNode> match(ASTNode rule, ASTNode node) throws SyntaxErrorException, NoRewritePossibleException {
-		return realmatch(rule, node, new HashMap<String, ASTNode>(), new HashMap<String, ASTNode>());
-	}
 	/**
 	 * Checks whether two trees match.
 	 * A match is achieved if they are structurally equal and the symbols used
@@ -315,7 +317,26 @@ public class Decomposition {
 	 * @param node The tree (or tree 2)
 	 * @param map A pre-existing mapping of variables to trees (initialize with empty map)
 	 * @return true if both trees match, false otherwise
-	 * @throws SyntaxErrorException
+	 * @throws SyntaxErrorException on encountering an error in the tree
+	 * @throws NoRewritePossibleException when the trees do not match
+	 */
+	public static HashMap<String, ASTNode> match(ASTNode rule, ASTNode node) throws SyntaxErrorException, NoRewritePossibleException {
+		return realmatch(rule, node, new HashMap<String, ASTNode>(), new HashMap<String, ASTNode>());
+	}
+
+	/**
+	 * The real implementation of the matching algorithm.
+	 * For more information see <code>match</code>
+	 * @param rule the one tree (normally not ground)
+	 * @param node the other tree (best if ground)
+	 * @param map The mapping of variables of the <code>rule</code> parameter
+	 * 		to values
+	 * @param nodeMap The mapping of variables of the <code>node</code> parameter
+	 * 		to values
+	 * @return	The mapping of variables of the <code>rule</code> parameter to values
+	 * @throws SyntaxErrorException when an error in the tree was encountered
+	 * @throws NoRewritePossibleException when the trees do not match
+	 * @see kites.Decomposition.match()
 	 */
 	private static HashMap<String, ASTNode> realmatch(ASTNode rule, ASTNode node, HashMap<String, ASTNode> map, HashMap<String, ASTNode> nodeMap) throws SyntaxErrorException, NoRewritePossibleException {
 		if(rule instanceof Variable) {

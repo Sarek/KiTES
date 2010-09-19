@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kites.logic;
 
 import java.util.HashMap;
@@ -17,12 +14,16 @@ import kites.exceptions.NoRewritePossibleException;
 import kites.exceptions.SyntaxErrorException;
 
 /**
- * @author sarek
- *
+ * This class is able to perform various syntax checks on TRSs.
+ * These syntax checks are needed to decide whether the TRS can be
+ * interpreted at all, and in which mode.
  */
 public class CheckTRS {
 	TRSFile rulelist;
 	
+	/**
+	 * @param rulelist The TRS object that the checks shall be performed upon 
+	 */
 	public CheckTRS(TRSFile rulelist) {
 		this.rulelist = rulelist;
 	}
@@ -70,6 +71,7 @@ public class CheckTRS {
 			}
 		}
 	}
+	
 	/**
 	 * Create the Gamma-signature of the rule set.
 	 * In a program system the root node in the tree representing
@@ -398,6 +400,15 @@ public class CheckTRS {
 		return variables;
 	}
 
+	/**
+	 * Check whether all the rules in the ruleset are left-linear.
+	 * This means that a variable may not appear more than once on the
+	 * left-hand side of a rule.
+	 * This is a prerequisite for interpretation in program mode, as systems
+	 * without this property may not be confluent.
+	 * 
+	 * @throws SyntaxErrorException If a rule is not left-linear.
+	 */
 	public void checkLeftLinear() throws SyntaxErrorException {
 		Iterator<Rule> ruleIt = rulelist.getRules();
 		
@@ -412,6 +423,14 @@ public class CheckTRS {
 		}
 	}
 	
+	/**
+	 * Checks whether a tree is linear, i. e. that no variable appears more
+	 * than once in it.
+	 * 
+	 * @param tree The tree to be checked
+	 * @param varSet A pre-existing number of variables. This should be initialized as an empty set.
+	 * @throws SyntaxErrorException If the tree is not linear.
+	 */
 	private void isLeftLinear(ASTNode tree, HashSet<String> varSet) throws SyntaxErrorException{
 		if(tree instanceof Variable) {
 			if(varSet.contains(tree.getName())) {

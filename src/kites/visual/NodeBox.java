@@ -9,24 +9,30 @@ import java.awt.Component;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * This is the graphical representation of a <code>Function</code>.
+ * It contains a head symbol and one or more children of arbitrary
+ * (i. e. of type <code>NodeContainer</code>) type.
+ */
 public class NodeBox extends JPanel implements NodeContainer {
 	/**
-	 * 
+	 * Eclipse still wants to have a serial everywhere...
 	 */
 	private static final long serialVersionUID = 4314879515239771459L;
 	private GridBagConstraints constraints;
 	private JLabel openPar;
-	private JLabel closePar;
 	private LinkedList<NodeContainer> children;
 	private NodeLabel head;
 	private int params;
 	private JPanel realContainer;
 	
+	/**
+	 * Create a new <code>NodeBox</code> with a specified number of children.
+	 * @param params the number of children
+	 */
 	public NodeBox(int params) {
 		super();
 		realContainer = new JPanel();
@@ -64,6 +70,11 @@ public class NodeBox extends JPanel implements NodeContainer {
 		this.invalidate();
 	}
 	
+	/**
+	 * Set the head symbol of this box.
+	 * It will be displayed in the upper-left corner.
+	 * @param head the graphical representation of the head symbol
+	 */
 	public void setHead(NodeLabel head) {
 		constraints.gridx = 0;
 		constraints.gridy = 0;
@@ -74,6 +85,10 @@ public class NodeBox extends JPanel implements NodeContainer {
 		this.invalidate();
 	}
 	
+	/**
+	 * Add a child to this box.
+	 * @param child the child to add
+	 */
 	public void addChild(NodeContainer child) {
 		if(children.size() < params) {
 			if(children.size() < params - 1) {
@@ -91,19 +106,37 @@ public class NodeBox extends JPanel implements NodeContainer {
 		this.invalidate();
 	}
 	
+	/**
+	 * Gives the current head symbol.
+	 * @return the current head symbol
+	 */
 	public NodeLabel getHead() {
 		return head;
 	}
 	
+	/**
+	 * Overridden to always be displayed as compact as possible
+	 */
 	@Override
 	public Dimension getPreferredSize() {
 		return this.getMinimumSize();
 	}
 	
+	/**
+	 * Overridden to always be displayed as compact as possible.
+	 */
 	public Dimension getMaximumSize() {
 		return this.getMinimumSize();
 	}
 	
+	/**
+	 * Set the interpreter window this box will be placed in.
+	 * We need this because of the popup listener, which will start
+	 * a new interpretation step.
+	 * This is also passed down the line to all the children.
+	 * 
+	 * @param wnd the window
+	 */
 	public void setInterpreterWindow(InterpreterWindow wnd) {
 		Iterator<NodeContainer> it = children.iterator();
 		
@@ -114,6 +147,10 @@ public class NodeBox extends JPanel implements NodeContainer {
 		}
 	}
 	
+	/**
+	 * Gives an iterator over all the children
+	 * @return the iterator
+	 */
 	public Iterator<NodeContainer> getChildIterator() {
 		return children.iterator();
 	}
@@ -131,6 +168,9 @@ public class NodeBox extends JPanel implements NodeContainer {
 		return getHead().toString();
 	}
 
+	/**
+	 * Deactivate all popup menus in this box and its children
+	 */
 	@Override
 	public void deactivate() {
 		getHead().deactivate();
@@ -140,14 +180,29 @@ public class NodeBox extends JPanel implements NodeContainer {
 		}
 	}
 	
+	/**
+	 * Add a closing parenthesis to the last child of this box.
+	 * This needs to be called if this box is itself placed inside a box as its last
+	 * child and therefore needs a closing parenthesis to textually
+	 * close the box it lives in.
+	 */
 	public void addClosePar() {
 		children.getLast().addClosePar();
 	}
 	
+	/**
+	 * Add a comma to the last child of this box.
+	 * This needs to be called if this box is itself placed inside a box and is not
+	 * the last child. Then it has to have a comma at its end, to textually
+	 * "lead in" a new child of the box it lives in.
+	 */
 	public void addComma() {
 		children.getLast().addComma();
 	}
 	
+	/**
+	 * Activate popup menus in this box and its children.
+	 */
 	public void activate() {
 		getHead().activate();
 		Iterator<NodeContainer> childIt = getChildIterator();
@@ -156,6 +211,10 @@ public class NodeBox extends JPanel implements NodeContainer {
 		}
 	}
 	
+	/**
+	 * Try to colorize the head symbol in this box and its children.
+	 * Color will only be added, if a rule is applicable.
+	 */
 	public void colorize() {
 		getHead().colorize();
 		Iterator<NodeContainer> childIt = getChildIterator();

@@ -1,6 +1,5 @@
 package kites.visual;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -21,11 +20,21 @@ import javax.swing.JScrollPane;
 import kites.TRSModel.TRSFile;
 import kites.logic.Codification;
 
+/**
+ * In this class's window the codified standard form of a term is
+ * displayed.
+ */
 public class CodificationWindow extends JFrame {
-	private TRSFile toCodify;
+	/**
+	 * A serial to stop Eclipse from jammering all over the place...
+	 */
+	private static final long serialVersionUID = 2314314138782455490L;
 	
+	/**
+	 * Create and display the codified standard form
+	 * @param toCodify The rulelist and instance to display in codified form
+	 */
 	public CodificationWindow(TRSFile toCodify) {
-		this.toCodify = toCodify;
 		this.setTitle("KiTES - Kodierung");
 	    Toolkit tk = Toolkit.getDefaultToolkit();
 	    Dimension screenSize = tk.getScreenSize();
@@ -57,6 +66,10 @@ public class CodificationWindow extends JFrame {
 	    this.setVisible(true);
 	}
 	
+	/**
+	 * Watch for mouse clicks and open up a popup menu if a
+	 * right mouse button click is seen.
+	 */
 	private class PopupListener implements MouseListener {
 		private JPanel source;
 		
@@ -101,6 +114,9 @@ public class CodificationWindow extends JFrame {
 		
 	}
 	
+	/**
+	 * Copy both codified terms to the system clipboard.
+	 */
     private class CopyAction implements ActionListener {
     	private JPanel source;
     	

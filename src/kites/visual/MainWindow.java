@@ -62,6 +62,9 @@ public class MainWindow extends JFrame {
 	private boolean hasChanged;
 	private String programDirectory;
 
+	/**
+	 * Create and display the window
+	 */
 	public MainWindow() {		
 		super();
 		
@@ -198,6 +201,10 @@ public class MainWindow extends JFrame {
         /*
          * Actions
          */
+        
+        /**
+         * Open the about window
+         */
         class AboutAction implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -208,6 +215,9 @@ public class MainWindow extends JFrame {
         
         menuHelpAbout.addActionListener(new AboutAction());
         
+        /**
+         * Insert a new include in the curently edited file
+         */
         class IncludeAction implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -257,7 +267,11 @@ public class MainWindow extends JFrame {
         menuEditCopy.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { editor.copy(); }});
         menuEditCut.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { editor.cut(); }});
         menuEditPaste.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { editor.paste(); }});
-                
+        
+        /**
+         * Save a file. If the file has never been saved before
+         * (aka "Untitled") open the Save as-dialog.
+         */
         class SaveAction implements ActionListener {
         	private boolean saveAs;
         	
@@ -305,6 +319,9 @@ public class MainWindow extends JFrame {
         menuFileSave.addActionListener(new SaveAction(false));
         menuFileSaveAs.addActionListener(new SaveAction(true));
         
+        /**
+         * Open a file, ditch the old one
+         */
         class OpenAction implements ActionListener {
 
 			@Override
@@ -342,6 +359,11 @@ public class MainWindow extends JFrame {
         menuFileOpen.addActionListener(new OpenAction());
         tbOpen.addActionListener(new OpenAction());
         
+        /**
+         * Watch the editor pane, to register when something changes.
+         * If it does, the title will be updated to reflect this and to
+         * indicate that the file will have to be saved.
+         */
         class ChangeListener implements KeyListener {
 
 			@Override
@@ -363,6 +385,11 @@ public class MainWindow extends JFrame {
         	
         }
         editor.addKeyListener(new ChangeListener());
+        
+        /**
+         * Exit the program.
+         * This is my personal masterpiece ;-)
+         */
         class QuitAction implements ActionListener {
 
 			@Override
@@ -373,7 +400,10 @@ public class MainWindow extends JFrame {
         	
         }
         menuFileQuit.addActionListener(new QuitAction());
-        
+
+        /**
+         * Open up the interpreter window
+         */
         class RunAction implements ActionListener {
         	@Override
         	@SuppressWarnings({"unused"})
@@ -406,7 +436,7 @@ public class MainWindow extends JFrame {
 	        			return;
 	        		}
 	        		
-					InterpreterWindow wndInterpreter = new InterpreterWindow(rulelist, 0);
+					InterpreterWindow wndInterpreter = new InterpreterWindow(rulelist);
 					wndInterpreter = null;
 					System.gc();
 				} catch (Exception e) {
@@ -422,6 +452,8 @@ public class MainWindow extends JFrame {
 
 	
 	/**
+	 * Application entry point.
+	 * Create a new <code>MainWindow</code> and open it.
 	 * @param args will be ignored
 	 */
 	public static void main(String[] args) {		
@@ -429,22 +461,39 @@ public class MainWindow extends JFrame {
         main.setVisible(true);
 	}
 
-
+	/**
+	 * Sets the currently edited file.
+	 * This does NOT mean that this file is opened or anything.
+	 * This is just used for updating the title.
+	 * @param curFile the currently edited file
+	 */
 	public void setCurFile(File curFile) {
 		this.curFile = curFile;
 	}
 
-
+	/**
+	 * Gives the currently edited file.
+	 * 
+	 * @return the currently edited file
+	 */
 	public File getCurFile() {
 		return curFile;
 	}
 
-
+	/**
+	 * Sets the changed status of the currently edited file.
+	 * Called, whenever a change in the editor occurs or the file has been saved.
+	 * @param changed true: changes have to be saved to disk; false: file on disk is current
+	 */
 	public void setChanged(boolean changed) {
 		this.hasChanged = changed;
 		updateTitle();
 	}
 
+	/**
+	 * Update the title to reflect current status of
+	 * edited file and the name of the file.
+	 */
 	public void updateTitle() {
 		String title = "KiTES - ";
 		if(hasChanged())
@@ -459,10 +508,21 @@ public class MainWindow extends JFrame {
 		this.setTitle(title);
 	}
 	
+	/**
+	 * Gives the property whether the currently edited file
+	 * has to be saved or not.
+	 * 
+	 * @return true if file needs saving, false otherwise
+	 */
 	public boolean hasChanged() {
 		return hasChanged;
 	}
 	
+	/**
+	 * Copy a string to the system clipboard
+	 * @param s The string to copy
+	 * @param owner The owner of the clipboard
+	 */
 	public static void writeToClipboard(String s, ClipboardOwner owner)
 	{
 	  Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();

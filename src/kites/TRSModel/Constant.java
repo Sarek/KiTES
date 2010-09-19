@@ -34,6 +34,8 @@ public class Constant extends ASTNode {
 
 	/**
 	 * @see ASTNode.toLabelWithRule()
+	 * @param decomp list of rules that can be applied to this node
+	 * @param highlight shall the node be initially highlighted
 	 * @return The constant's graphical representation
 	 */
 	@Override

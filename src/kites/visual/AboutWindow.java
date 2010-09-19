@@ -9,12 +9,21 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * This class displays a small window with some text in it,
+ * telling who developed KiTES and which version this is.
+ * @author sarek
+ *
+ */
 public class AboutWindow extends JFrame {
 	/**
-	 * 
+	 * A serial to stop Eclipse from jammering all over the place...
 	 */
 	private static final long serialVersionUID = 6022651378659252251L;
 
+	/**
+	 * Create and display the window
+	 */
 	public AboutWindow() {
 	    Toolkit tk = Toolkit.getDefaultToolkit();
 	    Dimension screenSize = tk.getScreenSize();

@@ -1,20 +1,10 @@
 package kites.visual;
 
-import java.awt.Component;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.swing.JEditorPane;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
 import kites.TRSModel.ASTNode;
 import kites.TRSModel.Rule;
@@ -35,6 +25,9 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 
+/**
+ * This class handles doing a step in the interpretation
+ */
 public class StepRewrite {
 	private boolean firstStep;
 	private TRSFile rulelist;
@@ -44,6 +37,13 @@ public class StepRewrite {
 	private HashMap<String, Integer> signature;
 	private InterpreterWindow wnd;
 	
+	/**
+	 * Create a new instance of this class.
+	 * 
+	 * @param rulelist the rulelist the interpretation will be based on
+	 * @param signature the signature of the rulelist
+	 * @param wnd the interpreter window the results shall be displayed in
+	 */
 	public StepRewrite(TRSFile rulelist, HashMap<String, Integer> signature, InterpreterWindow wnd) {
 		firstStep = true;
 		this.rulelist = rulelist;
@@ -52,19 +52,40 @@ public class StepRewrite {
 		this.instanceTree = null;
 	}
 	
+	/**
+	 * Abort the current interpretation and reset.
+	 */
 	public void setFirst() {
 		this.firstStep = true;
 		this.instanceTree = null;
 	}
 	
+	/**
+	 * Set the interpretation mode.
+	 * @see kites.logic.Decomposition
+	 * @param mode the mode from <code>kites.logic.Decomposition</code>
+	 */
 	public void setMode(int mode) {
 		this.mode = mode;
 	}
 	
+	/**
+	 * Set the interpretation strategy. Only applicable/used
+	 * when in program interpretation mode.
+	 * 
+	 * @see kites.logic.Decomposition
+	 * @param strategy the strategy from <code>kites.logic.Decomposition</code>
+	 */
 	public void setStrategy(int strategy) {
 		this.strategy = strategy;
 	}
 	
+	/**
+	 * Determine whether another interpretative step using the rules
+	 * in the current mode and strategy is possible.
+	 * 
+	 * @return true if a step is possible, false otherwise
+	 */
 	public boolean isStepPossible() {
 		try {
 			Decomposition decomp = new Decomposition(rulelist);
@@ -76,6 +97,18 @@ public class StepRewrite {
 		}
 	}
 	
+	/**
+	 * Perform a step in the interpretation.
+	 * In the first step, the instance in the interpreter window is fetched
+	 * and parsed.
+	 * 
+	 * @throws SyntaxErrorException if an error in the tree was found
+	 * @throws DecompositionException if an error with the decomposition is found
+	 * @throws NoRewritePossibleException if no rewrite is possible
+	 * @throws RecognitionException if there was a lexer or parser error (only thrown during first step)
+	 * @throws NoChildrenException if an error in the tree was found 
+	 * @throws NodeException if an error in a node was found
+	 */
 	public void run() throws SyntaxErrorException, DecompositionException, NoRewritePossibleException, RecognitionException, NoChildrenException, NodeException {
 		if(firstStep) {
 			parseInstance();
@@ -123,6 +156,14 @@ public class StepRewrite {
 		wnd.addToResults(nodelabel);
 	}
 	
+	/**
+	 * Parse the instance in the interpreter window.
+	 * If an interpretation is already underway, it will be aborted and the object reset.
+	 * 
+	 * @throws RecognitionException If a lexer/parser error was encountered
+	 * @throws SyntaxErrorException If an error in the tree structure was encountered
+	 * @throws NodeException If an error in a node was encountered
+	 */
 	public void parseInstance() throws RecognitionException, SyntaxErrorException, NodeException {
 		if(instanceTree != null) {
 			// the object has already been used. When parsing a possibly new instance
@@ -158,6 +199,13 @@ public class StepRewrite {
 		CheckTRS.instanceCheck(instanceTree, signature);
 	}
 
+	/**
+	 * Get the current instance.
+	 * If one or more steps in the interpretation was performed, this is the
+	 * transformed/interpreted instance, not the original one.
+	 * 
+	 * @return the instance
+	 */
 	public ASTNode getInstanceTree() {
 		return instanceTree;
 	}

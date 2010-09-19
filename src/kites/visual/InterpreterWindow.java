@@ -56,6 +56,13 @@ import kites.logic.CheckTRS;
 import kites.logic.Codification;
 import kites.logic.Decomposition;
 
+/**
+ * This is the interpreter window. It is opened by the <code>MainWindow</code>.
+ * The <code>TRSFile</code> object is loaded and displayed in the top. If an
+ * instance was given it will also be displayed in the second to top editor pane.
+ * From here interpretation can be started, the interpretation modes can be chosen
+ * and interpretation results will be displayed.
+ */
 public class InterpreterWindow extends JFrame {
 	/**
 	 * 
@@ -84,7 +91,14 @@ public class InterpreterWindow extends JFrame {
 	private String programDirectory;
 
 
-	public InterpreterWindow(final TRSFile rulelist, final int mode) {
+	/**
+	 * Create and open the interpreter window.
+	 * Before opening the interpreter window some syntax checks on the rulest
+	 * are performed and the choice of interpretation modes will be restricted accordingly.
+	 * 
+	 * @param rulelist The rulelist to use for interpretation
+	 */
+	public InterpreterWindow(final TRSFile rulelist) {
 		super();
 		
 		try {
@@ -119,7 +133,12 @@ public class InterpreterWindow extends JFrame {
         JMenuItem resultsPopupCopy = new JMenuItem("Ergebnis kopieren");
         resultsPopup.add(resultsPopupCopy);
         resultsPopup.add(resultsPopupClear);
-                
+        
+        /**
+         * This listener listens for right mouse click in the results pane
+         * to display a popup menu from which the results can be copied to
+         * the system clipboard or the pane can be cleared.
+         */
         class PopupListener implements MouseListener {
 
     		@Override
@@ -302,6 +321,9 @@ public class InterpreterWindow extends JFrame {
         JMenuItem menuEditClear = new JMenuItem("Ergebnis löschen");
         JMenuItem menuEditSave = new JMenuItem("Regeln und Term speichern");
         
+        /**
+         * This listener is able to clear the results pane
+         */
         class ClearAction implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) { 
@@ -317,6 +339,10 @@ public class InterpreterWindow extends JFrame {
         menuEditClear.addActionListener(new ClearAction());
         resultsPopupClear.addActionListener(new ClearAction());
         
+        /**
+         * This listener copies the contents of the results pane
+         * to the system clipboard.
+         */
         class CopyAction implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -335,6 +361,9 @@ public class InterpreterWindow extends JFrame {
         menuEditCopy.addActionListener(new CopyAction());
         resultsPopupCopy.addActionListener(new CopyAction());
         
+        /**
+         * Saves the current rulelist and instance in a file
+         */
         class SaveAction implements ActionListener {
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser fc = new JFileChooser();
@@ -364,6 +393,9 @@ public class InterpreterWindow extends JFrame {
         
         this.setJMenuBar(menuBar);
         
+        /**
+         * Steps through the interpretation
+         */
         class StepAction implements ActionListener {
         	private InterpreterWindow wnd;
         	boolean rewriteState;
@@ -443,7 +475,12 @@ public class InterpreterWindow extends JFrame {
 				}
 			}
         }
-        
+
+        /**
+         * Update the display according to the currently chosen interpretation
+         * method. If an interpretation was currently underway, it will be aborted
+         * and the results pane cleared.
+         */
         class StrategyAction implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -481,6 +518,11 @@ public class InterpreterWindow extends JFrame {
         menuInterpretationNonDet.addActionListener(stratAction);
         menuInterpretationTRS.addActionListener(stratAction);
         
+        /**
+         * This listener is added to the instance entry field.
+         * Whenever the instance is changed, it will abort an interpretation
+         * that is underway and will clear the results pane.
+         */
         class ResetAction implements KeyListener {
         	private InterpreterWindow wnd;
         	
@@ -499,7 +541,11 @@ public class InterpreterWindow extends JFrame {
 			public void keyTyped(KeyEvent arg0) {
 				wnd.getStepRewrite().setFirst();
 				wnd.getResultsPanel().removeAll();
+				wnd.scrollResults.setVisible(false);
+				scrollEndResult.setVisible(false);
 				wnd.getResultsPanel().repaint();
+				wnd.scrollResults.repaint();
+				scrollEndResult.repaint();
 				btnStep.setEnabled(true);
 				((StepAction) btnStep.getActionListeners()[0]).reset();
 				btnStep.setText("Schritt");
@@ -508,6 +554,10 @@ public class InterpreterWindow extends JFrame {
 			}
         }
         
+        /**
+         * Does the complete interpretation, until no more rewrites are possible.
+         * This is only possible in program interpretation mode.
+         */
 		class RunAction implements ActionListener {
 			private InterpreterWindow wnd;
 			
@@ -555,7 +605,11 @@ public class InterpreterWindow extends JFrame {
 		
 		instance.addKeyListener(new ResetAction(this));
     	
-    	class CodifyAction implements ActionListener {
+		/**
+		 * Open the <code>CodificationWindow</code> and display the
+		 * codified ruleset and instance.
+		 */
+		class CodifyAction implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				StepRewrite steprwrt = getStepRewrite();
@@ -628,6 +682,7 @@ public class InterpreterWindow extends JFrame {
 	}
 
 	/**
+	 * Set the rulelist to be interpreted
 	 * @param rulelist the rulelist to set
 	 */
 	public void setRuleList(TRSFile rulelist) {
@@ -635,12 +690,19 @@ public class InterpreterWindow extends JFrame {
 	}
 
 	/**
+	 * Gives the current rulelist
 	 * @return the rulelist
 	 */
 	public TRSFile getRuleList() {
 		return rulelist;
 	}
 	
+	/**
+	 * Gives the current interpretation mode-
+	 * Values for this can be found in the <code>Decomposition</code> class
+	 * @return current interpretation mode
+	 * @see kites.logic.Decomposition
+	 */
 	public int getMode() {
 		if(menuInterpretationNonDet.isSelected()) {
 			return Decomposition.M_NONDET;
@@ -656,6 +718,10 @@ public class InterpreterWindow extends JFrame {
 		}
 	}
 	
+	/**
+	 * Get the current strategy for interpretation in program mode.
+	 * @return the current strategy
+	 */
 	public int getStrategy() {
 		if(menuStrategyLI.isSelected()) {
 			return Decomposition.S_LI;
@@ -690,6 +756,10 @@ public class InterpreterWindow extends JFrame {
 		return txtSize;
 	}
 
+	/**
+	 * Add a tree's graphical representation to the results pane.
+	 * @param label the tree's graphical representation to add
+	 */
 	public void addToResults(NodeContainer label) {
 		scrollResults.setVisible(true);
 		label.setInterpreterWindow(this);
@@ -740,6 +810,9 @@ public class InterpreterWindow extends JFrame {
 		return this;
 	}
 	
+	/**
+	 * Update the title bar of he window, according to the currently chosen interpretation mode.
+	 */
 	public void updateTitle() {
 		String title = "KiTES - Interpretation als ";
 		switch(getMode()) {
