@@ -37,6 +37,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
 import kites.TRSModel.TRSFile;
+import kites.exceptions.NodeException;
 import kites.logic.Codification;
 
 /*
@@ -65,35 +66,45 @@ public class CodificationWindow extends JFrame {
 	 * @param toCodify The rulelist and instance to display in codified form
 	 */
 	public CodificationWindow(TRSFile toCodify) {
-		this.setTitle("KiTES - Kodierung");
-	    Toolkit tk = Toolkit.getDefaultToolkit();
-	    Dimension screenSize = tk.getScreenSize();
-		
-		setSize(1000, 600);
-	    setLocation((screenSize.width - this.getWidth()) / 2, (screenSize.height - this.getHeight()) / 2);
-	    
-	    JPanel code = new JPanel();
-	    code.setLayout(new BoxLayout(code, BoxLayout.X_AXIS));
-	    code.setAlignmentX(JPanel.TOP_ALIGNMENT);
-	    
-	    Codification codification = new Codification(toCodify);
-	    codification.codify();
-	    
-	    JPanel rulelist = new JPanel();
-	    rulelist.setBorder(BorderFactory.createTitledBorder("Regelsatz"));
-	    rulelist.add((Component) codification.getCodifiedRuleList().toLabel());
-	    code.add(rulelist);
-	    code.add(Box.createHorizontalStrut(15));
-	    rulelist.addMouseListener(new PopupListener(rulelist));
-	    JPanel instance = new JPanel();
-	    instance.setBorder(BorderFactory.createTitledBorder("Term"));
-	    instance.add((Component) codification.getCodifiedInstance().toLabel());
-	    instance.addMouseListener(new PopupListener(instance));
-	    code.add(instance);
-	    
-	    JScrollPane scrollCode = new JScrollPane(code);
-	    this.add(scrollCode);
-	    this.setVisible(true);
+		try {
+			Codification codification = new Codification(toCodify);
+		    codification.codify();
+		    
+			this.setTitle("KiTES - Kodierung");
+		    Toolkit tk = Toolkit.getDefaultToolkit();
+		    Dimension screenSize = tk.getScreenSize();
+			
+			setSize(1000, 600);
+		    setLocation((screenSize.width - this.getWidth()) / 2, (screenSize.height - this.getHeight()) / 2);
+		    
+		    JPanel code = new JPanel();
+		    code.setLayout(new BoxLayout(code, BoxLayout.X_AXIS));
+		    code.setAlignmentX(JPanel.TOP_ALIGNMENT);
+		    
+		    
+		    
+		    JPanel rulelist = new JPanel();
+		    rulelist.setBorder(BorderFactory.createTitledBorder("Regelsatz"));
+		    rulelist.add((Component) codification.getCodifiedRuleList().toLabel());
+		    code.add(rulelist);
+		    code.add(Box.createHorizontalStrut(15));
+		    rulelist.addMouseListener(new PopupListener(rulelist));
+		    
+		    if(codification.getCodifiedInstance() != null) {
+			    JPanel instance = new JPanel();
+			    instance.setBorder(BorderFactory.createTitledBorder("Term"));
+			    instance.add((Component) codification.getCodifiedInstance().toLabel());
+			    instance.addMouseListener(new PopupListener(instance));
+			    code.add(instance);
+		    }
+		    
+		    JScrollPane scrollCode = new JScrollPane(code);
+		    this.add(scrollCode);
+		    this.setVisible(true);
+		}
+		catch(NodeException e) {
+			MsgBox.error(e);
+		}
 	}
 	
 	/**

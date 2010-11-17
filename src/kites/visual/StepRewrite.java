@@ -189,6 +189,13 @@ public class StepRewrite {
 			// we then have to reset the object
 			setFirst();
 		}
+		
+		// Fail silently if an empty instance was given
+		if(wnd.getInstance().getText().isEmpty()) {
+			instanceTree = null;
+			return;
+		}
+		
 		TRSLexer lexer = new TRSLexer(new ANTLRStringStream(wnd.getInstance().getText()));
 		TokenStream tokenStream = new CommonTokenStream(lexer);
 		TRSParser parser = new TRSParser(tokenStream);

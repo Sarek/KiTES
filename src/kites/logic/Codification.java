@@ -30,6 +30,7 @@ import kites.TRSModel.Rule;
 import kites.TRSModel.TRSFile;
 import kites.TRSModel.Variable;
 import kites.exceptions.NoChildrenException;
+import kites.exceptions.NodeException;
 
 /**
  * This class provides everything necessary to transform a <code>RuleList</code> and an
@@ -78,28 +79,38 @@ public class Codification {
 	 * will be codified. Symbols present in the instance, but not in the
 	 * <code>RuleList</code> will also be codified. Their associated numbers
 	 * will be the highest ones. 
+	 * @throws NodeException If the given ruleset is empty (i. e. no rules)
 	 */
-	public void codify() {
+	public void codify() throws NodeException {
 		// Create standard form of the rulelist
 			// Create translation map of functions and variables in rules
-		Iterator<Rule> ruleIt = rulelist.getRules();
-		while(ruleIt.hasNext()) {
-			Rule rule = ruleIt.next();
-			// Look at left side
-			createMap(rule.getLeft());
+		
+		if(rulelist.getRulesList().size() > 0) {
+			Iterator<Rule> ruleIt = rulelist.getRules();
+			while(ruleIt.hasNext()) {
+				Rule rule = ruleIt.next();
+				// Look at left side
+				createMap(rule.getLeft());
+				
+				// Look at right side
+				createMap(rule.getRight());
+			}
 			
-			// Look at right side
-			createMap(rule.getRight());
+			// Create new list of rules in standard form using translation map
+			
+			codifiedRuleList = codifyRuleList();
+
+			if(rulelist.getInstance() != null) {
+				// Create standard form of the instance
+					// (Possibly) extend translation map of functions and variables
+				createMap(rulelist.getInstance());
+					// Create new instance tree in standard form
+				codifiedInstance = codifyTree(genFlatTree(rulelist.getInstance()));
+			}
 		}
-		
-		// Create new list of rules in standard form using translation map
-		codifiedRuleList = codifyRuleList();
-		
-		// Create standard form of the instance
-			// (Possibly) extend translation map of functions and variables
-		createMap(rulelist.getInstance());
-			// Create new instance tree in standard form
-		codifiedInstance = codifyTree(genFlatTree(rulelist.getInstance()));
+		else {
+			throw new NodeException("No ruleset to codify given!");
+		}
 	}
 
 	/**
@@ -227,12 +238,12 @@ public class Codification {
 	 * 
 	 * This builds a list of all the rules in the form:
 	 * <pre>
-	 * cons( cons( rule1.left,
+	 * cons( pair( rule1.left,
 	 *             rule1.right),
-	 *       cons( cons( rule2.left,
+	 *       cons( pair( rule2.left,
 	 *                   rule2.right),
 	 *             ...
-	 *                   cons( cons( ruleN.left,
+	 *                   cons( pair( ruleN.left,
 	 *                               ruleN.right),
 	 *                         empty) ... ))
 	 * </pre>
@@ -242,17 +253,17 @@ public class Codification {
 	 * @return The encoded rulelist
 	 */
 	private ASTNode codifyRuleList() {
-		ASTNode firstCons, secondCons, retval = null, toAdd = null;
+		ASTNode firstCons, rulePair, retval = null, toAdd = null;
 		
 		Iterator<Rule> ruleIt = rulelist.getRules();
 		while(ruleIt.hasNext()) {
 			Rule rule = ruleIt.next();
 			firstCons = new Function("cons");
-			secondCons = new Function("cons");
+			rulePair = new Function("pair");
 			
-			secondCons.add(codifyTree(genFlatTree(rule.getLeft())));
-			secondCons.add(codifyTree(genFlatTree(rule.getRight())));
-			firstCons.add(secondCons);
+			rulePair.add(codifyTree(genFlatTree(rule.getLeft())));
+			rulePair.add(codifyTree(genFlatTree(rule.getRight())));
+			firstCons.add(rulePair);
 
 			if(retval == null) {
 				retval = firstCons;

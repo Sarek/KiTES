@@ -637,11 +637,11 @@ public class InterpreterWindow extends JFrame {
 				StepRewrite steprwrt = getStepRewrite();
 				try {
 					steprwrt.parseInstance();
+					getRuleList().setInstance(steprwrt.getInstanceTree());
 				}
 				catch(Exception e) {
 					MsgBox.error(e);
 				}
-				getRuleList().setInstance(steprwrt.getInstanceTree());
 				CodificationWindow codeWin = new CodificationWindow(getRuleList());
 			}
     	}
